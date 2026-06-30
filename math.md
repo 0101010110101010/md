@@ -78,11 +78,23 @@
     - 数列与函数极限
       - 数列极限的基本定义
         - 理解 $\epsilon - N$ 定义, 能够利用定义证明数列极限，懂得数列发散、有界、收敛之间的对比
-        - 数列极限的定义：$\lim_{n \to \infty} a_n = A \Leftrightarrow \forall \epsilon > 0, \exists N \in \mathbb{N}, \forall n > N, |a_n - A| < \epsilon$
+        - 数列极限的定义
+          - $\lim_{n \to \infty} a_n = A \Leftrightarrow \forall \epsilon > 0, \exists N \in \mathbb{N}, \forall n > N, |a_n - A| < \epsilon$
+          - 设$\{x_n\}$为一数列，如果存在常数$a$,对于任意给定的正数$\epsilon$（无论它多么小）,总存在正整数$N$,使得当$n > N$时,不等式$|x_n-a| < \epsilon$都成立，那么就称常数$a$为数列$\{x_n\}$的极限，或者说数列$\{x_n\}$收敛于常数$a$，记作$\lim_{n \to \infty} x_n = a$ 或者 $x_n \to a (n \to \infty)$
+        - 性质
+          - 唯一性：如果数列$\{x_n\}$收敛于$a$，则其极限唯一
+          - 有界性：如果数列$\{x_n\}$收敛，那么它一定有界
+          - 保号性：如果 $lim_{n \to \infty} {x_n} = a$, 且$a > 0$, 那么存在正整数 $N$，当 $n > N$ 时，$x_n > 0$
+          - 子列收敛：如果数列$\{x_n\}$收敛于$a$，那么它的任一子数列也收敛于$a$
       - 函数极限的基本定义
         - 懂得 $ x \to 0 $ 和 $x \to a$ 的区别，以及 $\lim$ 算符 
+          - 设$f(x)$在点$x_0$的某一去心邻域内有定义，如果存在常数$A$,对于任意给定的正数$\epsilon$,总存在正数$\delta$,使得当$x$满足不等式$|x - x_0| < \delta$时,$|f(x)-a| < \epsilon$成立，那么就称常数$A$就叫做函数$f(x)$当 $x$ 趋近于$x_0$时的极限，记作$\lim_{x \to x_0} f(x) = A$ 或者 $f(x) \to A (x \to x_0)$
       - 极限运算法则
-        - 掌握极限四则运算法则
+        - 有界函数与无穷小相乘，仍然是无穷小
+        - 如果 $\lim f(x) = A, \lim g(x) = B$,注意A和B都是常数，那么 
+          $\lim(f(x) \pm g(x)) = \lim f(x) \pm \lim g(x) = A \pm B$
+          $\lim(f(x) \cdot g(x)) = \lim f(x) \cdot \lim g(x) = A \cdot B$
+          $若又有B\ne 0,则$ $\lim(\frac{f(x)}{g(x)}) = \frac{A}{B}$
       - ==两个特殊极限==
         - 推导 $$\lim_{x\to 0} \frac{\sin x}{x} = 1 $$ 和 $$\lim_{n\to \infty} (1 + \frac{1}{x}) = e$$
         - 掌握极限准则：夹逼准则、单调有界准则
@@ -93,4 +105,33 @@
         - 掌握无穷大变量的大小关系
       - ==极限求解思路==
         - 求解极限三步骤：代入、分类、化解
+      - 例题
+        - $$
+          \begin{align*}
+          \lim_{x \to 2}\left( \frac{1}{x - 2} - \frac{4}{x^2 - 4} \right)
+              &= \lim_{x \to 2}\left( \frac{x + 2}{x^2 - 4} - \frac{4}{x^2 - 4} \right) \\
+              &= \lim_{x \to 2} \frac{x - 2}{x^2 - 4} \\
+              &= \lim_{x \to 2} \frac{1}{x + 2} \\
+              &= \frac{1}{4}
+          \end{align*}
+          $$
+        - $$
+          \begin{align*}
+          \lim_{x \to 2}\left( \frac{x^2 - 5x + 6}{x^2 - 4} \right)
+          &= \lim_{x \to 2}\left( \frac{(x-2)(x-3)}{(x-2)(x+2)} \right) \\
+          &= \lim_{x \to 2}\left( \frac{x-3}{x+2} \right) \\
+          &= \frac{2-3}{2+2} \\
+          &= -\frac{1}{4}
+          \end{align*}
+          $$
+        - $$
+          \begin{align*}
+          \lim_{x \to 1}\left( \frac{\sqrt{3-x} - \sqrt{1+x}}{x^2 +x - 2} \right) 
+          &= \lim_{x \to 1}\left( \frac{(\sqrt{3-x} - \sqrt{1+x})\left( {\sqrt{3-x} + \sqrt{1+x}} \right)}{(x^2 +x - 2)\left( {\sqrt{3-x} + \sqrt{1+x}} \right)} \right) \\
+          &= \lim_{x \to 1}\left( \frac{2 - 2x}{(x - 1)(x+2)\left( {\sqrt{3-x} + \sqrt{1+x}} \right)} \right) \\
+          &= \lim_{x \to 1}\left( \frac{-2 (x -1)}{(x - 1)(x+2)\left( {\sqrt{3-x} + \sqrt{1+x}} \right)} \right) \\
+          &= \lim_{x \to 1}\left( \frac{-2}{(x+2)\left( {\sqrt{3-x} + \sqrt{1+x}} \right)} \right) \\
+          &=  \frac{-\sqrt{2}}{6} 
+          \end{align*}
+          $$
 - 线性代数
