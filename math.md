@@ -96,8 +96,9 @@
           $\lim(f(x) \cdot g(x)) = \lim f(x) \cdot \lim g(x) = A \cdot B$
           $若又有B\ne 0,则$ $\lim(\frac{f(x)}{g(x)}) = \frac{A}{B}$
       - ==两个特殊极限==
-        - 推导 $$\lim_{x\to 0} \frac{\sin x}{x} = 1 $$ 和 $$\lim_{n\to \infty} (1 + \frac{1}{x}) = e$$
+        - 推导 $\lim_{x\to 0} \frac{\sin x}{x} = 1 $ 和 $\lim_{n\to \infty} (1 + \frac{1}{x}) = e$
         - 掌握极限准则：夹逼准则、单调有界准则
+          - 夹逼准则：在 $x_0$ 的某去心邻域内，存在 $g(x) < f(x) < h(x)$, 且满足 $\lim_{x \to x_0} g(x) = \lim_{x \to x_0} h(x) = A$, 则 $\lim_{x \to x_0} f(x) = A$
         - 推广到更多极限结果
       - ==无穷小与无穷大==
         - 明晰无穷小的高阶、低阶、同阶、等价等概念
@@ -132,6 +133,50 @@
           &= \lim_{x \to 1}\left( \frac{-2 (x -1)}{(x - 1)(x+2)\left( {\sqrt{3-x} + \sqrt{1+x}} \right)} \right) \\
           &= \lim_{x \to 1}\left( \frac{-2}{(x+2)\left( {\sqrt{3-x} + \sqrt{1+x}} \right)} \right) \\
           &=  \frac{-\sqrt{2}}{6} 
+          \end{align*}
+          $$
+        - $$
+          \begin{align*}
+          \lim_{x \to +\infty}\left( \sqrt{x^2 + x}  - x\right) 
+          &= \lim_{x \to +\infty}\left( \frac{x}{\sqrt{x^2 + x}  + x}\right) 
+          &= \lim_{x \to +\infty}\left( \frac{1}{\sqrt{1 + \frac{1}{x}}  + 1}\right) 
+          &= \frac{1}{2}
+          \end{align*}
+          $$
+        - $$
+          \begin{align*}
+          \lim_{x \to \infty} \frac{5x^2 + 6x}{7x^2 + 8x}
+          &= \frac{5}{7}
+          \end{align*}
+          $$
+        - $$
+          \begin{align*}
+          \lim_{x \to \infty} \left( 1 + \frac{1}{x} \right) \left(2 - \frac{1}{x^2} \right)
+          &= 2
+          \end{align*}
+          $$
+        - $$
+          \begin{align*}
+          \lim_{x \to 0} \frac{\left(1 + x \right)^3 - 1}{x} 
+          &= \lim_{x \to 0} \frac{\left(1 + 3x + 3x^3 + x^3  - 1\right)}{x} \\
+          &= \lim_{x \to 0} \left(3 + 3x + x^2 \right)  \\
+          &= 3 
+          \end{align*}
+          $$
+        - $$
+          \begin{align*}
+          \lim_{x \to 0} \frac{ \sqrt{1 + x} - 1}{x} 
+          &= \lim_{x \to 0} \frac{x}{x (\sqrt{1 + x} + 1)}  \\
+          &= \lim_{x \to 0} \frac{1}{(\sqrt{1 + x} + 1)}  \\
+          &= \frac{1}{2} 
+          \end{align*}
+          $$
+        - $$
+          \begin{align*}
+          \lim_{x \to 3} \frac{x^2 - 5x + 6}{x^2 - 6x + 9}
+          &= \lim_{x \to 3} \frac{(x-3)(x-2)}{(x-3)(x-3)}
+          &= \lim_{x \to 3} \frac{(x-2)}{(x-3)}
+          &= \infty 
           \end{align*}
           $$
 - 线性代数
