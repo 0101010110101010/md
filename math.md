@@ -102,7 +102,24 @@
         - 推广到更多极限结果
       - ==无穷小与无穷大==
         - 明晰无穷小的高阶、低阶、同阶、等价等概念
+          - 下面的 $\alpha$ 和 $\beta$ 都是在同一个自变量的变化过程中的无穷小，且 $\alpha \ne 0$ :
+          如果 $\lim \frac{\beta}{\alpha} = 0$,那么就说 $\beta$ 是比 $\beta$ 高阶的无穷小，记作 $\beta = o(\alpha)$
+          如果 $\lim \frac{\beta}{\alpha} = \infty$,那么就说 $\beta$ 是比 $\alpha$ 低阶的无穷小
+          如果 $\lim \frac{\beta}{\alpha} = c \ne 0$,那么就说 $\beta$ 与 $\alpha$ 是同阶无穷小
+          如果 $\lim \frac{\beta}{\alpha^k} = c \ne 0,k > 0$,那么就说 $\beta$ 与 $\alpha$ 的$k$阶同阶无穷小
+          如果 $\lim \frac{\beta}{\alpha} = 1$,那么就说 $\beta$ 与 $\alpha$ 是等价无穷小,记作 $\alpha \sim \beta$
         - 掌握常用的等价无穷小代换
+          |||
+          |---|---|
+          |$\sin x$|$x$|
+          |$\tan x$|$x$|
+          |$\arcsin x$|$x$|
+          |$\arctan x$|$x$|
+          |$\ln(x+x)$|$x$|
+          |$e^x - 1$|$x$|
+          |$a^x - 1$|$x\ln{a}$|
+          |$(1 + x)^a - 1$|$ax$|
+          |$1 - \cos x$|$\frac{x^2}{2}$|
         - 掌握无穷大变量的大小关系
       - ==极限求解思路==
         - 求解极限三步骤：代入、分类、化解
