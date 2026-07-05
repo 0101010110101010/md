@@ -115,11 +115,61 @@
           |$\tan x$|$x$|
           |$\arcsin x$|$x$|
           |$\arctan x$|$x$|
-          |$\ln(x+x)$|$x$|
+          |$\ln(1+x)$|$x$|
           |$e^x - 1$|$x$|
           |$a^x - 1$|$x\ln{a}$|
           |$(1 + x)^a - 1$|$ax$|
           |$1 - \cos x$|$\frac{x^2}{2}$|
+        - 例题
+          - $$
+            \begin{align*}
+            \lim_{x \to 0} \frac{\sin 3x}{\arcsin x} &= \lim_{x \to 0} \frac{3x}{x} \\
+            &= 3
+            \end{align*} \text{(等价无穷小替换)}
+            $$
+          - $$
+            \begin{align*}
+            \lim_{x \to 0} \frac{\tan 3x}{\sqrt{1 + x} - 1} &= \lim_{x \to 0} \frac{x}{\frac{1}{2}x} \\
+            &= 2
+            \end{align*} \text{(等价无穷小替换)}
+            $$
+          - $$
+            \begin{align*}
+            \lim_{x \to 3} \frac{e^{x -3} - 1}{\sin(2x - 6)} &= \lim_{x \to 0} \frac{x - 3}{2x - 6} \\
+            &= \frac{1}{2}
+            \end{align*} \text{(等价无穷小替换)}
+            $$
+          - $$
+            \begin{align*}
+            \lim_{x \to 0} \frac{ln{(\cos x})}{x^2} &= \lim_{x \to 0} \frac{ln(1 + \cos x - 1)}{x^2} \\
+            &= \lim_{x \to 0} \frac{\cos x - 1}{x^2} \\
+            &= \lim_{x \to 0} \frac{-\frac{x^2}{2}}{x^2} \\
+            &= -\frac{1}{2} \\
+            \end{align*} \text{(等价无穷小替换)}
+            $$
+          - $$
+            \begin{align*}
+            \lim_{x \to 1} \frac{\cos (\frac{\pi}{2}x)}{x - 1} &= \lim_{x \to 1} \frac{\cos (\frac{\pi}{2}(x - 1 + 1))}{x - 1} \\
+            &= \lim_{x \to 1} \frac{\cos (\frac{\pi}{2}(x - 1) + \frac{\pi}{2}))}{x - 1} \\
+            &= \lim_{x \to 1} \frac{-\sin (\frac{\pi}{2}(x-1))}{x - 1} \\
+            &= \lim_{x \to 1} \frac{-\frac{\pi}{2}(x-1)}{x - 1} \\
+            &= -\frac{\pi}{2} \\
+            &= 令t=x-1 x = t+1 \lim_{t \to 0} \frac{\cos(\frac{\pi}{2}(t-1))}{t}
+            \end{align*} \text{(等价无穷小替换)}
+            $$
+          - $$
+            \begin{align*}
+            \lim_{x \to \infty} x\sin(\frac{1}{x})&= \lim_{x \to \infty} x\frac{1}{x} \\
+            &= 1
+            \end{align*} \text{(等价无穷小替换)}
+            $$
+          - $$
+            \begin{align*}
+            \lim_{x \to 0} \frac{\tan x - \sin x}{x^3} &= \lim_{x \to 0} \frac{\tan x(1 - \cos x)}{x^3} \\
+            &= \frac{1}{2}
+            \end{align*} \text{(等价无穷小替换)}
+            $$
+          
         - 掌握无穷大变量的大小关系
       - ==极限求解思路==
         - 求解极限三步骤：代入、分类、化解
