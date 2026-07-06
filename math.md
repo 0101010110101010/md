@@ -103,7 +103,7 @@
       - ==无穷小与无穷大==
         - 明晰无穷小的高阶、低阶、同阶、等价等概念
           - 下面的 $\alpha$ 和 $\beta$ 都是在同一个自变量的变化过程中的无穷小，且 $\alpha \ne 0$ :
-          如果 $\lim \frac{\beta}{\alpha} = 0$,那么就说 $\beta$ 是比 $\beta$ 高阶的无穷小，记作 $\beta = o(\alpha)$
+          如果 $\lim \frac{\beta}{\alpha} = 0$,那么就说 $\beta$ 是比 $\alpha$ 高阶的无穷小，记作 $\beta = o(\alpha)$
           如果 $\lim \frac{\beta}{\alpha} = \infty$,那么就说 $\beta$ 是比 $\alpha$ 低阶的无穷小
           如果 $\lim \frac{\beta}{\alpha} = c \ne 0$,那么就说 $\beta$ 与 $\alpha$ 是同阶无穷小
           如果 $\lim \frac{\beta}{\alpha^k} = c \ne 0,k > 0$,那么就说 $\beta$ 与 $\alpha$ 的$k$阶同阶无穷小
@@ -171,6 +171,31 @@
             $$
           
         - 掌握无穷大变量的大小关系
+            $$
+            \begin{align*}
+            \lim_{x \to 0} \frac{\ln(\cos x)}{x^2}
+            &= \lim_{x \to 0} \ln(\cos x)^{\frac{1}{x^2}}\\
+            &= \lim_{x \to 0} \ln(1 + \cos x - 1)^{\frac{1}{x^2}}\\
+            &= \lim_{x \to 0} \ln(1 + \cos x - 1)^{(\cos x - 1)\frac{1}{x^2(\cos x - 1)}}\\
+            &= \lim_{x \to 0} \frac{1}{x^2(\cos x - 1)}\\
+            \end{align*}
+            $$ 
+            $$
+            \begin{align*}
+            \lim_{x \to 0} (\cos x)^{\frac{1}{x^2}}
+            &= \lim_{x \to 0} e^{{\frac{1}{x^2}}\ln {(1 + \cos x - 1)}}\\
+            &= \lim_{x \to 0} e^{{\frac{\cos x - 1}{x^2}}\ln {(1 + \cos x - 1)^{\frac{1}{\cos x - 1}}}}\\
+            &= e^{-\frac{1}{2}}
+            \end{align*}
+            $$ 
+            $$
+            \begin{align*}
+            \lim_{x \to 0} (\cos x)^{\frac{1}{x^2}}
+            &= \lim_{x \to 0} (1 + \cos x - 1)^{\frac{1}{\cos x - 1}\frac{\cos x - 1}{x^2}} \\
+            &= \lim_{x \to 0} e^{\frac{\cos x - 1}{x^2}} \\
+            &= e^{-\frac{1}{2}}
+            \end{align*}
+            $$ 
       - ==极限求解思路==
         - 求解极限三步骤：代入、分类、化解
       - 例题
