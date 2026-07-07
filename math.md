@@ -297,6 +297,61 @@
         dy/dx=\lim_{\Delta x \to 0}\frac{\Delta y}{\Delta x}
         $$
       - 导数基本运算
+        - $$
+          \begin{align*}
+          \frac {\Delta y}{\Delta x} &= \lim_{\Delta x \to 0} \frac{\sin (x + \Delta x) - \sin x}{\Delta x} \\
+          &= \lim_{\Delta x \to 0} \frac{\sin x \cos \Delta x + \cos x \sin \Delta x - \sin x}{\Delta x}\\
+          &= \lim_{\Delta x \to 0} \frac{\sin x (\cos \Delta x - 1 )+ \cos x \sin \Delta x}{\Delta x}\\
+          &= \lim_{\Delta x \to 0} \frac{-2\sin x \sin^2 \frac{\Delta x}{2} + \cos x \sin \Delta x}{\Delta x}\\
+          &= \lim_{\Delta x \to 0} \frac{-2\sin x \sin^2 \frac{\Delta x}{2}}{\Delta x} + \lim_{\Delta x \to 0} \frac{\cos x \sin \Delta x}{\Delta x}\\
+          &= \lim_{\Delta x \to 0} -\frac{\sin x \sin^2 \frac{\Delta x}{2}}{\frac{\Delta x}{2}} + \lim_{\Delta x \to 0} \frac{\cos x \sin \Delta x}{\Delta x}\\
+          &= \lim_{\Delta x \to 0} -\sin x \sin \frac{\Delta x}{2} + \lim_{\Delta x \to 0} \frac{\cos x \sin \Delta x}{\Delta x}\\
+          &= \cos x \\
+          \end{align*}
+          $$
+        - $$
+          \begin{align*}
+          \frac {\Delta y}{\Delta x} &= \lim_{\Delta x \to 0} \frac{\cos (x + \Delta x) - \cos x}{\Delta x} \\
+          &= \lim_{\Delta x \to 0} \frac{\cos x \cos \Delta x - \sin x \sin \Delta x - \cos x}{\Delta x}\\
+          &= \lim_{\Delta x \to 0} \frac{\cos x (\cos \Delta x - 1 )- \sin x \sin \Delta x}{\Delta x}\\
+          &= \lim_{\Delta x \to 0} \frac{-2\cos x \sin^2 \frac{\Delta x}{2} - \sin x \sin \Delta x}{\Delta x}\\
+          &= \lim_{\Delta x \to 0} \frac{-2\cos x \sin^2 \frac{\Delta x}{2}}{\Delta x} - \lim_{\Delta x \to 0} \frac{\sin x \sin \Delta x}{\Delta x}\\
+          &= \lim_{\Delta x \to 0} \frac{-\cos x \sin^2 \frac{\Delta x}{2}}{\frac{\Delta x}{2}} - \lim_{\Delta x \to 0} \frac{\sin x \sin \Delta x}{\Delta x}\\
+          &= \lim_{\Delta x \to 0} -\cos x \sin \frac{\Delta x}{2} - \lim_{\Delta x \to 0} \frac{\sin x \sin \Delta x}{\Delta x}\\
+          &= -\sin x \\
+          \end{align*}
+          $$
+        - $$
+          \begin{align*}
+          \frac {\Delta y}{\Delta x} &= \lim_{\Delta x \to 0} \frac{e^{x + \Delta x} - e^x}{\Delta x} \\
+          &= \lim_{\Delta x \to 0} \frac{e^{x}(e^{\Delta x} - 1)}{\Delta x}\\
+          &= e^{x}
+          \end{align*}
+          $$
+        - $$
+          \begin{align*}
+          \frac {\Delta y}{\Delta x} &= \lim_{\Delta x \to 0} \frac{(x+ \Delta x)^{n} - x^n}{\Delta x} \\
+          &= \lim_{\Delta x \to 0} \frac{x^n + nx^{n -1}\Delta x - x^n}{\Delta x}\\
+          &= nx^{n -1}
+          \end{align*}
+          $$
+      - 基本求导公式
+        - 常数：$(C)' = 0$
+        - 幂函数：$(x^n)' = n x^{n-1}$
+        - 三角函数：
+          $(\sin x)' = \cos x$,
+          $(\cos x)' = -\sin x$,
+          $(\tan x)' = \sec^2 x$,
+          $(\cot x)' = -\csc^2 x$,
+          $(\sec x)' = \sec x \tan x$,
+          $(\csc x)' = -\csc x \cot x$
+        - 指数函数：$(a^x)' = a^x \ln a$，$(e^x)' = e^x$
+        - 对数函数：$(\log_a x)' = \frac{1}{x \ln a}$，$(\ln |x|)' = \frac{1}{x}$
+        - 反三角函数：
+          $(\arcsin x)' = \frac{1}{\sqrt{1 - x^2}}$,
+          $(\arccos x)' = -\frac{1}{\sqrt{1 - x^2}}$,
+          $(\arctan x)' = \frac{1}{1 + x^2}$,
+          $(\operatorname{arccot} x)' = -\frac{1}{1 + x^2}$
       - 隐函数求导
       - 参数方程求导
       - 反函数求导
