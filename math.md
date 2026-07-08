@@ -352,8 +352,44 @@
           $(\arccos x)' = -\frac{1}{\sqrt{1 - x^2}}$,
           $(\arctan x)' = \frac{1}{1 + x^2}$,
           $(\operatorname{arccot} x)' = -\frac{1}{1 + x^2}$
+      - 运算法则
+        如果函数$f(x)$与$g(x)$各自存在导数，则有：
+        $$
+        \begin{align*}
+        & [f(x) \pm g(x)]' = f'(x) + g'(x) \\
+        & \left[f(x) \cdot g(x) \right]' = f'(x)g(x) + f(x)g'(x) \\
+        & 连乘每个项单独求个导 加在一起,多项相乘也一样 \\
+        & \left[\frac{f(x)}{g(x)}\right]' = \frac{f'(x)g(x) - f(x)g'(x)}{g^2(x)} (g(x)\ne 0)
+        \end{align*}
+        $$
+        
+      - 复合函数求导
+        如果函数$f(x)$ 与 $g(x)$ 各自存在导数，则有：$[f(g(x))]' = f'(g(x))\cdot g'(x)$
       - 隐函数求导
       - 参数方程求导
       - 反函数求导
       - 高阶导数
+      - 例题
+        - $$
+          \begin{align*}
+          & y = \frac{e^x}{x^2} + ln3 \\
+          & y' = e^xx^{-2} - e^x2x^{-3} \\
+          & y' = \frac{e^xx^{2} - e^x2x^{1}}{x^4}
+          \end{align*}
+          $$
+        - $$
+          \begin{align*}
+          & y = x^2\ln x\cos x \\
+          & y' = 2x\ln x\cos x + x^2(\ln x \cos x)' \\
+          & y' = 2x\ln x\cos x + x^2(\frac{1}{x}\cos x - \ln x\sin x) \\
+          连乘每个项单独求个导
+          \end{align*}
+          $$
+        - 判断函数$y = \sqrt[3]{x}\sin x$ 在 $x =0$ 处是否可导
+          $$
+          \begin{align*}
+          lim_{x \to 0} \frac{\sqrt[3]x - 0}{x}&= \\
+          &= lim_{x \to 0} \sqrt[3]{x^2}
+          \end{align*}
+          $$
 - 线性代数
