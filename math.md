@@ -443,5 +443,23 @@
            \lim_{x\to a} \frac{f'(x)}{g'(x)} 存在(或为无穷大)
            $$
       - 相关变化率问题
+        - 一个路灯高为5.4m，人高1.8m， 当人以2m/s的速度径直朝远离路灯的方向移动时，人影子头顶部分的移动速度时多少？
+          $$
+          \begin{align*}
+          & \frac {\mathrm{d}x_1}{\mathrm{d}t} = 2 \\
+          & \frac{x_2}{x_2 - x_1} = 3 \\
+          & {x_2} = 3x_2 - 3x_1 \\
+          & \frac{2}{3}{x_2} = x_1 \\
+          & \frac{2}{3}\frac {\mathrm{d}x_2}{\mathrm{d}t} = 2 \\
+          & \frac {\mathrm{d}x_2}{\mathrm{d}t} = 3 \\
+          \end{align*}
+          $$
       - 函数单调性 凹凸性
+        $$
+        \begin{align*}
+        & 设函数 y=f(x) 在[a,b] 上连续，在(a,b)内可导 \\
+        & 如果在(a,b)内f'(x) \ge 0, 则称f(x)在(a,b)上单调递增 \\
+        & 如果在(a,b)内f'(x) \le 0, 则称f(x)在(a,b)上单调递减 \\
+        \end{align*}
+        $$
 - 线性代数
