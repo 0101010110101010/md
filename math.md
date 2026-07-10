@@ -477,4 +477,25 @@
           & 如果曲线y=f(x)在经过点(x_0,f(x_0))时，曲线的凹凸性改变了，那么就称点(x_0,f(x_0))为这曲线的拐点
           \end{align*}
           $$
+    - 泰勒公式
+      - $$
+        \begin{align*}
+        & f(x) = f(a) + f'(a)(x-a) + \frac{f''(a)}{2!}(x-a)^2 + \cdots + \frac{f^{(n)}(a)}{n!}(x-a)^n + R_n(x) \\
+        & e^x = 1+x+\frac{x^2}{2!} + \frac{x^3}{3!} + \frac{x^4}{4!} + \cdots + \frac{x^n}{n!} + R_n(x) \\
+        & \ln(1+x) = x - \frac{x^2}{2!} + \frac{x^3}{3!} - \frac{x^4}{4!} + \cdots + \frac{x^n}{n!} + R_n(x) \\
+        & \sin x = x - \frac{x^3}{3!} + \frac{x^5}{5!} - \frac{x^7}{7!} + \cdots + \frac{x^{2n+1}}{2n+1!} + R_n(x) \\
+        & \cos x = 1 - \frac{x^2}{2!} + \frac{x^4}{4!} - \frac{x^6}{6!} + \cdots + \frac{x^{2n}}{2n!} + R_n(x) \\
+        & \tan x = 
+        \end{align*}
+        $$
+
+      - $$
+        \begin{align*}
+        & \lim_{x \to 0} \frac{e^x - 1 - \sin x}{1 - \cos x} \\
+        &= \lim_{x \to 0} \frac{e^x - 1 - \sin x}{2\sin^2 \frac{x}{2}} \\
+        &= \lim_{x \to 0}  \frac{e^x - 1 - \sin x}{2\sin^2 \frac{x}{2}} \\
+        &= \lim_{x \to 0}  \frac{x + \frac{x^2}{2} - (x - \frac{x^3}{3!})}{\frac{x^2}{2}} \\
+        &= 1
+        \end{align*}
+        $$
 - 线性代数
