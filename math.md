@@ -7,6 +7,12 @@
             - 反函数相关概念
               反函数定义：设函数 $f:D \rightarrow f(D)$ 是单射，则它存在逆映射 $f^{-1}:f(D) \rightarrow D$，称此映射$f^{-1}$为 $f$ 的反函数，按此定义，对每个 $y \in f(D)$, 有唯一确定的值 $x \in D$ 与之对应，即 $f(x) = y$,于是有 $f^{-1}(y) = x$
               反函数的图像性质：一个函数和反函数之间的曲线是关于直线 $y = x$ 对称的
+            - 幂函数,指数函数,对数函数，三角函数，反三角函数
+            - 基本初等函数和常数进行四则运算和复合
+            - 奇偶性
+            - 单调性
+            - 有界性
+            - 周期性
             - 求函数的定义域
               | 名称 | 形式 | 定义域 |
               | --- | --- | --- |
@@ -100,24 +106,48 @@
           $\lim(f(x) \pm g(x)) = \lim f(x) \pm \lim g(x) = A \pm B$
           $\lim(f(x) \cdot g(x)) = \lim f(x) \cdot \lim g(x) = A \cdot B$
           $若又有B\ne 0,则$ $\lim(\frac{f(x)}{g(x)}) = \frac{A}{B}$
+          复合函数外层函数连续，lim符号可以放到内层的函数体上
         - ==两个特殊极限==
           - 推导 $\lim_{x\to 0} \frac{\sin x}{x} = 1 $ 和 $\lim_{n\to \infty} (1 + \frac{1}{x}) = e$
           - 掌握极限准则：夹逼准则、单调有界准则
             - 夹逼准则：在 $x_0$ 的某去心邻域内，存在 $g(x) < f(x) < h(x)$, 且满足 $\lim_{x \to x_0} g(x) = \lim_{x \to x_0} h(x) = A$, 则 $\lim_{x \to x_0} f(x) = A$
           - 推广到更多极限结果
-        - 洛必达
+        - 洛必达法则
+          当满足以下三点条件时：
+          $$
+          则有：\lim_{x \to a} \frac{f(x)}{g(x)} = \lim_{x \to a} \frac{f'(x)}{g'(x)}
+          $$
+           - $$
+             当 x \to a 时，函数 f(x) 以及 g(x) 都趋于 0
+             $$
+           - $$
+             在点a的某去心邻域内，函数f'(x) 以及 g'(x) 都存在且g(x) \ne 0
+             $$
+           - $$
+             \lim_{x\to a} \frac{f'(x)}{g'(x)} 存在(或为无穷大)
+             $$
+        - 泰勒公式
+          - $$
+            \begin{align*}
+            & f(x) = f(a) + f'(a)(x-a) + \frac{f''(a)}{2!}(x-a)^2 + \cdots + \frac{f^{(n)}(a)}{n!}(x-a)^n + R_n(x) \\
+            & e^x = 1+x+\frac{x^2}{2!} + \frac{x^3}{3!} + \frac{x^4}{4!} + \cdots + \frac{x^n}{n!} + R_n(x) \\
+            & \ln(1+x) = x - \frac{x^2}{2} + \frac{x^3}{3} - \frac{x^4}{4} + \cdots + \frac{x^n}{n} + R_n(x) \\
+            & \frac{1}{1+x} = 1 - x + x^2 - x^3 + \cdots + x^n + R_n(x) \\
+            & \frac{1}{1-x} = 1 + x + x^2 + x^3 + \cdots + x^n + R_n(x) \\
+            & \frac{1}{1+x^2} = 1 - x^2 + x^4 - x^6 + \cdots + x^n + R_n(x) \\
+            & \arctan x = x - \frac{1}{3}x^3 + \frac{1}{5}x^5 - \frac{1}{7}x^7 + \cdots + x^n + R_n(x) \\
+            & \sin x = x - \frac{x^3}{3!} + \frac{x^5}{5!} - \frac{x^7}{7!} + \cdots + \frac{x^{2n+1}}{2n+1!} + R_n(x) \\
+            & \cos x = 1 - \frac{x^2}{2!} + \frac{x^4}{4!} - \frac{x^6}{6!} + \cdots + \frac{x^{2n}}{2n!} + R_n(x) \\
+            & \tan x = 
+            \end{align*}
+            $$
         - 掌握常用的等价无穷小代换
           |||
           |---|---|
-          |$\sin x$|$x$|
           |$\tan x$|$x$|
           |$\arcsin x$|$x$|
-          |$\arctan x$|$x$|
-          |$\ln(1+x)$|$x$|
-          |$e^x - 1$|$x$|
           |$a^x - 1$|$x\ln{a}$|
           |$(1 + x)^a - 1$|$ax$|
-          |$1 - \cos x$|$\frac{x^2}{2}$|
           
       - ==极限求解思路==
         - 求解极限三步骤：代入、分类、化解
@@ -428,20 +458,6 @@
         & \mathrm{d}\left(\frac{u}{v}\right) = \frac{v\mathrm{d}u - u{\mathrm{d}v}}{v^2} (v\ne 0)
         \end{align*}
         $$
-      - 洛必达法则
-        当满足以下三点条件时：
-        $$
-        则有：\lim_{x \to a} \frac{f(x)}{g(x)} = \lim_{x \to a} \frac{f'(x)}{g'(x)}
-        $$
-         - $$
-           当 x \to a 时，函数 f(x) 以及 g(x) 都趋于 0
-           $$
-         - $$
-           在点a的某去心邻域内，函数f'(x) 以及 g'(x) 都存在且g(x) \ne 0
-           $$
-         - $$
-           \lim_{x\to a} \frac{f'(x)}{g'(x)} 存在(或为无穷大)
-           $$
       - 相关变化率问题
         - 一个路灯高为5.4m，人高1.8m， 当人以2m/s的速度径直朝远离路灯的方向移动时，人影子头顶部分的移动速度时多少？
           $$
@@ -477,25 +493,4 @@
           & 如果曲线y=f(x)在经过点(x_0,f(x_0))时，曲线的凹凸性改变了，那么就称点(x_0,f(x_0))为这曲线的拐点
           \end{align*}
           $$
-    - 泰勒公式
-      - $$
-        \begin{align*}
-        & f(x) = f(a) + f'(a)(x-a) + \frac{f''(a)}{2!}(x-a)^2 + \cdots + \frac{f^{(n)}(a)}{n!}(x-a)^n + R_n(x) \\
-        & e^x = 1+x+\frac{x^2}{2!} + \frac{x^3}{3!} + \frac{x^4}{4!} + \cdots + \frac{x^n}{n!} + R_n(x) \\
-        & \ln(1+x) = x - \frac{x^2}{2!} + \frac{x^3}{3!} - \frac{x^4}{4!} + \cdots + \frac{x^n}{n!} + R_n(x) \\
-        & \sin x = x - \frac{x^3}{3!} + \frac{x^5}{5!} - \frac{x^7}{7!} + \cdots + \frac{x^{2n+1}}{2n+1!} + R_n(x) \\
-        & \cos x = 1 - \frac{x^2}{2!} + \frac{x^4}{4!} - \frac{x^6}{6!} + \cdots + \frac{x^{2n}}{2n!} + R_n(x) \\
-        & \tan x = 
-        \end{align*}
-        $$
-
-      - $$
-        \begin{align*}
-        & \lim_{x \to 0} \frac{e^x - 1 - \sin x}{1 - \cos x} \\
-        &= \lim_{x \to 0} \frac{e^x - 1 - \sin x}{2\sin^2 \frac{x}{2}} \\
-        &= \lim_{x \to 0}  \frac{e^x - 1 - \sin x}{2\sin^2 \frac{x}{2}} \\
-        &= \lim_{x \to 0}  \frac{x + \frac{x^2}{2} - (x - \frac{x^3}{3!})}{\frac{x^2}{2}} \\
-        &= 1
-        \end{align*}
-        $$
 - 线性代数
