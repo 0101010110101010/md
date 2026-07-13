@@ -310,7 +310,7 @@
       - 性质
         - 有界性与最大值最小值定理：在闭区间上连续的函数在该区间上有界且一定能取得它的最大值和最小值
         - 零点定理：设函数$f(x)$在闭区间$[a,b]$上连续，且$f(a)f(b)<0$，则$f(x)$在$(a,b)$上一定有零点$\xi$,且$f(\xi) = 0$
-        - 介值定理：设函数$f(x)$在闭区间$[a,b]$上连续，且在这区间的端点取不同的函数值：$f(a) = A, f(b)=B$，则对于A与B之间的任意一个$C$ ，在开区间$(a,b)$内至少存在一个点$\xi$，使得$f(\xi) = C(a < \xi < b)$
+        - 介值定理：设函数$f(x)$在闭区间$[a,b]$上连续，且在这区间的端点取不同的函数值：$f(a) = A, f(b)=B$，则对于A与B之间的任意一个$C$ ，在闭区间$[a,b]$内至少存在一个点$\xi$，使得$f(\xi) = C(a < \xi < b)$
       - 例题
         - $$
           \begin{align*}
@@ -357,6 +357,34 @@
           $$
         - $$
           \begin{align*}
+          \frac {\Delta y}{\Delta x} &= \lim_{\Delta x \to 0} \frac{a^{x + \Delta x} - a^x}{\Delta x} \\
+          &= \lim_{\Delta x \to 0} \frac{a^{x}(a^{\Delta x} - 1)}{\Delta x}\\
+          &= \lim_{\Delta x \to 0} \frac{a^{x}(e^{{\Delta x}ln a} - 1)}{\Delta x}\\
+          &= a^{x}\ln a
+          \end{align*}
+          $$
+        - $$
+          \begin{align*}
+          \frac {\Delta y}{\Delta x} &= \lim_{\Delta x \to 0} \frac{a^{x + \Delta x} - a^x}{\Delta x} \\
+          &= \lim_{\Delta x \to 0} \frac{a^{x}(a^{\Delta x} - 1)}{\Delta x}\\
+          &= \lim_{\Delta x \to 0} \frac{a^{x}(e^{{\Delta x}ln a} - 1)}{\Delta x}\\
+          &= a^{x}\ln a
+          \end{align*}
+          $$
+        - $$
+          \begin{align*}
+          \frac {\Delta y}{\Delta x} &= \lim_{\Delta x \to 0} \frac{\log_a^{x + \Delta x} - \log_a^x}{\Delta x} \\
+          &= \lim_{\Delta x \to 0} \frac{\log_a^{1 + \frac{\Delta x}{x}}}{\Delta x} \\
+          &= \lim_{\Delta x \to 0} \frac{\log_a^{(1 + \frac{\Delta x}{x})^{\frac{x}{\Delta x}\times{\frac{\Delta x}{x}}}}}{\Delta x} \\
+          &= \lim_{\Delta x \to 0} \frac{{\frac{\Delta x}{x}}\log_a^{(1 + \frac{\Delta x}{x})^{\frac{x}{\Delta x}}}}{\Delta x} \\
+          &= \lim_{\Delta x \to 0} \frac{{\frac{1}{x}}\log_a^{(1 + \frac{\Delta x}{x})^{\frac{x}{\Delta x}}}}{1} \\
+          &= \lim_{\Delta x \to 0} {\frac{1}{x}}\log_a^{(1 + \frac{\Delta x}{x})^{\frac{x}{\Delta x}}} \\
+          &= {\frac{1}{x}}\log_a^{e} \\
+          &= {\frac{1}{x\ln^a}} \\
+          \end{align*}
+          $$
+        - $$
+          \begin{align*}
           \frac {\Delta y}{\Delta x} &= \lim_{\Delta x \to 0} \frac{(x+ \Delta x)^{n} - x^n}{\Delta x} \\
           &= \lim_{\Delta x \to 0} \frac{x^n + nx^{n -1}\Delta x - x^n}{\Delta x}\\
           &= nx^{n -1}
@@ -386,6 +414,7 @@
         & [f(x) \pm g(x)]' = f'(x) + g'(x) \\
         & \left[f(x) \cdot g(x) \right]' = f'(x)g(x) + f(x)g'(x) \\
         & 连乘每个项单独求个导 加在一起,多项相乘也一样 \\
+        & (uvw)' = u'vw + uv'w + uvw'\\
         & \left[\frac{f(x)}{g(x)}\right]' = \frac{f'(x)g(x) - f(x)g'(x)}{g^2(x)} (g(x)\ne 0)
         \end{align*}
         $$
