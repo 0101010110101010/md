@@ -397,6 +397,7 @@
           $(\sin x)' = \cos x$,
           $(\cos x)' = -\sin x$,
           $(\tan x)' = \sec^2 x$,
+          乘除法法则
           $(\cot x)' = -\csc^2 x$,
           $(\sec x)' = \sec x \tan x$,
           $(\csc x)' = -\csc x \cot x$
@@ -404,8 +405,10 @@
         - 对数函数：$(\log_a x)' = \frac{1}{x \ln a}$，$(\ln |x|)' = \frac{1}{x}$
         - 反三角函数：
           $(\arcsin x)' = \frac{1}{\sqrt{1 - x^2}}$,
+          $x = \sin y$,
           $(\arccos x)' = -\frac{1}{\sqrt{1 - x^2}}$,
           $(\arctan x)' = \frac{1}{1 + x^2}$,
+          $x = \tan y$,
           $(\operatorname{arccot} x)' = -\frac{1}{1 + x^2}$
       - 运算法则
         如果函数$f(x)$与$g(x)$各自存在导数，则有：
