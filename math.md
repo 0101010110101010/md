@@ -525,4 +525,176 @@
           & 如果曲线y=f(x)在经过点(x_0,f(x_0))时，曲线的凹凸性改变了，那么就称点(x_0,f(x_0))为这曲线的拐点
           \end{align*}
           $$
+    - 不定积分
+      - 积分的本质以及牛顿-莱布尼茨公式
+        - $$
+          \begin{align*}
+          & \int_a^b f(x) \, dx = F(b) - F(a) \\
+          & \text{其中 } F(x) \text{ 是 } f(x) \text{ 的原函数}
+          \end{align*}
+          $$
+      - 不定积分的基本求解方法
+        $$
+        \begin{align*}
+        & \int k \,\mathrm{d}x = kx + C \\
+        & \int x^\mu \,\mathrm{d}x = \frac{x^{\mu+1}}{\mu+1} + C \quad (\mu \neq -1) \\
+        & \int \frac{1}{x} \,\mathrm{d}x = \ln|x| + C \\
+        & \int e^x \,\mathrm{d}x = e^x + C \\
+        & \int a^x \,\mathrm{d}x = \frac{a^x}{\ln a} + C \\
+        & \int \sin x \,\mathrm{d}x = -\cos x + C \\
+        & \int \cos x \,\mathrm{d}x = \sin x + C \\
+        & \int \sec^2 x \,\mathrm{d}x = \tan x + C \\
+        & \int \csc^2 x \,\mathrm{d}x = -\cot x + C \\
+        & \int \sec x \tan x \,\mathrm{d}x = \sec x + C \\
+        & \int \csc x \cot x \,\mathrm{d}x = -\csc x + C \\
+        & \int \frac{1}{\sqrt{1 - x^2}} \,\mathrm{d}x = \arcsin x + C \\
+        & \int \frac{1}{1 + x^2} \,\mathrm{d}x = \arctan x + C \\
+
+        & \int [f(x) \pm g(x)] \,\mathrm{d}x = \int f(x) \,\mathrm{d}x \pm \int g(x) \,\mathrm{d}x \\
+        & \int kf(x)\mathrm d x = k \int f(x) \mathrm d x(x \ne 0) \\
+
+        & \int \frac{1}{x^2 + a^2} \mathrm d x \\
+        &= \frac{1}{a^2}\int \frac{1}{(\frac{x}{a})^2 + 1} \mathrm d x \\
+        &= \frac{1}{a} \arctan(\frac{x}{a}) + C \\
+        & \int \frac{1}{\sqrt {a^2 - x^2}} \mathrm d x \\
+        &=\frac{1}{|a|} \int \frac{1}{\sqrt {1 - (\frac{x}{a})^2}} \mathrm d x \\ 
+        &= \arcsin\frac{x}{|a|} + C
+        \end{align*}
+        $$
+      - 凑微分法：找到一部分作为另一部分的导数
+        - $\mathrm d y = y' \mathrm d x$
+        - $$
+          \begin{align*}
+          & 三角积分函数中的凑微分小技巧，若被积函数表达式R(\sin x, \cos x)存在下列条件： \\
+          & R(-\sin x, \cos x) = -R(\sin x, \cos x), 凑出\sin x \mathrm d x = -\mathrm d \cos x \\
+          & R(\sin x, -\cos x) = -R(\sin x, \cos x), 凑出\cos x \mathrm d x = \mathrm d \sin x \\
+          & R(-\sin x, -\cos x) = R(\sin x, \cos x), 凑出\sec^2 x \mathrm d x = \mathrm d \tan x
+
+          \end{align*}
+          $$
+      - 有关根号的常见处理：第二类换元法
+        - $$
+          \begin{align*}
+          & \sqrt {2x + 1} = t \\
+          & \sqrt[3] {x} = t \\
+          & \sqrt {e^x + 1} = t \\
+          \end{align*}
+          $$
+        - 三角代换（利用直角三角形）：
+          $$
+          \begin{array}{c|c|c|c}
+          \text{被积函数含} & \text{令 } x = & \mathrm{d}x = & \text{根号化为} \\
+          \hline
+          \sqrt{a^2 - x^2} & a\sin\theta & a\cos\theta\,\mathrm{d}\theta & a\cos\theta \\
+          \sqrt{a^2 + x^2} & a\tan\theta & a\sec^2\theta\,\mathrm{d}\theta & a\sec\theta \\
+          \sqrt{x^2 - a^2} & a\sec\theta & a\sec\theta\tan\theta\,\mathrm{d}\theta & a\tan\theta
+          \end{array}
+          $$
+        - 直角三角形示意图：
+
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 840 200" width="100%" height="200">
+            <defs>
+              <marker id="arrow" markerWidth="6" markerHeight="6" refX="6" refY="3" orient="auto">
+                <path d="M0,0 L6,3 L0,6 Z" fill="#333"/>
+              </marker>
+            </defs>
+
+            <!-- 第1个: sqrt(a^2-x^2) -->
+            <g transform="translate(40,20)">
+              <polygon points="0,140 200,140 200,60" fill="#FFD700" stroke="#333" stroke-width="2"/>
+              <rect x="185" y="140" width="15" height="15" fill="#fff" stroke="#333" stroke-width="1" transform="rotate(0,192,147)"/>
+              <path d="M 0,140 L 15,125" fill="none" stroke="#333" stroke-width="1.5"/>
+              <text x="100" y="160" text-anchor="middle" font-size="16">√(a²-x²)</text>
+              <text x="210" y="100" text-anchor="start" font-size="16">x</text>
+              <text x="80" y="85" text-anchor="middle" font-size="16">a</text>
+              <text x="15" y="130" text-anchor="middle" font-size="14" fill="#666">θ</text>
+              <text x="100" y="180" text-anchor="middle" font-size="12" fill="#888" font-style="italic">x = a sinθ</text>
+              <text x="100" y="195" text-anchor="middle" font-size="13" font-weight="bold">√(a²-x²) 型</text>
+            </g>
+
+            <!-- 第2个: sqrt(a^2+x^2) -->
+            <g transform="translate(320,20)">
+              <polygon points="0,140 160,140 160,70" fill="#FFD700" stroke="#333" stroke-width="2"/>
+              <rect x="145" y="140" width="15" height="15" fill="#fff" stroke="#333" stroke-width="1"/>
+              <path d="M 0,140 L 15,128" fill="none" stroke="#333" stroke-width="1.5"/>
+              <text x="80" y="160" text-anchor="middle" font-size="16">a</text>
+              <text x="170" y="105" text-anchor="start" font-size="16">x</text>
+              <text x="60" y="85" text-anchor="middle" font-size="16">√(a²+x²)</text>
+              <text x="15" y="130" text-anchor="middle" font-size="14" fill="#666">θ</text>
+              <text x="80" y="180" text-anchor="middle" font-size="12" fill="#888" font-style="italic">x = a tanθ</text>
+              <text x="80" y="195" text-anchor="middle" font-size="13" font-weight="bold">√(a²+x²) 型</text>
+            </g>
+
+            <!-- 第3个: sqrt(x^2-a^2) -->
+            <g transform="translate(600,20)">
+              <polygon points="0,140 130,140 130,75" fill="#FFD700" stroke="#333" stroke-width="2"/>
+              <rect x="115" y="140" width="15" height="15" fill="#fff" stroke="#333" stroke-width="1"/>
+              <path d="M 0,140 L 15,128" fill="none" stroke="#333" stroke-width="1.5"/>
+              <text x="65" y="160" text-anchor="middle" font-size="16">a</text>
+              <text x="140" y="110" text-anchor="start" font-size="16">√(x²-a²)</text>
+              <text x="45" y="85" text-anchor="middle" font-size="16">x</text>
+              <text x="15" y="130" text-anchor="middle" font-size="14" fill="#666">θ</text>
+              <text x="65" y="180" text-anchor="middle" font-size="12" fill="#888" font-style="italic">x = a secθ</text>
+              <text x="65" y="195" text-anchor="middle" font-size="13" font-weight="bold">√(x²-a²) 型</text>
+            </g>
+          </svg>
+      - 分部积分：用于处理多种类型函数组合搭配
+        - $$
+          \int u\mathrm d v = uv - \int v\mathrm d u
+          $$
+      - 特定类型的积分：有理分式积分
+      - 例题
+        - $$
+          \begin{align*}
+          & \int e^x(3 - \frac{e^{-x}}{\sqrt{x}}) \mathrm d x \\
+          &= \int 3e^x - \frac{1}{\sqrt{x}} \mathrm d x \\
+          &= 3\int e^x\mathrm d x - \int\frac{1}{\sqrt{x}} \mathrm d x \\
+          &= 3e^x - 2x^{\frac{1}{2}} + C\\
+          \end{align*}
+          $$
+        - $$
+          \begin{align*}
+          & \int \cos^{2}\frac{x}{2} \mathrm d x \\
+          &= \int \frac{\cos x + 1}{2} \mathrm d x \\
+          &= \int \frac{\cos x}{2} \mathrm d x  + \int \frac{1}{2} \mathrm d x \\
+          &= \frac{\sin x}{2} + \frac{x}{2} + C
+          \end{align*}
+          $$
+        - $$
+          \begin{align*}
+          & \int \frac{1}{3x + 2} \mathrm d x \\
+          &= \frac{1}{3} \int \frac{1}{3x + 2} \cdot 3 \mathrm d x \\
+          &= \frac{1}{3} \ln|3x + 2| + C
+          \end{align*}
+          $$
+        - $$
+          \begin{align*}
+          & \int \frac{3x - 1}{x^2 - 2x - 3} \mathrm d x \\
+          &=  \int \frac{2x - 2 + x + 1}{x^2 - 2x - 3} \mathrm d x \\
+          &=  \int \frac{2x - 2}{x^2 - 2x - 3} \mathrm d x + \int \frac{x + 1}{x^2 - 2x - 3} \mathrm d x \\
+          &=  \ln|x^2 - 2x - 3| + \int \frac{1}{x - 3} \mathrm d x + C \\
+          &=  \ln|x^2 - 2x - 3| + \ln|x - 3| + C\\
+          \end{align*}
+          $$
+        - $$
+          \begin{align*}
+          & \int \frac{1}{x^2 + 4x + 5} \mathrm d x \\
+          &=  \int \frac{1}{(x+2)^2 + 1} \mathrm d x \\
+          &= \arctan (2+x) + C
+          \end{align*}
+          $$
+        - $$
+          \begin{align*}
+          & \int \frac{1}{x^2 + a^2} \mathrm d x \\
+          &= \frac{1}{a^2}\int \frac{1}{(\frac{x}{a})^2 + 1} \mathrm d x \\
+          &= \frac{1}{a} \arctan(\frac{x}{a}) + C
+          \end{align*}
+          $$
+        - $$
+          \begin{align*}
+          & \int \frac{1}{\sqrt {a^2 - x^2}} \mathrm d x \\
+          &=\frac{1}{|a|} \int \frac{1}{\sqrt {1 - (\frac{x}{a})^2}} \mathrm d x \\ 
+          &= \arcsin\frac{x}{|a|} + C
+          \end{align*}
+          $$
 - 线性代数
