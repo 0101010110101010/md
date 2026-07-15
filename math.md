@@ -643,6 +643,8 @@
           \int u\mathrm d v = uv - \int v\mathrm d u
           $$
       - 特定类型的积分：有理分式积分
+        - 变真分式
+        - 拆分母 留数法 （乘分母，分母为0）
       - 例题
         - $$
           \begin{align*}
