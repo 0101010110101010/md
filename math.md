@@ -703,6 +703,16 @@
       - 定积分的含义与基本性质
         - 与变量无关
       - 定积分运算
+        - 华莱士（Wallis）公式（点火公式）
+          $$
+          \int_0^{\frac{\pi}{2}} \sin^n x \,\mathrm{d}x 
+          = \int_0^{\frac{\pi}{2}} \cos^n x \,\mathrm{d}x 
+          = 
+          \begin{cases}
+            \displaystyle \frac{n-1}{n} \cdot \frac{n-3}{n-2} \cdots \frac{1}{2} \cdot \frac{\pi}{2}, & n \text{ 为偶数} \\[8pt]
+            \displaystyle \frac{n-1}{n} \cdot \frac{n-3}{n-2} \cdots \frac{2}{3} \cdot 1, & n \text{ 为奇数}
+          \end{cases}
+          $$
       - 变上限积分
       - 广义积分
       - 积分应用
