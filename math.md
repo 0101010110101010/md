@@ -703,6 +703,11 @@
       - 定积分的含义与基本性质
         - 与变量无关
       - 定积分运算
+        - 奇偶性
+        - $$
+          \int_a^{b} f(x) \,\mathrm{d}x 
+          =\int_a^{b} f(a+b-x) \,\mathrm{d}x 
+          $$
         - 华莱士（Wallis）公式（点火公式）
           $$
           \int_0^{\frac{\pi}{2}} \sin^n x \,\mathrm{d}x 
