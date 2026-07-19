@@ -719,7 +719,132 @@
           \end{cases}
           $$
       - 变上限积分
+        - $$
+          \int_0^x f(t) \mathrm{d}t = f(x) \\
+          \int_0^x e^{t^2} \mathrm{d}t \quad S'(x)=e^{x^2} \\
+          \int_0^{\sin x} e^{t} \mathrm{d}t \quad S'(x)=e^{\sin x}\cos x \\
+          \int_0^{x} xe^{t} \mathrm{d}t \quad S'(x)=x'\int_0^{x} xe^{t} \mathrm{d}t + x\left(\int_0^{x} xe^{t} \mathrm{d}t \right)'\\
+          \int_0^x \sin(x+t)\mathrm d t \quad u=x+t \quad \int_x^{2x} \sin(u)\mathrm d u \quad S'=2\sin 2x - \sin x
+          $$
       - 广义积分
-      - 积分应用
+        - $$
+          \int_a^b f(x) \,\mathrm{d}x \quad a,b固定，存在c \in [a,b]使得 \lim_{x\to c} f(x)= \infty \\
+          \int_a^{+\infty} f(x) \,\mathrm{d}x  \\
+          \int_{-\infty}^a f(x) \,\mathrm{d}x  \\
+          \int_{-\infty}^{+\infty} f(x) \,\mathrm{d}x  \\
+          $$
+        - $p$ 积分的敛散性（$x^p$ 的广义积分判据）
+          $$
+          \begin{aligned}
+          &\int_0^1 \frac{1}{x} \,\mathrm{d}x \quad &\text{发散（} \ln x \to -\infty \text{）}\\[4pt]
+          &\int_0^1 \frac{1}{x^2} \,\mathrm{d}x \quad &\text{发散（} -\frac{1}{x} \to \infty \text{）}\\[4pt]
+          &\int_0^1 \frac{1}{\sqrt{x}} \,\mathrm{d}x \quad &p=\tfrac{1}{2}<1,\ \text{收敛}=2\\[4pt]
+          &\int_1^{+\infty} \frac{1}{x} \,\mathrm{d}x \quad &\text{发散（} \ln x \to +\infty \text{）}\\[4pt]
+          &\int_1^{+\infty} \frac{1}{x^2} \,\mathrm{d}x \quad &p=2>1,\ \text{收敛}=1\\[4pt]
+          &\int_1^{+\infty} \frac{1}{\sqrt{x}} \,\mathrm{d}x \quad &p=\tfrac{1}{2}<1,\ \text{发散（} 2\sqrt{x} \to +\infty \text{）}
+          \end{aligned}
+          $$
+      - 积分应用 旋转体体积
+          $$
+          \begin{aligned}
+          &\int_a^b \pi f^2(x) \mathrm{d}x\\[4pt]
+          \end{aligned}
+          $$
       - 利用定积分进行数列求和
+        $$
+        \begin{aligned}
+        &\int_3^5 x^2 \mathrm{d}x = \\[4pt]
+        \end{aligned}
+        $$
+    - 常微分方程
+      - 一阶微分方程
+        - 分离变量法 一阶线性齐次微分方程
+          $$
+          \begin{aligned}
+          & y' = 2xy \\
+          & \frac{\mathrm{d}y}{\mathrm{d}x} = 2xy \\
+          & \frac{\mathrm{d}y}{y} = 2x\mathrm{d}x \\
+          & \int\frac{\mathrm{d}y}{y} = \int 2x\mathrm{d}x \\
+          & \ln |y| = x^2 + C  \\
+          & |y| = e^{x^2 + C} \\
+          & y = Ce^{x^2} \\
+          \end{aligned}
+          $$
+
+          $$
+          \boxed{
+          \begin{aligned}
+          & y' = P(x)y \\
+          & y = Ce^{\int P(x)\mathrm{d}x}
+          \end{aligned}
+          }
+          $$
+        - 一阶线性非齐次微分方程
+          $$
+          \begin{aligned}
+          & y' + P(x)y = Q(x)\\
+          & y = e^{-\int P(x)\mathrm{d}x} \left[\int {Q(x)e^{\int P(x)\mathrm{d}x}}\mathrm{d}x + C\right] \\[6pt]
+          \end{aligned}
+          $$
+          
+          **推导过程：**
+          $$
+          \boxed{
+          \begin{aligned}
+          &\frac {(e^{\int P(x)\mathrm{d}x} y)'}{e^{\int P(x)\mathrm{d}x}} = Q(x) \\[4pt]
+          &{(e^{\int P(x)\mathrm{d}x} y)'} = e^{\int P(x)\mathrm{d}x}Q(x) \\[4pt]
+          &(e^{\int P(x)\mathrm{d}x} y) = \int e^{\int P(x)\mathrm{d}x}Q(x) \,\mathrm{d}x + C \\[4pt]
+          &y = e^{-\int P(x)\mathrm{d}x} \left[\int {Q(x)e^{\int P(x)\mathrm{d}x}}\,\mathrm{d}x + C\right]
+          \end{aligned}
+          }
+          $$
+          
+          **说明：**
+          1. 积分因子 $e^{\int P(x)\mathrm{d}x}$ 中，$\int P(x)\mathrm{d}x$ **不加绝对值**也不加常数，因为 $e^{\ln|f(x)|} = |f(x)|$ 带绝对值反而麻烦，且积分因子只需一个特解，正负号可被后续常数 $C$ 吸收。
+          2. 通解公式推导中，积分因子里的 $\int P(x)\mathrm{d}x$ **不加 $C$**；最终结果中的 $C$ 来自右边积分，已经够用。
+        - 一阶线性非齐次微分方程
+          $$
+          \begin{aligned}
+          &u = \frac{y}{x} \\
+          &ax + by + C = U
+          \end{aligned}
+          $$
+      - 二阶微分方程
+        - $$
+          \begin{aligned}
+          &y'' = f(x)
+          \end{aligned}
+          $$
+        - 可降阶的微分方程
+          $$
+          \begin{aligned}
+          &y'' = f(x,y') \\
+          &y'' = f(y,y')
+          \end{aligned}
+          $$
+          - $$
+            \begin{aligned}
+            &(1+x^2)y'' = 2xy' \\
+            &令 y'=p, \frac{\mathrm{d}y}{\mathrm{d}x} = p, y'' = \frac{\mathrm{d}p}{\mathrm{d}x} = p'\\
+            &(1+x^2)y'' = 2xp \\
+            &(1+x^2)p' = 2xp \\
+            \end{aligned}
+            $$
+          - $$
+            \begin{aligned}
+            &2yy'' + (y')^2 = 0 \\
+            &令 y'=p , \frac{\mathrm{d}p}{\mathrm{d}x} = y'' = \frac{\mathrm{d}p}{\mathrm{d}y}\frac{\mathrm{d}y}{\mathrm{d}x}\\
+            &2y\frac{\mathrm{d}p}{\mathrm{d}y}p + p^2 = 0 \\
+            \end{aligned}
+            $$
+        - 二阶常系数线性齐次微分方程
+          $$
+          \begin{aligned}
+          y'' + py' + qy = 0
+          \end{aligned}
+          $$
+      - 高阶微分方程
+- 线性代数
+      - 二阶微分方程
+      - 高阶微分方程
 - 线性代数
