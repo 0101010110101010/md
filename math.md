@@ -883,4 +883,93 @@
           $$
           注意：若 $y_p$ 的试设形式与齐次解 $y_h$ 的项**重合**，则乘以 $x$（或 $x^k$）以提高次数。
       - 高阶微分方程
+  - 空间向量与解析几何
+    - 向量点乘（内积）
+      $$
+      \vec{a} \cdot \vec{b} = a_x b_x + a_y b_y + a_z b_z
+      $$
+      $$
+      \vec{a} \cdot \vec{b} = |\vec{a}| |\vec{b}| \cos \theta
+      $$
+      结果为一个**数**，用于判断夹角、求投影长度。
+    - 向量叉乘（外积）
+      $$
+      \vec{a} \times \vec{b} =
+      \begin{vmatrix}
+      \vec{i} & \vec{j} & \vec{k} \\
+      a_x & a_y & a_z \\
+      b_x & b_y & b_z
+      \end{vmatrix}
+      = (a_y b_z - a_z b_y,\; a_z b_x - a_x b_z,\; a_x b_y - a_y b_x)
+      $$
+      或 $|\vec{a} \times \vec{b}| = |\vec{a}| |\vec{b}| \sin \theta$，
+      方向满足**右手定则**，垂直于 $\vec{a}$ 和 $\vec{b}$ 所在平面。
+      结果为一个**向量**，用于求法向量、面积、力矩。
+    - 几何意义对比
+
+      |  | 点乘 $\cdot$ | 叉乘 $\times$ |
+      |---|---|---|
+      | 结果类型 | 标量 | 向量 |
+      | 公式 | $\lVert\vec{a}\rVert \lVert\vec{b}\rVert \cos\theta$ | $\lVert\vec{a}\rVert \lVert\vec{b}\rVert \sin\theta$ |
+      | $\theta=90^\circ$ | $=0$（垂直判定） | 最大 |
+      | $\theta=0^\circ$   | 最大 | $=0$（平行判定） |
+  - 平面的点法式方程
+    已知平面 $\pi$ 上一点 $M_0(x_0, y_0, z_0)$ 及法向量 $\vec{n} = (A, B, C)$，则平面方程为：
+
+    $$A(x - x_0) + B(y - y_0) + C(z - z_0) = 0$$
+
+    展开得**一般式**：$Ax + By + Cz + D = 0$，其中法向量即为 $\vec{n} = (A, B, C)$。
+  - 平面的截距式方程
+    平面在 $x, y, z$ 轴上的截距分别为 $a, b, c$（$abc \neq 0$），则方程为：
+
+    $$\frac{x}{a} + \frac{y}{b} + \frac{z}{c} = 1$$
+
+    适用于已知三轴截距时快速写出平面方程。
+
+    **推导原理**：
+
+    截距 $a, b, c$ 意味着平面过三点 $(a, 0, 0), (0, b, 0), (0, 0, c)$。设平面一般式 $Ax + By + Cz + D = 0$，代入三点：
+
+    $$\begin{aligned}
+    (a, 0, 0) &\text{ 代入：} & A \cdot a + D &= 0 &\Rightarrow A &= -\frac{D}{a} \\[4pt]
+    (0, b, 0) &\text{ 代入：} & B \cdot b + D &= 0 &\Rightarrow B &= -\frac{D}{b} \\[4pt]
+    (0, 0, c) &\text{ 代入：} & C \cdot c + D &= 0 &\Rightarrow C &= -\frac{D}{c}
+    \end{aligned}$$
+
+    将 $A, B, C$ 代回一般式：
+
+    $$-\frac{D}{a}x - \frac{D}{b}y - \frac{D}{c}z + D = 0$$
+
+    $$\Rightarrow D\left(-\frac{x}{a} - \frac{y}{b} - \frac{z}{c} + 1\right) = 0$$
+
+    平面不通过原点时 $D \neq 0$（若 $D=0$ 则平面过原点，截距全为零无意义），两边除以 $D$ 整理得：
+
+    $$\frac{x}{a} + \frac{y}{b} + \frac{z}{c} = 1$$
+
+    > **注意**：截距是**有符号的**，不是距离。例如截距 $a = -3$ 表示平面与 $x$ 轴负半轴相交。
+  - 两平面的夹角
+    设两平面 $\pi_1: A_1x + B_1y + C_1z + D_1 = 0$，$\pi_2: A_2x + B_2y + C_2z + D_2 = 0$，
+    法向量分别为 $\vec{n}_1 = (A_1, B_1, C_1)$，$\vec{n}_2 = (A_2, B_2, C_2)$。
+
+    两平面的夹角 $\theta$（锐角）由法向量夹角确定：
+
+    $$\cos\theta = \frac{|\vec{n}_1 \cdot \vec{n}_2|}{\lVert\vec{n}_1\rVert \, \lVert\vec{n}_2\rVert}
+    = \frac{|A_1A_2 + B_1B_2 + C_1C_2|}{\sqrt{A_1^{2} + B_1^{2} + C_1^{2}} \, \sqrt{A_2^{2} + B_2^{2} + C_2^{2}}}$$
+
+    - **垂直**：$A_1A_2 + B_1B_2 + C_1C_2 = 0$
+    - **平行**：$\displaystyle\frac{A_1}{A_2} = \frac{B_1}{B_2} = \frac{C_1}{C_2}$
 - 线性代数
+  - 施密特正交化（Schmidt Orthogonalization）
+    将线性无关向量组 $\alpha_1, \alpha_2, \ldots, \alpha_n$ 化为正交向量组 $\beta_1, \beta_2, \ldots, \beta_n$：
+
+    $$\begin{aligned}
+    \beta_1 &= \alpha_1 \\[4pt]
+    \beta_2 &= \alpha_2 - \frac{(\alpha_2, \beta_1)}{(\beta_1, \beta_1)} \beta_1 \\[4pt]
+    \beta_3 &= \alpha_3 - \frac{(\alpha_3, \beta_1)}{(\beta_1, \beta_1)} \beta_1 - \frac{(\alpha_3, \beta_2)}{(\beta_2, \beta_2)} \beta_2 \\[4pt]
+    &\ \ \vdots \\[4pt]
+    \beta_n &= \alpha_n - \sum_{i=1}^{n-1} \frac{(\alpha_n, \beta_i)}{(\beta_i, \beta_i)} \beta_i
+    \end{aligned}$$
+
+    其中 $(\alpha, \beta)$ 表示内积（点乘）。
+
+    再**单位化**得标准正交基：$\displaystyle e_i = \frac{\beta_i}{\lVert\beta_i\rVert}$
