@@ -840,11 +840,47 @@
         - 二阶常系数线性齐次微分方程
           $$
           \begin{aligned}
-          y'' + py' + qy = 0
+          &y'' + py' + qy = 0 \\
+          &r^2 + pr + q = 0
           \end{aligned}
           $$
-      - 高阶微分方程
-- 线性代数
-      - 二阶微分方程
+          令判别式 $\Delta = p^2 - 4q$，通解分三种情况：
+          $$
+          y = \begin{cases}
+          C_1 e^{r_1 x} + C_2 e^{r_2 x}, & \Delta > 0 \quad (r_1 \neq r_2) \\[6pt]
+          (C_1 + C_2 x) e^{r x},           & \Delta = 0 \quad (r_1 = r_2 = r) \\[6pt]
+          e^{\alpha x}(C_1 \cos \beta x + C_2 \sin \beta x), & \Delta < 0 \quad (r = \alpha \pm \beta i)
+          \end{cases}
+          $$
+        - 性齐次微分方程
+          $$
+          y = y_1 \quad y=y_2 都是某个微分方程的解
+          y = \begin{cases}
+          y = y_1 + y_2 \\[6pt]
+          y = Cy_1 \\[6pt]
+          y = ay_1 + by_2 \\[6pt]
+          \end{cases} \\
+          $$
+        - 二阶常系数线性非齐次微分方程
+          $$
+          \begin{aligned}
+          &y'' + py' + qy = f(x)
+          \end{aligned}
+          $$
+          解的结构：$y = y_h + y_p$，其中 $y_h$ 为齐次通解，$y_p$ 为非齐次特解。
+
+          待定系数法求 $y_p$（根据 $f(x)$ 形式设解）：
+          $$
+          \begin{array}{c|c}
+          f(x) \text{ 的形式} & y_p \text{ 的试设形式} \\
+          \hline
+          e^{\lambda x}                      & A e^{\lambda x} \\
+          P_n(x)                             & Q_n(x) \\
+          P_n(x) e^{\lambda x}               & Q_n(x) e^{\lambda x} x^{\lambda等于通解几个值}\\
+          A \cos \beta x + B \sin \beta x    & M \cos \beta x + N \sin \beta x \\
+          e^{\alpha x}(A \cos \beta x + B \sin \beta x) & e^{\alpha x}(M \cos \beta x + N \sin \beta x)
+          \end{array}
+          $$
+          注意：若 $y_p$ 的试设形式与齐次解 $y_h$ 的项**重合**，则乘以 $x$（或 $x^k$）以提高次数。
       - 高阶微分方程
 - 线性代数
