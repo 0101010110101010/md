@@ -913,105 +913,105 @@
       | 公式 | $\lVert\vec{a}\rVert \lVert\vec{b}\rVert \cos\theta$ | $\lVert\vec{a}\rVert \lVert\vec{b}\rVert \sin\theta$ |
       | $\theta=90^\circ$ | $=0$（垂直判定） | 最大 |
       | $\theta=0^\circ$   | 最大 | $=0$（平行判定） |
-  - 平面的点法式方程
-    - 已知平面 $\pi$ 上一点 $M_0(x_0, y_0, z_0)$ 及法向量 $\vec{n} = (A, B, C)$，则平面方程为：
+    - 平面的点法式方程
+      - 已知平面 $\pi$ 上一点 $M_0(x_0, y_0, z_0)$ 及法向量 $\vec{n} = (A, B, C)$，则平面方程为：
 
-      $$A(x - x_0) + B(y - y_0) + C(z - z_0) = 0$$
+        $$A(x - x_0) + B(y - y_0) + C(z - z_0) = 0$$
 
-      展开得**一般式**：$Ax + By + Cz + D = 0$，其中法向量即为 $\vec{n} = (A, B, C)$。
-  - 平面的截距式方程
-    - 平面在 $x, y, z$ 轴上的截距分别为 $a, b, c$（$abc \neq 0$），则方程为：
+        展开得**一般式**：$Ax + By + Cz + D = 0$，其中法向量即为 $\vec{n} = (A, B, C)$。
+    - 平面的截距式方程
+      - 平面在 $x, y, z$ 轴上的截距分别为 $a, b, c$（$abc \neq 0$），则方程为：
 
-      $$\frac{x}{a} + \frac{y}{b} + \frac{z}{c} = 1$$
+        $$\frac{x}{a} + \frac{y}{b} + \frac{z}{c} = 1$$
 
-      适用于已知三轴截距时快速写出平面方程。
+        适用于已知三轴截距时快速写出平面方程。
 
-      **推导原理**：
+        **推导原理**：
 
-      截距 $a, b, c$ 意味着平面过三点 $(a, 0, 0), (0, b, 0), (0, 0, c)$。设平面一般式 $Ax + By + Cz + D = 0$，代入三点：
+        截距 $a, b, c$ 意味着平面过三点 $(a, 0, 0), (0, b, 0), (0, 0, c)$。设平面一般式 $Ax + By + Cz + D = 0$，代入三点：
 
-      $$\begin{aligned}
-      (a, 0, 0) &\text{ 代入：} & A \cdot a + D &= 0 &\Rightarrow A &= -\frac{D}{a} \\[4pt]
-      (0, b, 0) &\text{ 代入：} & B \cdot b + D &= 0 &\Rightarrow B &= -\frac{D}{b} \\[4pt]
-      (0, 0, c) &\text{ 代入：} & C \cdot c + D &= 0 &\Rightarrow C &= -\frac{D}{c}
-      \end{aligned}$$
+        $$\begin{aligned}
+        (a, 0, 0) &\text{ 代入：} & A \cdot a + D &= 0 &\Rightarrow A &= -\frac{D}{a} \\[4pt]
+        (0, b, 0) &\text{ 代入：} & B \cdot b + D &= 0 &\Rightarrow B &= -\frac{D}{b} \\[4pt]
+        (0, 0, c) &\text{ 代入：} & C \cdot c + D &= 0 &\Rightarrow C &= -\frac{D}{c}
+        \end{aligned}$$
 
-      将 $A, B, C$ 代回一般式：
+        将 $A, B, C$ 代回一般式：
 
-      $$-\frac{D}{a}x - \frac{D}{b}y - \frac{D}{c}z + D = 0$$
+        $$-\frac{D}{a}x - \frac{D}{b}y - \frac{D}{c}z + D = 0$$
 
-      $$\Rightarrow D\left(-\frac{x}{a} - \frac{y}{b} - \frac{z}{c} + 1\right) = 0$$
+        $$\Rightarrow D\left(-\frac{x}{a} - \frac{y}{b} - \frac{z}{c} + 1\right) = 0$$
 
-      平面不通过原点时 $D \neq 0$（若 $D=0$ 则平面过原点，截距全为零无意义），两边除以 $D$ 整理得：
+        平面不通过原点时 $D \neq 0$（若 $D=0$ 则平面过原点，截距全为零无意义），两边除以 $D$ 整理得：
 
-      $$\frac{x}{a} + \frac{y}{b} + \frac{z}{c} = 1$$
+        $$\frac{x}{a} + \frac{y}{b} + \frac{z}{c} = 1$$
 
-      > **注意**：截距是**有符号的**，不是距离。例如截距 $a = -3$ 表示平面与 $x$ 轴负半轴相交。
-  - 两平面的夹角
-    - 设两平面 $\pi_1: A_1x + B_1y + C_1z + D_1 = 0$，$\pi_2: A_2x + B_2y + C_2z + D_2 = 0$，
-      法向量分别为 $\vec{n}_1 = (A_1, B_1, C_1)$，$\vec{n}_2 = (A_2, B_2, C_2)$。
+        > **注意**：截距是**有符号的**，不是距离。例如截距 $a = -3$ 表示平面与 $x$ 轴负半轴相交。
+    - 两平面的夹角
+      - 设两平面 $\pi_1: A_1x + B_1y + C_1z + D_1 = 0$，$\pi_2: A_2x + B_2y + C_2z + D_2 = 0$，
+        法向量分别为 $\vec{n}_1 = (A_1, B_1, C_1)$，$\vec{n}_2 = (A_2, B_2, C_2)$。
 
-      两平面的夹角 $\theta$（锐角）由法向量夹角确定：
+        两平面的夹角 $\theta$（锐角）由法向量夹角确定：
 
-      $$\cos\theta = \frac{|\vec{n}_1 \cdot \vec{n}_2|}{\lVert\vec{n}_1\rVert \, \lVert\vec{n}_2\rVert}
-      = \frac{|A_1A_2 + B_1B_2 + C_1C_2|}{\sqrt{A_1^{2} + B_1^{2} + C_1^{2}} \, \sqrt{A_2^{2} + B_2^{2} + C_2^{2}}}$$
+        $$\cos\theta = \frac{|\vec{n}_1 \cdot \vec{n}_2|}{\lVert\vec{n}_1\rVert \, \lVert\vec{n}_2\rVert}
+        = \frac{|A_1A_2 + B_1B_2 + C_1C_2|}{\sqrt{A_1^{2} + B_1^{2} + C_1^{2}} \, \sqrt{A_2^{2} + B_2^{2} + C_2^{2}}}$$
 
-      - **垂直**：$A_1A_2 + B_1B_2 + C_1C_2 = 0$
-      - **平行**：$\displaystyle\frac{A_1}{A_2} = \frac{B_1}{B_2} = \frac{C_1}{C_2}$
-  - 空间平面向坐标面的投影面积
-    - 设空间平面面积为 $S$，法向量 $\vec{n} = (A, B, C)$，$\alpha, \beta, \gamma$ 为法向量与 $x, y, z$ 轴的夹角。
+        - **垂直**：$A_1A_2 + B_1B_2 + C_1C_2 = 0$
+        - **平行**：$\displaystyle\frac{A_1}{A_2} = \frac{B_1}{B_2} = \frac{C_1}{C_2}$
+    - 空间平面向坐标面的投影面积
+      - 设空间平面面积为 $S$，法向量 $\vec{n} = (A, B, C)$，$\alpha, \beta, \gamma$ 为法向量与 $x, y, z$ 轴的夹角。
 
-      法向量的方向余弦：
+        法向量的方向余弦：
 
-      $$\cos\alpha = \frac{A}{\sqrt{A^{2}+B^{2}+C^{2}}},\quad
-        \cos\beta = \frac{B}{\sqrt{A^{2}+B^{2}+C^{2}}},\quad
-        \cos\gamma = \frac{C}{\sqrt{A^{2}+B^{2}+C^{2}}}$$
+        $$\cos\alpha = \frac{A}{\sqrt{A^{2}+B^{2}+C^{2}}},\quad
+          \cos\beta = \frac{B}{\sqrt{A^{2}+B^{2}+C^{2}}},\quad
+          \cos\gamma = \frac{C}{\sqrt{A^{2}+B^{2}+C^{2}}}$$
 
-      投影面积等于原面积乘以平面与投影面夹角的余弦（即法向量与投影面垂直轴的夹角余弦的绝对值）：
+        投影面积等于原面积乘以平面与投影面夹角的余弦（即法向量与投影面垂直轴的夹角余弦的绝对值）：
 
-      $$\begin{aligned}
-      S_{xy} &= S \cdot |\cos\gamma| = S \cdot \frac{|C|}{\sqrt{A^{2}+B^{2}+C^{2}}} \quad &\text{（向 }xOy\text{ 面投影）} \\[6pt]
-      S_{yz} &= S \cdot |\cos\alpha| = S \cdot \frac{|A|}{\sqrt{A^{2}+B^{2}+C^{2}}} \quad &\text{（向 }yOz\text{ 面投影）} \\[6pt]
-      S_{zx} &= S \cdot |\cos\beta| = S \cdot \frac{|B|}{\sqrt{A^{2}+B^{2}+C^{2}}} \quad &\text{（向 }zOx\text{ 面投影）}
-      \end{aligned}$$
+        $$\begin{aligned}
+        S_{xy} &= S \cdot |\cos\gamma| = S \cdot \frac{|C|}{\sqrt{A^{2}+B^{2}+C^{2}}} \quad &\text{（向 }xOy\text{ 面投影）} \\[6pt]
+        S_{yz} &= S \cdot |\cos\alpha| = S \cdot \frac{|A|}{\sqrt{A^{2}+B^{2}+C^{2}}} \quad &\text{（向 }yOz\text{ 面投影）} \\[6pt]
+        S_{zx} &= S \cdot |\cos\beta| = S \cdot \frac{|B|}{\sqrt{A^{2}+B^{2}+C^{2}}} \quad &\text{（向 }zOx\text{ 面投影）}
+        \end{aligned}$$
 
-      且有关系：$S^{2} = S_{xy}^{2} + S_{yz}^{2} + S_{zx}^{2}$（类比勾股定理在三维空间的推广）。
-  - 点到平面的距离
-    - 点 $P_0(x_0, y_0, z_0)$ 到平面 $\pi: Ax + By + Cz + D = 0$ 的距离：
+        且有关系：$S^{2} = S_{xy}^{2} + S_{yz}^{2} + S_{zx}^{2}$（类比勾股定理在三维空间的推广）。
+    - 点到平面的距离
+      - 点 $P_0(x_0, y_0, z_0)$ 到平面 $\pi: Ax + By + Cz + D = 0$ 的距离：
 
-      $$d = \frac{|Ax_0 + By_0 + Cz_0 + D|}{\sqrt{A^{2} + B^{2} + C^{2}}}$$
+        $$d = \frac{|Ax_0 + By_0 + Cz_0 + D|}{\sqrt{A^{2} + B^{2} + C^{2}}}$$
 
-      **推导**：设 $P_1(x_1, y_1, z_1)$ 为平面上一点，则 $Ax_1 + By_1 + Cz_1 + D = 0$。
-      距离为 $\overrightarrow{P_1P_0}$ 在法向量 $\vec{n} = (A, B, C)$ 上的投影长度：
+        **推导**：设 $P_1(x_1, y_1, z_1)$ 为平面上一点，则 $Ax_1 + By_1 + Cz_1 + D = 0$。
+        距离为 $\overrightarrow{P_1P_0}$ 在法向量 $\vec{n} = (A, B, C)$ 上的投影长度：
 
-      $$d = \frac{|\overrightarrow{P_1P_0} \cdot \vec{n}|}{\lVert\vec{n}\rVert} = \frac{|A(x_0 - x_1) + B(y_0 - y_1) + C(z_0 - z_1)|}{\sqrt{A^{2} + B^{2} + C^{2}}}$$
+        $$d = \frac{|\overrightarrow{P_1P_0} \cdot \vec{n}|}{\lVert\vec{n}\rVert} = \frac{|A(x_0 - x_1) + B(y_0 - y_1) + C(z_0 - z_1)|}{\sqrt{A^{2} + B^{2} + C^{2}}}$$
 
-      利用 $Ax_1 + By_1 + Cz_1 = -D$ 代入即得公式。
+        利用 $Ax_1 + By_1 + Cz_1 = -D$ 代入即得公式。
 
-      > 分子不加绝对值时，结果的正负号可判断点位于平面的哪一侧。
-  - 空间直线的方程
-    - **一般式（交面式）**：两平面交线
+        > 分子不加绝对值时，结果的正负号可判断点位于平面的哪一侧。
+    - 空间直线的方程
+      - **一般式（交面式）**：两平面交线
 
-      $$\begin{cases}
-      A_1x + B_1y + C_1z + D_1 = 0 \\
-      A_2x + B_2y + C_2z + D_2 = 0
-      \end{cases}$$
+        $$\begin{cases}
+        A_1x + B_1y + C_1z + D_1 = 0 \\
+        A_2x + B_2y + C_2z + D_2 = 0
+        \end{cases}$$
 
-      方向向量为两法向量的叉乘：$\vec{s} = \vec{n}_1 \times \vec{n}_2$
+        方向向量为两法向量的叉乘：$\vec{s} = \vec{n}_1 \times \vec{n}_2$
 
-    - **参数式**：过点 $M_0(x_0, y_0, z_0)$，方向向量 $\vec{s} = (m, n, p)$
+      - **参数式**：过点 $M_0(x_0, y_0, z_0)$，方向向量 $\vec{s} = (m, n, p)$
 
-      $$\begin{cases}
-      x = x_0 + mt \\
-      y = y_0 + nt \\
-      z = z_0 + pt
-      \end{cases} \quad (t \in \mathbb{R})$$
+        $$\begin{cases}
+        x = x_0 + mt \\
+        y = y_0 + nt \\
+        z = z_0 + pt
+        \end{cases} \quad (t \in \mathbb{R})$$
 
-    - **点向式（对称式）**：由参数式消去 $t$
+      - **点向式（对称式）**：由参数式消去 $t$
 
-      $$\frac{x - x_0}{m} = \frac{y - y_0}{n} = \frac{z - z_0}{p}$$
+        $$\frac{x - x_0}{m} = \frac{y - y_0}{n} = \frac{z - z_0}{p}$$
 
-      其中 $m, n, p$ 为直线的**方向数**，$\vec{s} = (m, n, p)$ 为**方向向量**。若某一分量为 $0$（如 $m=0$），则对应分子也为 $0$，理解为 $x = x_0$。
+        其中 $m, n, p$ 为直线的**方向数**，$\vec{s} = (m, n, p)$ 为**方向向量**。若某一分量为 $0$（如 $m=0$），则对应分子也为 $0$，理解为 $x = x_0$。
 - 线性代数
   - 施密特正交化（Schmidt Orthogonalization）
     将线性无关向量组 $\alpha_1, \alpha_2, \ldots, \alpha_n$ 化为正交向量组 $\beta_1, \beta_2, \ldots, \beta_n$：
