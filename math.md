@@ -1012,6 +1012,88 @@
         $$\frac{x - x_0}{m} = \frac{y - y_0}{n} = \frac{z - z_0}{p}$$
 
         其中 $m, n, p$ 为直线的**方向数**，$\vec{s} = (m, n, p)$ 为**方向向量**。若某一分量为 $0$（如 $m=0$），则对应分子也为 $0$，理解为 $x = x_0$。
+  - 多元函数微分学
+    - 连续
+    - 偏导数
+    - 全微分
+      - **四大概念关系**（二元函数）：
+
+        <svg width="500" height="340" xmlns="http://www.w3.org/2000/svg">
+          <!-- 偏导数连续 -->
+          <rect x="160" y="10" width="160" height="50" rx="8" fill="#e8f5e9" stroke="#2e7d32" stroke-width="2"/>
+          <text x="240" y="40" text-anchor="middle" font-size="15" fill="#2e7d32" font-weight="bold">偏导数连续</text>
+          <!-- 可全微分 -->
+          <rect x="160" y="130" width="160" height="50" rx="8" fill="#e3f2fd" stroke="#1565c0" stroke-width="2"/>
+          <text x="240" y="160" text-anchor="middle" font-size="15" fill="#1565c0" font-weight="bold">可全微分</text>
+          <!-- 连续 -->
+          <rect x="60" y="260" width="130" height="50" rx="8" fill="#fff3e0" stroke="#e65100" stroke-width="2"/>
+          <text x="125" y="290" text-anchor="middle" font-size="15" fill="#e65100" font-weight="bold">连续</text>
+          <!-- 偏导数存在 -->
+          <rect x="290" y="260" width="140" height="50" rx="8" fill="#fce4ec" stroke="#c62828" stroke-width="2"/>
+          <text x="360" y="290" text-anchor="middle" font-size="15" fill="#c62828" font-weight="bold">偏导数存在</text>
+          <!-- 箭头：偏导连续 → 可全微分 -->
+          <line x1="240" y1="60" x2="240" y2="125" stroke="#2e7d32" stroke-width="2" marker-end="url(#arrowGreen)"/>
+          <text x="260" y="95" font-size="12" fill="#2e7d32">充分条件</text>
+          <!-- 箭头：可全微分 → 连续 -->
+          <line x1="195" y1="180" x2="135" y2="255" stroke="#1565c0" stroke-width="2" marker-end="url(#arrowBlue)"/>
+          <text x="130" y="225" font-size="12" fill="#1565c0">⇒</text>
+          <!-- 箭头：可全微分 → 偏导存在 -->
+          <line x1="285" y1="180" x2="345" y2="255" stroke="#1565c0" stroke-width="2" marker-end="url(#arrowBlue)"/>
+          <text x="330" y="225" font-size="12" fill="#1565c0">⇒</text>
+          <!-- 双向交叉线：连续 ⇏ 偏导存在 -->
+          <line x1="190" y1="275" x2="290" y2="275" stroke="#999" stroke-width="1.5" stroke-dasharray="6,3"/>
+          <text x="200" y="269" font-size="11" fill="#999">互不蕴含</text>
+          <text x="250" y="269" font-size="11" fill="#999">✗</text>
+          <!-- 箭头定义 -->
+          <defs>
+            <marker id="arrowGreen" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+              <polygon points="0 0, 10 3.5, 0 7" fill="#2e7d32"/>
+            </marker>
+            <marker id="arrowBlue" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+              <polygon points="0 0, 10 3.5, 0 7" fill="#1565c0"/>
+            </marker>
+          </defs>
+        </svg>
+
+        | 反例 | 说明 |
+        |---|---|
+        | 偏导存在但不可微 | $f(x,y)=\begin{cases}\frac{xy}{x^{2}+y^{2}},&(x,y)\neq(0,0)\\0,&(0,0)\end{cases}$：偏导存在但不连续，更不可微 |
+        | 可微但偏导不连续 | $f(x,y)=\begin{cases}(x^{2}+y^{2})\sin\frac{1}{\sqrt{x^{2}+y^{2}}},&(x,y)\neq(0,0)\\0,&(0,0)\end{cases}$ |
+        | 偏导存在但不连续 | 同上第一个反例，偏导存在说明不了连续性 |
+
+      - **可微条件**（二元函数 $z = f(x, y)$）：
+
+        - **必要条件**：偏导数 $f_x, f_y$ 存在（但反之不成立）
+        - **充分条件**：偏导数 $f_x, f_y$ 连续 $\Rightarrow$ 可微
+        - **充要条件（定义）**：全增量可表示为
+
+          $$\Delta z = f_x\Delta x + f_y\Delta y + o(\rho)$$
+
+          其中 $\rho = \sqrt{(\Delta x)^2 + (\Delta y)^2}$，即
+
+          $$\lim_{(\Delta x, \Delta y) \to (0,0)} \frac{\Delta z - (f_x\Delta x + f_y\Delta y)}{\sqrt{(\Delta x)^2 + (\Delta y)^2}} = 0$$
+
+      -   函数 $z = f(x, y)$ 在点 $(x, y)$ 可微，则全微分为：
+
+          $$dz = \frac{\partial z}{\partial x}\,dx + \frac{\partial z}{\partial y}\,dy$$
+
+          推广到 $n$ 元函数 $u = f(x_1, x_2, \ldots, x_n)$：
+
+          $$du = \frac{\partial u}{\partial x_1}dx_1 + \frac{\partial u}{\partial x_2}dx_2 + \cdots + \frac{\partial u}{\partial x_n}dx_n$$
+
+          > 偏导数连续 $\Rightarrow$ 函数可微 $\Rightarrow$ 偏导数存在，反方向不成立。
+    - 方向导数
+      - 函数 $z = f(x, y)$ 在点 $P_0(x_0, y_0)$ 沿单位向量 $\vec{l} = (\cos\alpha, \cos\beta)$ 的方向导数：
+
+        $$\frac{\partial f}{\partial l}\bigg|_{P_0} = f_x(x_0, y_0)\cos\alpha + f_y(x_0, y_0)\cos\beta$$
+
+        用**梯度** $\nabla f = \left(\dfrac{\partial f}{\partial x}, \dfrac{\partial f}{\partial y}\right)$ 表示为：
+
+        $$\frac{\partial f}{\partial l} = \nabla f \cdot \vec{l}$$
+
+        推广到 $n$ 元函数：$\displaystyle\frac{\partial f}{\partial l} = \nabla f \cdot \vec{l} = \sum_{i=1}^{n} \frac{\partial f}{\partial x_i}\cos\theta_i$
+
+        > 梯度 $\nabla f$ 的方向是函数值**增长最快**的方向，梯度模长即为最大方向导数 $\lVert\nabla f\rVert$。
 - 线性代数
   - 施密特正交化（Schmidt Orthogonalization）
     将线性无关向量组 $\alpha_1, \alpha_2, \ldots, \alpha_n$ 化为正交向量组 $\beta_1, \beta_2, \ldots, \beta_n$：
@@ -1027,3 +1109,29 @@
     其中 $(\alpha, \beta)$ 表示内积（点乘）。
 
     再**单位化**得标准正交基：$\displaystyle e_i = \frac{\beta_i}{\lVert\beta_i\rVert}$
+  - 特征值与特征向量
+    设 $A$ 为 $n$ 阶方阵，若 $A\vec{x} = \lambda\vec{x}$（$\vec{x} \neq \vec{0}$），则 $\lambda$ 为**特征值**，$\vec{x}$ 为对应的**特征向量**。
+
+    由 $|\lambda E - A| = 0$ 求特征值，代入 $(\lambda E - A)\vec{x} = 0$ 求特征向量。
+
+    - 特征值之和等于迹：$\sum\lambda_i = \operatorname{tr}(A)$
+    - 特征值之积等于行列式：$\prod\lambda_i = |A|$
+    - 不同特征值对应的特征向量线性无关
+  - 矩阵相似对角化
+    若 $A$ 有 $n$ 个线性无关的特征向量，则 $A$ 可对角化：
+
+    $$P^{-1}AP = \Lambda = \begin{pmatrix}
+    \lambda_1 & & \\
+    & \ddots & \\
+    & & \lambda_n
+    \end{pmatrix}$$
+
+    其中 $P$ 的列为对应的特征向量。**实对称矩阵必定可对角化**，且存在正交矩阵 $Q$ 使 $Q^{-1}AQ = \Lambda$。
+  - 二次型
+    $n$ 元二次齐次多项式 $f(\vec{x}) = \vec{x}^T A \vec{x}$（$A$ 为实对称矩阵）。
+
+    通过正交变换 $\vec{x} = Q\vec{y}$ 化为**标准形**：
+
+    $$f = \lambda_1 y_1^2 + \lambda_2 y_2^2 + \cdots + \lambda_n y_n^2$$
+
+    正定判定：$A$ 的特征值全为正 $\Leftrightarrow$ 各阶顺序主子式 $> 0$。
