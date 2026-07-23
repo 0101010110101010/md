@@ -1094,6 +1094,127 @@
         推广到 $n$ 元函数：$\displaystyle\frac{\partial f}{\partial l} = \nabla f \cdot \vec{l} = \sum_{i=1}^{n} \frac{\partial f}{\partial x_i}\cos\theta_i$
 
         > 梯度 $\nabla f$ 的方向是函数值**增长最快**的方向，梯度模长即为最大方向导数 $\lVert\nabla f\rVert$。
+    - 多元复合函数求导
+      **链式法则图**（变量依赖关系）：
+
+      **情况 1**：$z = f(u, v),\ u = u(t),\ v = v(t)$
+
+      <svg width="300" height="180" xmlns="http://www.w3.org/2000/svg">
+        <!-- z -->
+        <rect x="120" y="10" width="50" height="36" rx="6" fill="#e3f2fd" stroke="#1565c0" stroke-width="1.5"/>
+        <text x="145" y="33" text-anchor="middle" font-size="16" fill="#1565c0" font-weight="bold">z</text>
+        <!-- u -->
+        <rect x="40" y="90" width="50" height="36" rx="6" fill="#fff3e0" stroke="#e65100" stroke-width="1.5"/>
+        <text x="65" y="113" text-anchor="middle" font-size="16" fill="#e65100" font-weight="bold">u</text>
+        <!-- v -->
+        <rect x="200" y="90" width="50" height="36" rx="6" fill="#fff3e0" stroke="#e65100" stroke-width="1.5"/>
+        <text x="225" y="113" text-anchor="middle" font-size="16" fill="#e65100" font-weight="bold">v</text>
+        <!-- t -->
+        <rect x="120" y="155" width="50" height="25" rx="6" fill="#e8f5e9" stroke="#2e7d32" stroke-width="1.5"/>
+        <text x="145" y="172" text-anchor="middle" font-size="15" fill="#2e7d32" font-weight="bold">t</text>
+        <!-- lines z-u, z-v, u-t, v-t -->
+        <line x1="130" y1="46" x2="60" y2="88" stroke="#555" stroke-width="1.2"/>
+        <line x1="160" y1="46" x2="225" y2="88" stroke="#555" stroke-width="1.2"/>
+        <line x1="65" y1="126" x2="135" y2="153" stroke="#555" stroke-width="1.2"/>
+        <line x1="225" y1="126" x2="155" y2="153" stroke="#555" stroke-width="1.2"/>
+        <!-- derivative labels -->
+        <text x="72" y="68" font-size="11" fill="#c62828">∂z/∂u</text>
+        <text x="180" y="68" font-size="11" fill="#c62828">∂z/∂v</text>
+        <text x="72" y="148" font-size="11" fill="#c62828">du/dt</text>
+        <text x="232" y="148" font-size="11" fill="#c62828">dv/dt</text>
+        <!-- formula -->
+        <text x="150" y="195" text-anchor="middle" font-size="13" fill="#333">每条路径相乘，各路相加</text>
+      </svg>
+
+      $$\frac{dz}{dt} = \frac{\partial z}{\partial u}\frac{du}{dt} + \frac{\partial z}{\partial v}\frac{dv}{dt}$$
+
+      **情况 2**：$z = f(u, v),\ u = u(x, y),\ v = v(x, y)$
+
+      <svg width="380" height="200" xmlns="http://www.w3.org/2000/svg">
+        <!-- z -->
+        <rect x="155" y="5" width="50" height="36" rx="6" fill="#e3f2fd" stroke="#1565c0" stroke-width="1.5"/>
+        <text x="180" y="28" text-anchor="middle" font-size="16" fill="#1565c0" font-weight="bold">z</text>
+        <!-- u -->
+        <rect x="50" y="80" width="50" height="36" rx="6" fill="#fff3e0" stroke="#e65100" stroke-width="1.5"/>
+        <text x="75" y="103" text-anchor="middle" font-size="16" fill="#e65100" font-weight="bold">u</text>
+        <!-- v -->
+        <rect x="260" y="80" width="50" height="36" rx="6" fill="#fff3e0" stroke="#e65100" stroke-width="1.5"/>
+        <text x="285" y="103" text-anchor="middle" font-size="16" fill="#e65100" font-weight="bold">v</text>
+        <!-- x (shared) -->
+        <rect x="100" y="155" width="40" height="28" rx="6" fill="#e8f5e9" stroke="#2e7d32" stroke-width="1.5"/>
+        <text x="120" y="174" text-anchor="middle" font-size="15" fill="#2e7d32" font-weight="bold">x</text>
+        <!-- y (shared) -->
+        <rect x="220" y="155" width="40" height="28" rx="6" fill="#e8f5e9" stroke="#2e7d32" stroke-width="1.5"/>
+        <text x="240" y="174" text-anchor="middle" font-size="15" fill="#2e7d32" font-weight="bold">y</text>
+        <!-- lines z→u, z→v -->
+        <line x1="165" y1="41" x2="72" y2="78" stroke="#555" stroke-width="1.2"/>
+        <line x1="195" y1="41" x2="285" y2="78" stroke="#555" stroke-width="1.2"/>
+        <!-- lines u→x, u→y -->
+        <line x1="65" y1="116" x2="113" y2="153" stroke="#555" stroke-width="1.2"/>
+        <line x1="82" y1="116" x2="233" y2="153" stroke="#555" stroke-width="1.2"/>
+        <!-- lines v→x, v→y -->
+        <line x1="278" y1="116" x2="128" y2="153" stroke="#555" stroke-width="1.2"/>
+        <line x1="295" y1="116" x2="247" y2="153" stroke="#555" stroke-width="1.2"/>
+        <!-- labels -->
+        <text x="92" y="63" font-size="11" fill="#c62828">∂z/∂u</text>
+        <text x="204" y="63" font-size="11" fill="#c62828">∂z/∂v</text>
+        <text x="78" y="133" font-size="10" fill="#c62828">∂u/∂x</text>
+        <text x="145" y="133" font-size="10" fill="#c62828">∂u/∂y</text>
+        <text x="212" y="133" font-size="10" fill="#c62828">∂v/∂x</text>
+        <text x="284" y="133" font-size="10" fill="#c62828">∂v/∂y</text>
+        <!-- formula annotations -->
+        <text x="10" y="27" font-size="12" fill="#333">z → x 共 2 条路径</text>
+        <text x="10" y="44" font-size="12" fill="#c62828">z→u→x, z→v→x</text>
+      </svg>
+
+      $$\frac{\partial z}{\partial x} = \frac{\partial z}{\partial u}\frac{\partial u}{\partial x} + \frac{\partial z}{\partial v}\frac{\partial v}{\partial x}$$
+
+      $$\frac{\partial z}{\partial y} = \frac{\partial z}{\partial u}\frac{\partial u}{\partial y} + \frac{\partial z}{\partial v}\frac{\partial v}{\partial y}$$
+
+      > **口诀**：分叉相加，链上相乘。从因变量到自变量，每条路径上的偏导相乘，各路径结果求和。
+    - $$
+      \begin{align*}
+      & w = f(x+y+z, xyz) ,\frac{\partial w}{\partial x}, \frac{\partial^2w}{\partial x \partial z} \\
+      & \frac{\partial w}{\partial x} = f_1' \times 1 + f_2' \times yz\\
+      & \frac{\partial^2 w}{\partial x\partial z} = \frac{\partial(f_{1}')}{\partial z} + \frac{\partial(f_2')}{\partial z} \times yz + f_2'y\\
+      \end{align*}
+      $$
+    - 隐函数
+      - 1 一元函数
+      - 2 多元函数
+      - 3 方程组
+    - 函数多元极值
+      - 无条件
+        **必要条件**：解 $\begin{cases} f_x(x,y) = 0 \\ f_y(x,y) = 0 \end{cases}$ 得驻点。
+
+        **充分条件**：记 $A = f_{xx}''$, $B = f_{xy}''$, $C = f_{yy}''$，判别式 $\Delta = AC - B^2$，
+        在驻点 $(x_0, y_0)$ 处：
+
+        | $\Delta = AC - B^2$ | $A$ | 结论 |
+        |---|---|---|
+        | $\Delta > 0$ | $A > 0$ | **极小值** |
+        | $\Delta > 0$ | $A < 0$ | **极大值** |
+        | $\Delta < 0$ | — | **无极值**（鞍点） |
+        | $\Delta = 0$ | — | 无法判定，需另法 |
+      - 有条件（拉格朗日乘数法）
+        **一个约束**：求 $z = f(x, y)$ 在 $\varphi(x, y) = 0$ 下的极值。
+
+        构造拉格朗日函数 $L(x, y, \lambda) = f(x, y) + \lambda\,\varphi(x, y)$，
+        解方程组：
+
+        $$\begin{cases}
+        L_x = f_x + \lambda\varphi_x = 0 \\
+        L_y = f_y + \lambda\varphi_y = 0 \\
+        L_\lambda = \varphi(x, y) = 0
+        \end{cases}$$
+
+        解出驻点 $(x_0, y_0)$，代入 $f$ 比较即得条件极值。
+
+        **多个约束**：求 $u = f(x, y, z)$ 在 $\varphi_1 = 0,\ \varphi_2 = 0$ 下的极值：
+
+        $$L(x, y, z, \lambda, \mu) = f + \lambda\varphi_1 + \mu\varphi_2$$
+
+        对 $x, y, z, \lambda, \mu$ 分别求偏导令其为 $0$，联立求解。
 - 线性代数
   - 施密特正交化（Schmidt Orthogonalization）
     将线性无关向量组 $\alpha_1, \alpha_2, \ldots, \alpha_n$ 化为正交向量组 $\beta_1, \beta_2, \ldots, \beta_n$：
