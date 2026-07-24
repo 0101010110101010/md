@@ -1180,7 +1180,7 @@
       \end{align*}
       $$
     - 隐函数
-      - 1 一元函数
+      - 1 一元函数（全微分变形）
         由 $F(x, y) = 0$ 确定 $y = y(x)$，则：
 
         $$\frac{dy}{dx} = -\frac{F'_x}{F'_y} \quad (F'_y \neq 0)$$
@@ -1231,6 +1231,45 @@
         $$L(x, y, z, \lambda, \mu) = f + \lambda\varphi_1 + \mu\varphi_2$$
 
         对 $x, y, z, \lambda, \mu$ 分别求偏导令其为 $0$，联立求解。
+    - 空间曲线的切线和法平面 显式得切，隐式得法
+      - 参数方程形式
+        设空间曲线 $\Gamma: \begin{cases} x = x(t) \\ y = y(t) \\ z = z(t) \end{cases}$ 在 $t = t_0$ 对应点 $M_0(x_0, y_0, z_0)$。
+
+        **切向量**：$\vec{T} = (x'(t_0),\, y'(t_0),\, z'(t_0))$
+
+        **切线方程**（点向式）：
+        $$\frac{x - x_0}{x'(t_0)} = \frac{y - y_0}{y'(t_0)} = \frac{z - z_0}{z'(t_0)}$$
+
+        若某分量导数为 $0$，如 $x'(t_0) = 0$，则切线方程为 $\begin{cases} x = x_0 \\ \dfrac{y - y_0}{y'(t_0)} = \dfrac{z - z_0}{z'(t_0)} \end{cases}$（理解：对应分母为 $0$ 时分子也应为 $0$）。
+
+        **法平面方程**（以切向量为法向量）：
+        $$x'(t_0)(x - x_0) + y'(t_0)(y - y_0) + z'(t_0)(z - z_0) = 0$$
+
+        > **几何理解**：切向量 $\vec{T}$ 是曲线在 $M_0$ 处的方向向量；法平面是过 $M_0$ 且以 $\vec{T}$ 为法向量的平面。
+
+      - 一般方程形式（两曲面交线）
+        设空间曲线 $\Gamma: \begin{cases} F(x, y, z) = 0 \\ G(x, y, z) = 0 \end{cases}$，曲线为两曲面的交线。
+
+        **切向量**为两曲面法向量的叉积：
+        $$\vec{T} = \nabla F \times \nabla G = \begin{vmatrix}
+        \vec{i} & \vec{j} & \vec{k} \\
+        F'_x & F'_y & F'_z \\
+        G'_x & G'_y & G'_z
+        \end{vmatrix}_{M_0}$$
+
+        记 $\vec{T} = (A, B, C)$，其中：
+        $$A = \begin{vmatrix} F'_y & F'_z \\ G'_y & G'_z \end{vmatrix},\quad
+          B = \begin{vmatrix} F'_z & F'_x \\ G'_z & G'_x \end{vmatrix},\quad
+          C = \begin{vmatrix} F'_x & F'_y \\ G'_x & G'_y \end{vmatrix}$$
+
+        **切线方程**：
+        $$\frac{x - x_0}{A} = \frac{y - y_0}{B} = \frac{z - z_0}{C}$$
+
+        **法平面方程**：
+        $$A(x - x_0) + B(y - y_0) + C(z - z_0) = 0$$
+
+        > **几何理解**：曲面 $F=0$ 在 $M_0$ 的法向量为 $\nabla F$，曲面 $G=0$ 的法向量为 $\nabla G$。曲线的切线同时垂直于两个法向量，故切向量为 $\nabla F \times \nabla G$。
+
 - 线性代数
   - 施密特正交化（Schmidt Orthogonalization）
     将线性无关向量组 $\alpha_1, \alpha_2, \ldots, \alpha_n$ 化为正交向量组 $\beta_1, \beta_2, \ldots, \beta_n$：
