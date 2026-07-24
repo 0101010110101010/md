@@ -1181,8 +1181,24 @@
       $$
     - 隐函数
       - 1 一元函数
+        由 $F(x, y) = 0$ 确定 $y = y(x)$，则：
+
+        $$\frac{dy}{dx} = -\frac{F'_x}{F'_y} \quad (F'_y \neq 0)$$
+
       - 2 多元函数
+        由 $F(x, y, z) = 0$ 确定 $z = z(x, y)$，则：
+
+        $$\frac{\partial z}{\partial x} = -\frac{F'_x}{F'_z},\quad \frac{\partial z}{\partial y} = -\frac{F'_y}{F'_z} \quad (F'_z \neq 0)$$
+
       - 3 方程组
+        由 $\begin{cases} F(x, y, u, v) = 0 \\ G(x, y, u, v) = 0 \end{cases}$ 确定 $u, v$ 为 $x, y$ 的函数。
+
+        利用**雅可比行列式** $J = \dfrac{\partial(F, G)}{\partial(u, v)} = \begin{vmatrix} F'_u & F'_v \\ G'_u & G'_v \end{vmatrix} \neq 0$：
+
+        $$\frac{\partial u}{\partial x} = -\frac{1}{J}\frac{\partial(F, G)}{\partial(x, v)},\quad
+          \frac{\partial v}{\partial x} = -\frac{1}{J}\frac{\partial(F, G)}{\partial(u, x)}$$
+
+      - > **梯度与法向量**：对于隐式曲面 $F(x, y, z) = 0$，梯度 $\nabla F = (F'_x, F'_y, F'_z)$ 即为曲面在该点的**法向量**。将显式 $z = f(x, y)$ 改写为 $F = f(x, y) - z = 0$，则 $\nabla F = (f_x, f_y, -1)$ 亦是法向量。而对 $z = f(x, y)$ 直接求 $\nabla f = (f_x, f_y)$，它是 $xy$ 平面内的**最速上升方向**，不是法向量。
     - 函数多元极值
       - 无条件
         **必要条件**：解 $\begin{cases} f_x(x,y) = 0 \\ f_y(x,y) = 0 \end{cases}$ 得驻点。
