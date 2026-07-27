@@ -1269,8 +1269,464 @@
         $$A(x - x_0) + B(y - y_0) + C(z - z_0) = 0$$
 
         > **几何理解**：曲面 $F=0$ 在 $M_0$ 的法向量为 $\nabla F$，曲面 $G=0$ 的法向量为 $\nabla G$。曲线的切线同时垂直于两个法向量，故切向量为 $\nabla F \times \nabla G$。
+  - 重积分
+    - 二重积分直角坐标系运算
+      - 投影, $\mathrm dx \mathrm dy(\mathrm d\sigma)$ 表示每个颗粒，$f(x,y)$ 表示属性 
+        - 例：计算 $\displaystyle \iint_D xy \,\mathrm{d}x\mathrm{d}y$，$D: 0 \le x \le 1,\ 1 \le y \le 2$
 
-- 线性代数
+          $$
+          \begin{aligned}
+          \iint_D xy \,\mathrm{d}x\mathrm{d}y
+          &= \int_1^2 \int_0^1 xy \,\mathrm{d}x\mathrm{d}y \\[4pt]
+          &= \int_1^2 \left[ \frac{1}{2}x^2 y \right]_0^1 \mathrm{d}y \\[4pt]
+          &= \int_1^2 \frac{1}{2}y \,\mathrm{d}y \\[4pt]
+          &= \left[ \frac{1}{4}y^2 \right]_1^2 \\[4pt]
+          &= \frac{1}{4}(4 - 1) = \frac{3}{4}
+          \end{aligned}
+          $$
+      - 1 画图 2 切割 3 二重积分改为二次积分 4 计算 (刀左右切一次，左侧是左右限，右侧是上下限，可以全部算每个轴左右界限，不必考虑上下)
+      - 三维坐标系中，计算物体投影，比如xoy平面，则把没有z的表达式画出来，就可以了，然后把z有关的两个方程找出来，画出上盖和下底
+    - 极坐标
+      - 积分时候，左边是角度，右边是长度，直角坐标 → 极坐标转换过程：
+
+        $$
+        \begin{cases}
+        x = r\cos\theta \\[2pt]
+        y = r\sin\theta
+        \end{cases}
+        \qquad
+        \mathrm{d}x\mathrm{d}y = r\,\mathrm{d}r\mathrm{d}\theta
+        $$
+
+        $$
+        \iint_D f(x,y)\,\mathrm{d}x\mathrm{d}y
+        = \iint_{D'} f(r\cos\theta,\ r\sin\theta) \cdot r \,\mathrm{d}r\mathrm{d}\theta
+        $$
+
+        > **注意**：千万不要漏掉 $r$（雅可比行列式 $|J| = r$），这是极坐标变换最容易扣分的地方。
+
+        **$r$ 的含义：**
+        1. **几何角度**：极坐标下面积微元是一个小扇形格，径向宽 $\mathrm{d}r$，弧长 $r\mathrm{d}\theta$，面积 $= r\,\mathrm{d}r\mathrm{d}\theta$。半径越大，同样的 $\mathrm{d}\theta$ 扫过的弧长越长，$r$ 补偿这个效应。
+        2. **代数角度**：变量替换的雅可比行列式 $|J| = \begin{vmatrix} \cos\theta & -r\sin\theta \\ \sin\theta & r\cos\theta \end{vmatrix} = r$，面积元素必须乘上 $|J|$。
+    - 被积函数关于轴对称，考虑值是否为0 
+    - 二重积分对称性
+      - **轮换对称性**：积分区域 $D$ 关于 $y = x$ 对称时，将被积函数中 $x$ 与 $y$ 互换，积分值不变。
+
+        $$
+        \iint_D f(x,y)\,\mathrm{d}\sigma = \iint_D f(y,x)\,\mathrm{d}\sigma
+        $$
+
+        常用技巧：当 $D$ 关于 $y=x$ 对称时，
+
+        $$
+        \iint_D f(x,y)\,\mathrm{d}\sigma
+        = \frac{1}{2} \iint_D \big[f(x,y) + f(y,x)\big] \,\mathrm{d}\sigma
+        $$
+
+        特殊用法（偶函数）：
+
+        $$
+        \iint_D x^2 \,\mathrm{d}\sigma = \iint_D y^2 \,\mathrm{d}\sigma
+        \quad\Longrightarrow\quad
+        \iint_D x^2 \,\mathrm{d}\sigma 
+        = \frac{1}{2} \iint_D (x^2 + y^2) \,\mathrm{d}\sigma
+        $$
+
+        > **注意**：轮换对称性要求积分区域 $D$ 关于 $y=x$ 对称，即 $(x,y)\in D \iff (y,x)\in D$。
+    - 三重积分
+      - **直角坐标系**
+      - **柱坐标系**（三重积分常用变换）
+
+        $$
+        \begin{cases}
+        x = \rho\cos\theta \\[2pt]
+        y = \rho\sin\theta \\[2pt]
+        z = z
+        \end{cases}
+        \qquad
+        \mathrm{d}x\mathrm{d}y\mathrm{d}z = \rho \,\mathrm{d}\rho\mathrm{d}\theta\mathrm{d}z
+        $$
+
+        | 变量 | 含义 | 范围 |
+        |------|------|------|
+        | $\rho$ | $xy$ 平面投影到原点的距离 | $[0, +\infty)$ |
+        | $\theta$ | $xy$ 平面投影与 $x$ 轴夹角 | $[0, 2\pi]$ |
+        | $z$ | 竖坐标（不变） | $(-\infty, +\infty)$ |
+
+        完整变换：
+
+        $$
+        \iiint_\Omega f(x,y,z)\,\mathrm{d}x\mathrm{d}y\mathrm{d}z
+        = \iiint_{\Omega'} f(\rho\cos\theta,\ \rho\sin\theta,\ z) \cdot \rho \,\mathrm{d}\rho\mathrm{d}\theta\mathrm{d}z
+        $$
+
+        > **注意**：柱坐标本质是 $xy$ 平面用极坐标、$z$ 轴不变，体积元素 $\rho$ 就是极坐标的面积元素。
+      - **球坐标系**（三重积分常用变换）
+
+        $$
+        \begin{cases}
+        x = r\sin\varphi\cos\theta \\[2pt]
+        y = r\sin\varphi\sin\theta \\[2pt]
+        z = r\cos\varphi
+        \end{cases}
+        \qquad
+        \mathrm{d}x\mathrm{d}y\mathrm{d}z = r^2 \sin\varphi \,\mathrm{d}r\mathrm{d}\varphi\mathrm{d}\theta
+        $$
+
+        | 变量 | 含义 | 范围 |
+        |------|------|------|
+        | $r$ | 点到原点的距离（径向） | $[0, +\infty)$ |
+        | $\varphi$ | 与 $z$ 轴正方向的夹角（天顶角） | $[0, \pi]$ |
+        | $\theta$ | $xy$ 平面投影与 $x$ 轴夹角（方位角） | $[0, 2\pi]$ |
+
+        完整变换：
+
+        $$
+        \iiint_\Omega f(x,y,z)\,\mathrm{d}x\mathrm{d}y\mathrm{d}z
+        = \iiint_{\Omega'} f(r\sin\varphi\cos\theta,\ r\sin\varphi\sin\theta,\ r\cos\varphi) \cdot r^2\sin\varphi \,\mathrm{d}r\mathrm{d}\varphi\mathrm{d}\theta
+        $$
+
+        > **注意**：球坐标体积元素是 $r^2\sin\varphi$，极坐标面积元素是 $r$，两者容易混淆。
+
+        **$r^2\sin\varphi$ 的推导（雅可比行列式）：**
+
+        $$
+        \begin{aligned}
+        J &= \frac{\partial(x,y,z)}{\partial(r,\varphi,\theta)}
+        = \begin{vmatrix}
+        \frac{\partial x}{\partial r} & \frac{\partial x}{\partial \varphi} & \frac{\partial x}{\partial \theta} \\[6pt]
+        \frac{\partial y}{\partial r} & \frac{\partial y}{\partial \varphi} & \frac{\partial y}{\partial \theta} \\[6pt]
+        \frac{\partial z}{\partial r} & \frac{\partial z}{\partial \varphi} & \frac{\partial z}{\partial \theta}
+        \end{vmatrix} \\[8pt]
+        &= \begin{vmatrix}
+        \sin\varphi\cos\theta & r\cos\varphi\cos\theta & -r\sin\varphi\sin\theta \\
+        \sin\varphi\sin\theta & r\cos\varphi\sin\theta &  r\sin\varphi\cos\theta \\
+        \cos\varphi            & -r\sin\varphi        & 0
+        \end{vmatrix} \\[8pt]
+        \end{aligned}
+        $$
+
+        按第三行展开：
+
+        $$
+        \begin{aligned}
+        |J| &= \cos\varphi \cdot 
+        \begin{vmatrix} r\cos\varphi\cos\theta & -r\sin\varphi\sin\theta \\ r\cos\varphi\sin\theta & r\sin\varphi\cos\theta \end{vmatrix}
+        \;+\; r\sin\varphi \cdot
+        \begin{vmatrix} \sin\varphi\cos\theta & -r\sin\varphi\sin\theta \\ \sin\varphi\sin\theta & r\sin\varphi\cos\theta \end{vmatrix} \\[6pt]
+        &= \cos\varphi \cdot r^2\sin\varphi\cos\varphi + r\sin\varphi \cdot r\sin\varphi \\[4pt]
+        &= r^2\sin\varphi(\cos^2\varphi + \sin^2\varphi) \\[4pt]
+        &= r^2\sin\varphi
+        \end{aligned}
+        $$
+
+        > 直观理解：$r^2$ 是球面的面积缩放因子，$\sin\varphi$ 是因为越靠近 $z$ 轴（$\varphi \to 0$ 或 $\pi$），同样的 $\mathrm{d}\theta$ 扫过的弧长越短，体积微元越小。
+
+        **几何推导（三边正交法）：**
+
+        体积微元 $\mathrm{d}V$ 的三个正交边长：
+
+        | 边 | 长度 | 说明 |
+        |----|------|------|
+        | 径向厚度 | $\mathrm{d}r$ | 沿半径方向直接变化 |
+        | 经线弧长 | $r\,\mathrm{d}\varphi$ | 半径 × 天顶角微变 |
+        | 纬线弧长 | $r\sin\varphi\,\mathrm{d}\theta$ | 纬线圈半径 $r\sin\varphi$ × 方位角微变 |
+
+        三者相乘得体积元素：
+
+        $$
+        \mathrm{d}V = \mathrm{d}r \cdot (r\,\mathrm{d}\varphi) \cdot (r\sin\varphi\,\mathrm{d}\theta)
+        = r^2\sin\varphi \,\mathrm{d}r\mathrm{d}\varphi\mathrm{d}\theta
+        $$
+
+        最终替换到三重积分：
+
+        $$
+        \begin{aligned}
+        \iiint_\Omega f(x,y,z)\,\mathrm{d}V
+        &\downarrow \ \mathrm{d}V = r^2\sin\varphi \,\mathrm{d}r\mathrm{d}\varphi\mathrm{d}\theta \\[4pt]
+        \iiint_{\Omega'} f(r\sin\varphi\cos\theta,\ r\sin\varphi\sin\theta,\ r\cos\varphi) \cdot r^2\sin\varphi \,\mathrm{d}r\mathrm{d}\varphi\mathrm{d}\theta
+        \end{aligned}
+        $$
+    - 积分应用
+      - 空间曲面的面积
+
+        $$
+        S = \iint_D \sqrt{1 + \left(\frac{\partial z}{\partial x}\right)^2 + \left(\frac{\partial z}{\partial y}\right)^2} \,\mathrm{d}x\mathrm{d}y
+        $$
+
+        曲面 $z = z(x,y)$ 在区域 $D$ 上的表面积，本质是曲面微元 $\sqrt{1+z_x'^2+z_y'^2}\,\mathrm{d}x\mathrm{d}y$ 求和。
+
+        **被积函数推导（法向量与 $z$ 轴的夹角）：**
+
+        曲面微元 $\mathrm{d}S$（斜）与它在 $xy$ 平面的投影 $\mathrm{d}x\mathrm{d}y$（平）满足：
+
+        $$
+        \mathrm{d}S = \frac{\mathrm{d}x\mathrm{d}y}{|\cos\gamma|}
+        $$
+
+        其中 $\gamma$ 是曲面法向量 $\vec{n}$ 与 $z$ 轴正方向 $(0,0,1)$ 的夹角。
+
+        曲面 $z = z(x,y)$ 的法向量：$\vec{n} = (-z_x',\ -z_y',\ 1)$
+
+        $$
+        \cos\gamma = \frac{\vec{n} \cdot (0,0,1)}{|\vec{n}| \cdot 1}
+        = \frac{1}{\sqrt{(z_x')^2 + (z_y')^2 + 1}}
+        $$
+
+        代入：
+
+        $$
+        \mathrm{d}S = \frac{\mathrm{d}x\mathrm{d}y}{\frac{1}{\sqrt{1 + z_x'^2 + z_y'^2}}}
+        = \sqrt{1 + z_x'^2 + z_y'^2} \;\mathrm{d}x\mathrm{d}y
+        $$
+
+        > 直观：曲面越"陡"（$z_x',z_y'$ 越大），法向量越偏离 $z$ 轴，$\cos\gamma$ 越小，同样的投影面积对应越大的真实曲面面积。
+      - 平面区域绕直线旋转的体积（视为圆柱，微元是底面积，被积函数是长度）
+
+        平面区域 $D$ 绕直线 $L$ 旋转，记点 $(x,y)$ 到 $L$ 的距离为 $r(x,y)$：
+
+        $$
+        V = 2\pi \iint_D r(x,y) \,\mathrm{d}\sigma
+        $$
+
+        其中 $r(x,y)$ 是点到转轴 $L: Ax+By+C=0$ 的距离：
+
+        $$
+        r(x,y) = \frac{|Ax + By + C|}{\sqrt{A^2 + B^2}}
+        $$
+
+        特例——绕 $x$ 轴旋转（$y = f(x)$ 在 $[a,b]$ 上）：
+
+        $$
+        V = \pi \int_a^b [f(x)]^2 \,\mathrm{d}x
+        $$
+      - 转动惯量
+
+        $$
+        I = \iint_D \rho(x,y) \cdot r^2(x,y) \,\mathrm{d}\sigma
+        $$
+
+        $r(x,y)$ 是点 $(x,y)$ 到转轴的距离，$\rho(x,y)$ 是面密度。
+
+        **推导过程（微元法）：**
+
+        **1. 质点**：一个质量为 $m$ 的质点，到转轴的距离为 $r$，其转动惯量定义为
+
+        $$
+        I = m r^2
+        $$
+
+        转动惯量衡量物体旋转时"抗拒角加速度"的能力，$r^2$ 说明质量离轴越远，惯性越大。
+
+        **为什么是 $mr^2$？**
+
+        由转动定律导出。质点在半径 $r$ 处以角加速度 $\alpha$ 转动：
+
+        $$
+        \text{切向加速度：}\ a = r\alpha \qquad
+        \text{切向力：}\ F = ma = m \cdot r\alpha
+        $$
+
+        力矩 = 力 × 力臂：
+
+        $$
+        \tau = F \cdot r = m r\alpha \cdot r = mr^2 \cdot \alpha
+        $$
+
+        类比 $\tau = I \alpha$（转动版 $F=ma$），得 $I = mr^2$。
+
+        > $r^2$ 中的两个 $r$ 来源不同：一个来自 $a = r\alpha$（加速度 → 角加速度），一个来自 $\tau = Fr$（力 → 力矩）。
+
+        **2. 微元分割**：将平面区域 $D$ 细分为无数个面积微元 $\mathrm{d}\sigma$，每个微元看作一个质点：
+
+        $$
+        \mathrm{d}m = \rho(x,y) \cdot \mathrm{d}\sigma \qquad
+        \mathrm{d}I = r^2 \cdot \mathrm{d}m = r^2(x,y) \cdot \rho(x,y) \cdot \mathrm{d}\sigma
+        $$
+
+        其中 $\rho(x,y)$ 是面密度（单位面积的质量），$r(x,y)$ 是该微元到转轴的距离。
+
+        **3. 累加（积分）**：将所有微元的转动惯量求和，即二重积分：
+
+        $$
+        I = \sum \mathrm{d}I \;\longrightarrow\; I = \iint_D r^2(x,y) \cdot \rho(x,y) \,\mathrm{d}\sigma
+        $$
+
+        **各轴的具体形式：**
+
+        $$
+        I_x = \iint_D y^2 \rho \,\mathrm{d}\sigma, \qquad
+        I_y = \iint_D x^2 \rho \,\mathrm{d}\sigma, \qquad
+        I_O = \iint_D (x^2 + y^2) \rho \,\mathrm{d}\sigma
+        $$
+
+        > $I_O = I_x + I_y$（平面区域绕原点 = 绕 $x$ 轴 + 绕 $y$ 轴），因为 $r^2 = x^2 + y^2$。
+  - 曲线积分曲面积分（数一）
+    - 第一类曲线积分（对弧长）
+
+      $$
+      \int_L f(x,y) \,\mathrm{d}s
+      $$
+
+      弧长微元 $\mathrm{d}s = \sqrt{(\mathrm{d}x)^2 + (\mathrm{d}y)^2}$：
+      - $y = y(x)$：$\displaystyle \mathrm{d}s = \sqrt{1 + (y')^2}\,\mathrm{d}x$
+      - 参数形式：$\displaystyle \mathrm{d}s = \sqrt{[x'(t)]^2 + [y'(t)]^2}\,\mathrm{d}t$
+
+      > **无方向性**：与积分路径方向无关，$\int_{AB} f\,\mathrm{d}s = \int_{BA} f\,\mathrm{d}s$。
+    - 第二类曲线积分（对坐标）
+
+      $$
+      \int_L P(x,y)\,\mathrm{d}x + Q(x,y)\,\mathrm{d}y
+      $$
+
+      参数形式（$x = x(t),\ y = y(t)$）：
+
+      $$
+      \int_L P\,\mathrm{d}x + Q\,\mathrm{d}y
+      = \int_\alpha^\beta \big[P \cdot x'(t) + Q \cdot y'(t)\big] \,\mathrm{d}t
+      $$
+
+      > **有方向性**：反向积分变号，$\int_{AB} = -\int_{BA}$。
+
+      **两类积分的关系：**
+
+      $$
+      \int_L P\,\mathrm{d}x + Q\,\mathrm{d}y
+      = \int_L (P\cos\alpha + Q\cos\beta)\,\mathrm{d}s
+      $$
+
+      其中 $(\cos\alpha,\cos\beta)$ 是曲线切向量的方向余弦。
+    - 格林公式（Green）
+
+      $$
+      \oint_L P\,\mathrm{d}x + Q\,\mathrm{d}y
+      = \iint_D \left(\frac{\partial Q}{\partial x} - \frac{\partial P}{\partial y}\right) \mathrm{d}x\mathrm{d}y
+      $$
+
+      要求 $L$ 为正向闭曲线、$D$ 内 $P,Q$ 有一阶连续偏导。
+
+      **推导过程（小网格法）：**
+
+      将区域 $D$ 划分为若干小矩形网格 $\Delta x \times \Delta y$，取其中一个网格：
+
+      <pre>
+       Q(x,y) ↖           ↗ Q(x+Δx, y)
+                ┌────────┐
+           P ↓  │ 网格   │ P ↑
+                └────────┘
+       Q(x,y+Δy) ↙    ↘ Q(x+Δx, y+Δy)
+         方向：逆时针（正向）
+      </pre>
+
+      小网格上的环流量（四个边绕一圈）：
+
+      $$
+      \Delta\Gamma 
+      = P(x,y)\Delta x \;+\; Q(x+\Delta x,y)\Delta y \;-\; P(x,y+\Delta y)\Delta x \;-\; Q(x,y)\Delta y
+      $$
+
+      > 解释：下边 $P\Delta x$（向右）+ 右边 $Q\Delta y$（向上）− 上边 $P\Delta x$（向左抵消）− 左边 $Q\Delta y$（向下抵消）
+
+      重新排列，对 $P$ 项用垂直差、对 $Q$ 项用水平差：
+
+      $$
+      \begin{aligned}
+      \Delta\Gamma 
+      &= -\big[P(x,y+\Delta y) - P(x,y)\big]\Delta x \;+\; \big[Q(x+\Delta x,y) - Q(x,y)\big]\Delta y \\[4pt]
+      &\approx -\frac{\partial P}{\partial y}\Delta y \cdot \Delta x \;+\; \frac{\partial Q}{\partial x}\Delta x \cdot \Delta y \\[4pt]
+      &= \left(\frac{\partial Q}{\partial x} - \frac{\partial P}{\partial y}\right) \Delta x \Delta y
+      \end{aligned}
+      $$
+
+      将所有小网格的环流量求和：
+
+      - **内部边**：相邻网格共用边方向相反，互相抵消
+      - **边界边**：只有最外层 $L$ 的边不被抵消
+
+      故 $\displaystyle \sum\Delta\Gamma = \oint_L P\,\mathrm{d}x + Q\,\mathrm{d}y$，取极限 $\Delta x,\Delta y \to 0$：
+
+      $$
+      \oint_L P\,\mathrm{d}x + Q\,\mathrm{d}y
+      = \iint_D \left(\frac{\partial Q}{\partial x} - \frac{\partial P}{\partial y}\right) \mathrm{d}x\mathrm{d}y
+      $$
+    - 积分与路径无关
+
+      若在单连通区域 $D$ 内满足：
+
+      $$
+      \frac{\partial Q}{\partial x} = \frac{\partial P}{\partial y}
+      $$
+
+      则 $\int_L P\,\mathrm{d}x + Q\,\mathrm{d}y$ 在 $D$ 内**与路径无关**，等价于：
+
+      1. $\displaystyle \oint_L P\,\mathrm{d}x + Q\,\mathrm{d}y = 0$（任意闭曲线积分为零）
+      2. 存在势函数 $u(x,y)$，使得 $\mathrm{d}u = P\,\mathrm{d}x + Q\,\mathrm{d}y$，即 $\displaystyle \frac{\partial u}{\partial x} = P,\ \frac{\partial u}{\partial y} = Q$
+      3. $\displaystyle \int_{A}^{B} P\,\mathrm{d}x + Q\,\mathrm{d}y = u(B) - u(A)$（类似牛顿-莱布尼茨公式）
+
+      > **充分必要条件**：$\frac{\partial Q}{\partial x} = \frac{\partial P}{\partial y}$（格林公式直接推出）。
+    - 第一类曲面积分（对面积）
+
+      $$
+      \iint_\Sigma f(x,y,z) \,\mathrm{d}S
+      $$
+
+      面积微元（$z = z(x,y)$）：
+
+      $$
+      \mathrm{d}S = \sqrt{1 + \left(\frac{\partial z}{\partial x}\right)^2 + \left(\frac{\partial z}{\partial y}\right)^2} \,\mathrm{d}x\mathrm{d}y
+      $$
+
+      参数形式（$\vec{r} = \vec{r}(u,v)$）：
+
+      $$
+      \mathrm{d}S = \left|\frac{\partial \vec{r}}{\partial u} \times \frac{\partial \vec{r}}{\partial v}\right| \mathrm{d}u\mathrm{d}v
+      $$
+
+      > **无方向性**：与曲面侧无关，只与面积有关（类比第一类曲线积分）。
+    - 第二类曲面积分（对坐标）要不要加负号，算面的朝向和垂直于面的轴方向夹角，锐角为正，钝角为负
+
+      $$
+      \iint_\Sigma P\,\mathrm{d}y\mathrm{d}z + Q\,\mathrm{d}z\mathrm{d}x + R\,\mathrm{d}x\mathrm{d}y
+      $$
+
+      曲面 $\Sigma$：$z = z(x,y)$，取上侧，$R$ 项投影到 $xy$ 平面：
+
+      $$
+      \iint_\Sigma R(x,y,z)\,\mathrm{d}x\mathrm{d}y
+      = \iint_{D_{xy}} R(x,y,z(x,y))\,\mathrm{d}x\mathrm{d}y
+      $$
+
+      > **有方向性**：取上侧为正、下侧为负（类比第二类曲线积分）。
+    - 两类曲面积分的关系
+
+      $$
+      \iint_\Sigma P\,\mathrm{d}y\mathrm{d}z + Q\,\mathrm{d}z\mathrm{d}x + R\,\mathrm{d}x\mathrm{d}y
+      = \iint_\Sigma (P\cos\alpha + Q\cos\beta + R\cos\gamma)\,\mathrm{d}S
+      $$
+
+      其中 $(\cos\alpha,\cos\beta,\cos\gamma)$ 是曲面单位外法向量的方向余弦。
+    - 高斯公式（Gauss / 散度定理）
+
+      $$
+      \oiint_{\Sigma} P\,\mathrm{d}y\mathrm{d}z + Q\,\mathrm{d}z\mathrm{d}x + R\,\mathrm{d}x\mathrm{d}y
+      = \iiint_\Omega \left(\frac{\partial P}{\partial x} + \frac{\partial Q}{\partial y} + \frac{\partial R}{\partial z}\right) \mathrm{d}x\mathrm{d}y\mathrm{d}z
+      $$
+
+      $\Sigma$ 为闭曲面取外侧，$\Omega$ 是 $\Sigma$ 围成的空间区域。
+    - 斯托克斯公式（Stokes）
+
+      $$
+      \oint_L P\,\mathrm{d}x + Q\,\mathrm{d}y + R\,\mathrm{d}z
+      = \iint_\Sigma 
+      \begin{vmatrix} 
+      \mathrm{d}y\mathrm{d}z & \mathrm{d}z\mathrm{d}x & \mathrm{d}x\mathrm{d}y \\[2pt]
+      \frac{\partial}{\partial x} & \frac{\partial}{\partial y} & \frac{\partial}{\partial z} \\[2pt]
+      P & Q & R
+      \end{vmatrix}
+      $$
+
+      $L$ 是曲面 $\Sigma$ 的边界曲线，方向满足右手法则。
   - 施密特正交化（Schmidt Orthogonalization）
     将线性无关向量组 $\alpha_1, \alpha_2, \ldots, \alpha_n$ 化为正交向量组 $\beta_1, \beta_2, \ldots, \beta_n$：
 
