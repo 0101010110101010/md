@@ -1727,6 +1727,102 @@
       $$
 
       $L$ 是曲面 $\Sigma$ 的边界曲线，方向满足右手法则。
+  - 无穷级数
+    - 常数项级数
+      $\displaystyle\sum_{n=1}^{\infty} a_n$，部分和 $S_n = \sum_{k=1}^{n} a_k$，若 $\lim_{n\to\infty} S_n = S$ 存在，则级数**收敛**于 $S$。
+      - **收敛必要条件**：$\lim_{n\to\infty} a_n = 0$（反之不成立，如调和级数 $\sum\frac{1}{n}$ 发散）。
+
+      - **常见级数**：
+        - $p$-级数 $\displaystyle\sum\frac{1}{n^p}$：$p > 1$ 收敛，$p \le 1$ 发散
+        - 几何级数 $\displaystyle\sum_{n=0}^{\infty} ar^n$：$|r| < 1$ 收敛于 $\frac{a}{1-r}$，$|r| \ge 1$ 发散
+
+      - **判别法**（正项级数）：
+        - ==比值判别法==：$\displaystyle\lim_{n\to\infty}\left|\frac{a_{n+1}}{a_n}\right| = \rho$，$\rho<1$ 收敛，$\rho>1$ 发散，$\rho=1$ 方法失效
+        - 比较判别法（与已知收敛/发散级数比较）
+          - **放缩形式**：$0 \le a_n \le b_n$（$n$ 充分大）$\quad
+          \begin{cases}
+            \sum b_n \text{ 收敛} \Rightarrow \sum a_n \text{ 收敛} \\[4pt]
+            \sum a_n \text{ 发散} \Rightarrow \sum b_n \text{ 发散}
+          \end{cases}$
+          - ==极限形式==：$\displaystyle\lim_{n\to\infty} \frac{a_n}{b_n} = l \quad
+          \begin{cases}
+            0 < l < +\infty, & \sum a_n \text{ 与 } \sum b_n \text{ 同敛散} \\[4pt]
+            l = 0, & \sum b_n \text{ 收敛} \Rightarrow \sum a_n \text{ 收敛} \\[4pt]
+            l = +\infty, & \sum b_n \text{ 发散} \Rightarrow \sum a_n \text{ 发散}
+          \end{cases}$
+        - 根值判别法：$\displaystyle\lim_{n\to\infty}\sqrt[n]{|a_n|} = \rho$
+      - 交错级数判别法（Leibniz）：$a_n$ 单调递减趋于 $0$ 则 $\sum(-1)^{n-1}a_n$ 收敛
+      - **绝对收敛与条件收敛**：
+        - **绝对收敛**：把每一项取绝对值后，级数仍然收敛。这意味着一开始就收敛得"很稳"——正负项再怎么排列，和都不变。就像攒够了一笔钱，怎么花都够用。
+        - **条件收敛**：原级数收敛，但取绝对值后就发散了。这种收敛靠的是正负项互相抵消——一旦打乱顺序，和可能变成任何数！就像一个天平，左边和右边刚好平衡，但随便动一个砝码就翻了。
+        - 例子：$1 - \frac{1}{2} + \frac{1}{3} - \frac{1}{4} + \cdots$（交错调和级数），原级数收敛到 $\ln 2$，但取绝对值后变成 $\sum\frac{1}{n}$（调和级数）就发散了 → **条件收敛**。而 $1 - \frac{1}{4} + \frac{1}{9} - \cdots$，取绝对值后是 $\sum\frac{1}{n^2}$（$p=2$）仍然收敛 → **绝对收敛**。
+    - 幂级数
+      $\displaystyle\sum_{n=0}^{\infty} a_n (x - x_0)^n$，收敛半径 $R$：
+
+      $$R = \lim_{n\to\infty} \left|\frac{a_n}{a_{n+1}}\right| \quad\text{或}\quad R = \frac{1}{\lim_{n\to\infty}\sqrt[n]{|a_n|}}$$
+
+      - $|x - x_0| < R$：**绝对收敛**
+      - $|x - x_0| > R$：**发散**
+      - 端点处需单独判别
+
+      - **泰勒级数**（$x_0 = 0$ 时为麦克劳林级数）：
+        $$f(x) = \sum_{n=0}^{\infty} \frac{f^{(n)}(x_0)}{n!}(x - x_0)^n$$
+        **常用展开**：
+        $$\begin{aligned}
+        e^x &= \sum_{n=0}^{\infty} \frac{x^n}{n!} \quad (-\infty < x < \infty) \\[4pt]
+        \sin x &= \sum_{n=0}^{\infty} (-1)^n \frac{x^{2n+1}}{(2n+1)!} \\[4pt]
+        \cos x &= \sum_{n=0}^{\infty} (-1)^n \frac{x^{2n}}{(2n)!} \\[4pt]
+        \ln(1+x) &= \sum_{n=1}^{\infty} (-1)^{n-1} \frac{x^n}{n} \quad (-1 < x \le 1) \\[4pt]
+        \frac{1}{1-x} &= \sum_{n=0}^{\infty} x^n \quad (|x| < 1)
+        \end{aligned}$$
+
+        幂级数在收敛区间内可**逐项求导**和**逐项积分**，收敛半径不变。
+
+        **为什么 $e^x$、$\sin x$、$\cos x$ 可以代入任意值？** 因为分母有 $n!$，收敛半径 $R=+\infty$：
+
+        $$R = \lim_{n\to\infty} \left|\frac{a_n}{a_{n+1}}\right| = \lim_{n\to\infty} \frac{(n+1)!}{n!} = +\infty$$
+
+        $n!$ 的增长速度碾压任何 $x^n$——不管 $x$ 多大，$n$ 足够大时 $\frac{x^n}{n!} \to 0$，余项必趋于 $0$。
+
+        对比：$\ln(1+x)$ 分母只有 $n$ 没有阶乘，$R=1$；$\frac{1}{1-x}$ 连 $n$ 都没有，$R=1$。**分母有阶乘 $\Rightarrow$ 全实数轴收敛；没阶乘 $\Rightarrow$ 只在收敛半径内能用。**
+    - 傅立叶级数
+      周期 $2\pi$ 的函数 $f(x)$ 可展开为：
+
+      $$f(x) = \frac{a_0}{2} + \sum_{n=1}^{\infty} \bigl(a_n \cos nx + b_n \sin nx\bigr)$$
+
+      其中傅立叶系数：
+
+      $$\begin{aligned}
+      a_n &= \frac{1}{\pi}\int_{-\pi}^{\pi} f(x)\cos nx\,dx \quad (n = 0, 1, 2, \ldots) \\[4pt]
+      b_n &= \frac{1}{\pi}\int_{-\pi}^{\pi} f(x)\sin nx\,dx \quad (n = 1, 2, \ldots)
+      \end{aligned}$$
+
+      - $f(x)$ 为**偶函数** $\Rightarrow$ $b_n = 0$，得**余弦级数**
+      - $f(x)$ 为**奇函数** $\Rightarrow$ $a_n = 0$，得**正弦级数**
+
+      周期为 $2l$ 时，将积分区间和三角函数参数换为 $\frac{n\pi x}{l}$ 即可。
+
+      **狄利克雷收敛定理**：若 $f(x)$ 在一个周期内分段单调且只有有限个第一类间断点，则傅立叶级数收敛于 $\frac{f(x^+) + f(x^-)}{2}$。
+    - 例题
+      - $$
+        \begin{aligned}
+        \sum_{n=0}^{+\infty} 3^n\sin\frac{\pi}{4^n}
+        \end{aligned}
+        $$ 
+      - $$
+        \begin{aligned}
+        \sum_{n=0}^{+\infty} \frac{x^{2n+1}}{2n + 1}
+        \end{aligned}
+        $$ 
+      - **例**：将 $\sin x$ 展开成 $x - \frac{\pi}{4}$ 的幂级数。
+        $$
+        \begin{aligned}
+        & t = x - \frac{\pi}{4} \\
+        & \sin x= \sin(x+ \frac{\pi}{4}) \\
+        & \sin(x+ \frac{\pi}{4}) = \sin x \cos {\frac{\pi}{4}} + sin {\frac{\pi}{4}} \cos x
+        \end{aligned}
+        $$ 
+- 线性代数
   - 施密特正交化（Schmidt Orthogonalization）
     将线性无关向量组 $\alpha_1, \alpha_2, \ldots, \alpha_n$ 化为正交向量组 $\beta_1, \beta_2, \ldots, \beta_n$：
 
@@ -1767,3 +1863,14 @@
     $$f = \lambda_1 y_1^2 + \lambda_2 y_2^2 + \cdots + \lambda_n y_n^2$$
 
     正定判定：$A$ 的特征值全为正 $\Leftrightarrow$ 各阶顺序主子式 $> 0$。
+- 方法
+  - 整体局部的分类和关系
+    - 过程
+      - 实践(微观)
+      - 认识(宏观)
+      - 再实践(宏观)
+    - 结果
+      - 定义
+      - 性质
+      - 公式
+      - 方法
