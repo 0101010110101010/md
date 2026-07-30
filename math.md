@@ -1887,6 +1887,68 @@
       $$
     - **方阵的幂**：$A^k = A \cdot A \cdots A$（$k$ 个），$A^0 = I$，$(A^k)^T = (A^T)^k$
     - **特殊矩阵**：零矩阵 $O$、单位矩阵 $I$、对角矩阵 $\text{diag}(\lambda_1,\ldots,\lambda_n)$、对称矩阵 $A=A^T$、反对称矩阵 $A=-A^T$
+    - **矩阵等价**：$A$ 与 $B$ 等价 $\iff$ 存在可逆矩阵 $P,Q$ 使 $B = PAQ$
+
+      等价具有：反身性（$A \sim A$）、对称性（$A \sim B \iff B \sim A$）、传递性（$A \sim B,\ B \sim C \implies A \sim C$）。
+
+      **充要条件**：$A$ 与 $B$ 等价 $\iff$ $A$ 与 $B$ 有相同的秩 $\iff$ $A$ 与 $B$ 可通过初等变换互化。
+
+      **标准形**：任意 $m \times n$ 矩阵 $A$ 等价于
+
+      $$
+      \begin{pmatrix} I_r & O \\ O & O \end{pmatrix}_{m \times n}, \quad r = \operatorname{rank}(A)
+      $$
+
+      即存在可逆 $P,Q$，使得 $PAQ = \begin{pmatrix} I_r & O \\ O & O \end{pmatrix}$。
+
+      > **注意区分**：等价（秩相同，$B = PAQ$）→ 相似（特征值相同，$B = P^{-1}AP$）→ 合同（二次型，$B = C^TAC$），三者的共同特征：都是等价关系。
+    - **初等矩阵**：单位矩阵 $I$ 经过**一次**初等变换得到的矩阵
+
+      三种初等变换对应三类初等矩阵：
+
+      | 类型 | 变换操作 | 初等矩阵 | 行列式 |
+      |------|----------|----------|--------|
+      | 倍乘 | 第 $i$ 行乘 $k \neq 0$ | $E_i(k)$：$I$ 的 $(i,i)$ 位置改为 $k$ | $k$ |
+      | 倍加 | 第 $i$ 行加 $j$ 行的 $k$ 倍 | $E_{ij}(k)$：$I$ 的 $(i,j)$ 位置补 $k$ | $1$ |
+      | 互换 | 交换第 $i$ 行与第 $j$ 行 | $E_{ij}$：交换 $I$ 的 $i,j$ 两行 | $-1$ |
+
+      核心性质：
+
+      - **左乘行变、右乘列变**：$E_{ij}(k) A$ 将 $A$ 的第 $j$ 行乘 $k$ 加到第 $i$ 行；$A E_{ij}(k)$ 将 $A$ 的第 $i$ 列乘 $k$ 加到第 $j$ 列。
+      - 初等矩阵均可逆，逆矩阵仍为初等矩阵：
+        $$E_i(k)^{-1} = E_i(\tfrac{1}{k}),\qquad E_{ij}(k)^{-1} = E_{ij}(-k),\qquad E_{ij}^{-1} = E_{ij}$$
+
+      > 任意可逆矩阵 $A$ 可分解为有限个初等矩阵的乘积：$A = E_1 E_2 \cdots E_k$。
+    - **求逆矩阵的方法**
+
+      $A$ 可逆 $\iff |A| \neq 0$，逆矩阵记为 $A^{-1}$，满足 $AA^{-1} = A^{-1}A = I$。
+
+      **方法一：伴随矩阵法**
+
+      $$
+      A^{-1} = \frac{1}{|A|} A^*, \qquad A^* = \begin{pmatrix}
+      A_{11} & A_{21} & \cdots & A_{n1} \\
+      A_{12} & A_{22} & \cdots & A_{n2} \\
+      \vdots  & \vdots  & \ddots & \vdots  \\
+      A_{1n} & A_{2n} & \cdots & A_{nn}
+      \end{pmatrix}
+      $$
+
+      其中 $A_{ij}$ 是 $a_{ij}$ 的代数余子式。注意 $A^*$ 是**转置**排列的：$(i,j)$ 位置是 $A_{ji}$。
+
+      > 适用于低阶（2 阶、3 阶）方阵，高阶矩阵计算量太大。
+
+      **方法二：初等变换法（最常用）**
+
+      $$
+      (A \mid I) \xrightarrow{\text{初等行变换}} (I \mid A^{-1})
+      $$
+
+      将 $A$ 和 $I$ 并排拼接，仅用**行变换**把左边消成 $I$，右边即得 $A^{-1}$。若左边化不出 $I$（出现全零行），则 $A$ 不可逆。
+
+      **方法三：分块矩阵求逆**
+      - 对角分块：$\displaystyle \begin{pmatrix} A & O \\ O & B \end{pmatrix}^{-1} = \begin{pmatrix} A^{-1} & O \\ O & B^{-1} \end{pmatrix}$
+      - 三角分块：$\displaystyle \begin{pmatrix} A & C \\ O & B \end{pmatrix}^{-1} = \begin{pmatrix} A^{-1} & -A^{-1}CB^{-1} \\ O & B^{-1} \end{pmatrix}$
   - 行列式
   - 向量空间
   - 特征值与相似
