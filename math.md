@@ -1823,6 +1823,74 @@
         \end{aligned}
         $$ 
 - 线性代数
+  - $f(ax) = af(x) \quad f(x+y) = f(x)+f(y)$
+  - 线性方程组
+    $m$ 个方程、$n$ 个未知数的线性方程组：$A\vec{x} = \vec{b}$，其中 $A$ 为 $m \times n$ 系数矩阵。
+    - **初等变换**（三种基本操作，不改变方程组的解）：
+      - **交换两行**：$r_i \leftrightarrow r_j$，对应初等矩阵 $E(i,j)$（交换单位矩阵的 $i,j$ 行）
+      - **某行乘非零常数**：$kr_i$（$k \neq 0$），对应 $E(i(k))$（单位矩阵第 $i$ 行乘 $k$）
+      - **某行的 $k$ 倍加到另一行**：$r_i + kr_j$，对应 $E(i,j(k))$（单位矩阵的 $(i,j)$ 位置加 $k$）
+      - 对列作同样操作记为 $c_i \leftrightarrow c_j$、$kc_i$、$c_i + kc_j$。
+    - **行阶梯形**：通过初等行变换化为如下形式——① 零行在非零行下方；② 每行第一个非零元（主元）的列标随行递增；③ 主元下方全为零。例如 $\begin{pmatrix} 1 & 2 & 3 \\ 0 & 1 & 4 \\ 0 & 0 & 0 \end{pmatrix}$
+    - **行最简形**：在行阶梯形基础上进一步要求：① 主元全为 $1$；② 主元所在列的其余元素全为 $0$。例如 $\begin{pmatrix} 1 & 0 & -5 \\ 0 & 1 & 4 \\ 0 & 0 & 0 \end{pmatrix}$。行最简形是唯一的，可直接读出解。
+    - **齐次方程组** $A\vec{x} = \vec{0}$：
+      $$
+      \begin{cases}
+        \text{仅有零解（唯一解）}, & r(A) = n \text{（列满秩）} \\[4pt]
+        \text{有无穷多非零解}, & r(A) < n，\text{基础解系含 } n - r(A) \text{ 个向量}
+      \end{cases}
+      $$
+    - **非齐次方程组** $A\vec{x} = \vec{b}$：
+      $$
+      \begin{cases}
+        \text{无解}, & r(A) \neq r(A \mid \vec{b}) \\[6pt]
+        \text{唯一解}, & r(A) = r(A \mid \vec{b}) = n \\[6pt]
+        \text{无穷多解}, & r(A) = r(A \mid \vec{b}) < n
+      \end{cases}
+      $$
+      **解的结构**：$\vec{x} = \vec{x}_h + \vec{x}_p$（非齐次通解 = 齐次通解 + 非齐次特解）
+      - **解的运算性质**：
+        | 组合 | 结果 |
+        |------|------|
+        | 齐次解 + 齐次解 | 齐次解 ✓ |
+        | 齐次解 $\times$ 常数 | 齐次解 ✓ |
+        | 非齐次解 + 齐次解 | 非齐次解 ✓ |
+        | 非齐次解 $-$ 非齐次解 | 齐次解 ✓ |
+        | 非齐次解 + 非齐次解 | 不是原方程的解 ❌ |
+    - **克拉默法则**（$A$ 为 $n$ 阶方阵且 $\det A \neq 0$）：$\displaystyle x_i = \frac{\det A_i}{\det A}$，其中 $A_i$ 为用 $\vec{b}$ 替换 $A$ 第 $i$ 列所得矩阵。
+  - 矩阵运算
+    - **加减**：$A \pm B = (a_{ij} \pm b_{ij})$（同型矩阵逐元素相加减）
+    - **数乘**：$kA = (k \cdot a_{ij})$（常数 $k$ 乘每个元素）
+    - **矩阵乘法**：$A_{m\times s} \cdot B_{s\times n} = C_{m\times n}$，$c_{ij} = \sum_{k=1}^{s} a_{ik}b_{kj}$（左列数 = 右行数才能乘）
+      - **满足的运算律**：
+        $$
+        \begin{cases}
+          (AB)C = A(BC) & \text{结合律} \\[4pt]
+          A(B+C) = AB + AC & \text{左分配律} \\[4pt]
+          (A+B)C = AC + BC & \text{右分配律} \\[4pt]
+          k(AB) = (kA)B = A(kB) & \text{数乘结合律}
+        \end{cases}
+        $$
+      - **不满足的规律（易错）**：
+        - 不满足交换律：一般 $AB \neq BA$
+        - $AB = 0 \nRightarrow A=0$ 或 $B=0$（有非零的零因子）
+        - $AB = AC \nRightarrow B=C$（消去律不总成立，除非 $A$ 可逆）
+        - $(A+B)^2 \neq A^2 + 2AB + B^2$（因 $AB \neq BA$，正确应为 $A^2 + AB + BA + B^2$）
+    - **转置** $(A^T)_{ij} = a_{ji}$，性质：
+      $$
+      \begin{cases}
+        (A^T)^T = A \\[4pt]
+        (A+B)^T = A^T + B^T \\[4pt]
+        (kA)^T = kA^T \\[4pt]
+        (AB)^T = B^T A^T
+      \end{cases}
+      $$
+    - **方阵的幂**：$A^k = A \cdot A \cdots A$（$k$ 个），$A^0 = I$，$(A^k)^T = (A^T)^k$
+    - **特殊矩阵**：零矩阵 $O$、单位矩阵 $I$、对角矩阵 $\text{diag}(\lambda_1,\ldots,\lambda_n)$、对称矩阵 $A=A^T$、反对称矩阵 $A=-A^T$
+  - 行列式
+  - 向量空间
+  - 特征值与相似
+  - 二次型
   - 施密特正交化（Schmidt Orthogonalization）
     将线性无关向量组 $\alpha_1, \alpha_2, \ldots, \alpha_n$ 化为正交向量组 $\beta_1, \beta_2, \ldots, \beta_n$：
 
@@ -1864,7 +1932,7 @@
 
     正定判定：$A$ 的特征值全为正 $\Leftrightarrow$ 各阶顺序主子式 $> 0$。
 - 方法
-  - 整体局部的分类和关系
+  - 整体局部的分类和关系(图形表示)
     - 过程
       - 实践(微观)
       - 认识(宏观)
@@ -1874,3 +1942,5 @@
       - 性质
       - 公式
       - 方法
+- 书籍
+  - [ ] DR_CAN 控制之美
