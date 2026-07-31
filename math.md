@@ -1950,6 +1950,49 @@
       - 对角分块：$\displaystyle \begin{pmatrix} A & O \\ O & B \end{pmatrix}^{-1} = \begin{pmatrix} A^{-1} & O \\ O & B^{-1} \end{pmatrix}$
       - 三角分块：$\displaystyle \begin{pmatrix} A & C \\ O & B \end{pmatrix}^{-1} = \begin{pmatrix} A^{-1} & -A^{-1}CB^{-1} \\ O & B^{-1} \end{pmatrix}$
   - 行列式
+    $n$ 阶方阵 $A$ 的行列式记为 $|A|$ 或 $\det(A)$。
+    - **余子式 $M_{ij}$**：划去 $A$ 的第 $i$ 行和第 $j$ 列，剩下元素按原顺序构成的 $n-1$ 阶行列式。
+    - **代数余子式 $A_{ij}$**：$A_{ij} = (-1)^{i+j} M_{ij}$（加上符号 $+/-$，棋盘格从左上角 $(1,1)$ 开始为正）。
+    - **按行（列）展开定理**：
+      - 按第 $i$ 行展开：$\displaystyle |A| = \sum_{j=1}^{n} a_{ij} A_{ij}$
+      - 按第 $j$ 列展开：$\displaystyle |A| = \sum_{i=1}^{n} a_{ij} A_{ij}$
+      - **异行展开为零**：$\displaystyle \sum_{j=1}^{n} a_{ij} A_{kj} = 0$（$i \neq k$），即某行乘另一行的代数余子式之和为零。
+    - **基本性质**：
+      - $|A^T| = |A|$
+      - 交换两行（列），行列式变号
+      - 某行（列）乘 $k$，行列式乘 $k$；$|kA| = k^n|A|$
+      - 某行（列）的 $k$ 倍加到另一行（列），行列式不变
+      - 两行（列）成比例 $\Rightarrow$ $|A| = 0$
+      - $|AB| = |A|\cdot|B|$，$|A^{-1}| = |A|^{-1}$
+    - **特殊行列式**：
+      - 三角行列式 = 对角元乘积
+      - 范德蒙行列式：$\displaystyle |V| = \prod_{1 \le i < j \le n} (x_j - x_i)$
+        例（$n=3$）：$\begin{vmatrix}
+        1 & 1 & 1 \\
+        x_1 & x_2 & x_3 \\
+        x_1^2 & x_2^2 & x_3^2
+        \end{vmatrix} = (x_2-x_1)(x_3-x_1)(x_3-x_2)$
+        数值例：$x_1=1,x_2=2,x_3=4$，则行列式 $=(2-1)(4-1)(4-2)=1\times3\times2=6$
+      - **主对角线 $a$，其余 $b$ 的行列式**：
+        $$D_n = \begin{vmatrix}
+        a & b & b & \cdots & b \\
+        b & a & b & \cdots & b \\
+        b & b & a & \cdots & b \\
+        \vdots & \vdots & \vdots & \ddots & \vdots \\
+        b & b & b & \cdots & a
+        \end{vmatrix}$$
+        **解法**：将第 $2,3,\ldots,n$ 列都加到第 $1$ 列，提出公因子 $a + (n-1)b$，再将第 $1$ 行的 $(-1)$ 倍加到其余各行，化为三角行列式：
+        $$D_n = \bigl[a + (n-1)b\bigr](a-b)^{n-1}$$
+      - **递推型行列式**（按行或列展开得递推关系）：
+        按第 $1$ 行（或第 $1$ 列）展开，建立 $D_n$ 与 $D_{n-1}$、$D_{n-2}$ 的递推式，再求通项。
+        - **三对角行列式**：$\begin{vmatrix}
+          a & b & & & \\
+          c & a & b & & \\
+            & \ddots & \ddots & \ddots & \\
+            & & c & a & b \\
+            & & & c & a
+          \end{vmatrix}_{n\times n}$，按第 $1$ 行展开得 $D_n = a D_{n-1} - bc D_{n-2}$。
+        - 若为常系数线性递推，解特征方程 $\lambda^2 = a\lambda - bc$，得 $D_n = C_1\lambda_1^n + C_2\lambda_2^n$（$\lambda_1 \neq \lambda_2$），代入 $D_1, D_2$ 定系数。
   - 向量空间
   - 特征值与相似
   - 二次型
