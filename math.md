@@ -1833,6 +1833,14 @@
       - 对列作同样操作记为 $c_i \leftrightarrow c_j$、$kc_i$、$c_i + kc_j$。
     - **行阶梯形**：通过初等行变换化为如下形式——① 零行在非零行下方；② 每行第一个非零元（主元）的列标随行递增；③ 主元下方全为零。例如 $\begin{pmatrix} 1 & 2 & 3 \\ 0 & 1 & 4 \\ 0 & 0 & 0 \end{pmatrix}$
     - **行最简形**：在行阶梯形基础上进一步要求：① 主元全为 $1$；② 主元所在列的其余元素全为 $0$。例如 $\begin{pmatrix} 1 & 0 & -5 \\ 0 & 1 & 4 \\ 0 & 0 & 0 \end{pmatrix}$。行最简形是唯一的，可直接读出解。
+      - **如何从行最简形直接写出解（三步口诀）**：
+        - **找主元列 → 定主变量**：主元所在列的变量写在左边
+        - **非主元列 → 自由变量**：剩下的变量取任意常数 $t_1, t_2, \ldots$
+        - **反解**：把自由变量移到右边，系数取相反数即为基础解系向量；常数项抄下来即为特解
+      - **单自由变量示例**：增广矩阵 $(A \mid b) = \left(\begin{array}{ccc|c} 1 & 0 & 2 & 3 \\ 0 & 1 & -1 & 4 \\ 0 & 0 & 0 & 0 \end{array}\right)$，主变量 $x_1,x_2$，自由变量 $x_3=t$，解得 $\begin{pmatrix} x_1 \\ x_2 \\ x_3 \end{pmatrix} = \begin{pmatrix} 3 \\ 4 \\ 0 \end{pmatrix} + t\begin{pmatrix} -2 \\ 1 \\ 1 \end{pmatrix}$（特解 + 基础解系）
+      - **主元不挨着的示例**：增广矩阵 $(A \mid b) = \left(\begin{array}{cccc|c} 1 & 3 & 0 & 2 & 5 \\ 0 & 0 & 1 & -1 & 4 \\ 0 & 0 & 0 & 0 & 0 \end{array}\right)$，主元在第 1 和 3 列，主变量 $x_1,x_3$，自由变量 $x_2=t_1,\ x_4=t_2$，反解：$x_1 = 5 - 3t_1 - 2t_2,\ x_3 = 4 + t_2$，$\begin{pmatrix} x_1 \\ x_2 \\ x_3 \\ x_4 \end{pmatrix} = \begin{pmatrix} 5 \\ 0 \\ 4 \\ 0 \end{pmatrix} + t_1\begin{pmatrix} -3 \\ 1 \\ 0 \\ 0 \end{pmatrix} + t_2\begin{pmatrix} -2 \\ 0 \\ -1 \\ 1 \end{pmatrix}$
+        - **规律不变**：自由变量列对应的系数反号填到主变量行，自由变量行仍填"自己位置=1、其他=0"
+        - 特解定位置，自由变量取负号，空位补01
     - **齐次方程组** $A\vec{x} = \vec{0}$：
       $$
       \begin{cases}
@@ -1994,8 +2002,40 @@
           \end{vmatrix}_{n\times n}$，按第 $1$ 行展开得 $D_n = a D_{n-1} - bc D_{n-2}$。
         - 若为常系数线性递推，解特征方程 $\lambda^2 = a\lambda - bc$，得 $D_n = C_1\lambda_1^n + C_2\lambda_2^n$（$\lambda_1 \neq \lambda_2$），代入 $D_1, D_2$ 定系数。
   - 向量空间
+
+    向量空间（线性空间）$V$：对加法和数乘封闭的非空集合。
+
+    - **八条公理**：加法交换律、结合律、零元、负元；数乘结合律、分配律（两条）、单位元 $1 \cdot \alpha = \alpha$。
+    - **子空间**：非空子集 $W \subseteq V$ 对加法和数乘封闭即为子空间。
+    - **线性相关与无关**：$\sum k_i \alpha_i = 0$ 仅有零解 $\iff$ 线性无关；有非零解 $\iff$ 线性相关。
+    - **基与维数**：极大线性无关组称为基，基向量的个数为维数 $\dim V$。任意 $n+1$ 个 $n$ 维向量必线性相关。
+    - **坐标**：取基 $\alpha_1,\ldots,\alpha_n$，任意向量 $\beta = x_1\alpha_1 + \cdots + x_n\alpha_n$，$(x_1,\ldots,x_n)^T$ 即 $\beta$ 的坐标。
+    - **基变换与坐标变换**：从基 $A$ 到基 $B$ 的过渡矩阵 $P$ 满足 $B = AP$，坐标变换 $y = P^{-1} x$。
+    - **秩的重要关系**：
+      $$\operatorname{rank}(A) = \operatorname{rank}(A^T) = \operatorname{rank}(A^TA) = \operatorname{rank}(AA^T)$$
+    - **解空间维度**：齐次方程组 $Ax=0$ 解空间维数 $= n - \operatorname{rank}(A)$（未知数个数 − 秩）。
   - 特征值与相似
+
+    - **特征值与特征向量**：$A\vec{x} = \lambda\vec{x}$（$\vec{x} \neq \vec{0}$）
+      - 特征方程 $|\lambda I - A| = 0$ 求特征值
+      - 代入 $(\lambda I - A)\vec{x} = 0$ 求特征向量
+    - **特征值的性质**：
+      - $\sum\lambda_i = \operatorname{tr}(A)$（迹），$\prod\lambda_i = |A|$（行列式）
+      - $A$ 可逆 $\iff$ 所有特征值 $\neq 0$；$\lambda$ 是 $A^{-1}$ 的特征值 $\frac{1}{\lambda}$
+      - $A$ 与 $A^T$ 特征值相同，不同特征值对应特征向量线性无关
+    - **相似对角化**：$A \sim \Lambda \iff P^{-1}AP = \Lambda = \operatorname{diag}(\lambda_1,\ldots,\lambda_n)$
+      - $n$ 阶方阵可对角化 $\iff$ 有 $n$ 个线性无关的特征向量 $\iff$ 每个特征值的几何重数 = 代数重数
+      - **实对称矩阵**必可正交对角化：$Q^TAQ = \Lambda$，$Q$ 为正交矩阵
+    - **相似不变性**：$A \sim B$ 则 $|A|=|B|$、$\operatorname{tr}(A)=\operatorname{tr}(B)$、特征值相同、秩相同
   - 二次型
+
+    - **定义**：$f(x_1,\ldots,x_n) = x^T A x$，其中 $A$ 为实对称矩阵。
+    - **标准形**：$x^T A x = \lambda_1 y_1^2 + \lambda_2 y_2^2 + \cdots + \lambda_n y_n^2$
+    - **惯性定理**：标准形中正项、负项、零项个数唯一确定（正负惯性指数不变）。
+    - **正定性判定**：
+      - $A$ 正定 $\iff$ 所有特征值 $> 0$ $\iff$ 各阶顺序主子式 $> 0$
+      - $A$ 负定 $\iff$ 所有特征值 $< 0$ $\iff$ 奇数阶主子式 $< 0$，偶数阶 $> 0$
+    - **合同**：$A$ 与 $B$ 合同 $\iff$ 存在可逆 $C$ 使 $B = C^T A C$。合同保持正负惯性指数不变。
   - 施密特正交化（Schmidt Orthogonalization）
     将线性无关向量组 $\alpha_1, \alpha_2, \ldots, \alpha_n$ 化为正交向量组 $\beta_1, \beta_2, \ldots, \beta_n$：
 
