@@ -2019,14 +2019,46 @@
     - **特征值与特征向量**：$A\vec{x} = \lambda\vec{x}$（$\vec{x} \neq \vec{0}$）
       - 特征方程 $|\lambda I - A| = 0$ 求特征值
       - 代入 $(\lambda I - A)\vec{x} = 0$ 求特征向量
+    - **两个重要概念**：
+      - **代数重数**：特征方程 $|\lambda I - A| = 0$ 中 $\lambda_0$ 作为根的**重数**。例如 $(\lambda - 2)^3(\lambda - 5) = 0$，则 $\lambda = 2$ 的代数重数为 $3$，$\lambda = 5$ 的代数重数为 $1$
+      - **几何重数**：特征值 $\lambda_0$ 对应的特征子空间 $V_{\lambda_0} = \{\vec{x} \mid A\vec{x} = \lambda_0\vec{x}\}$ 的**维数**，即 $(\lambda_0 I - A)\vec{x} = 0$ 解空间的维数 $= n - \operatorname{rank}(\lambda_0 I - A)$
+      - **关系**：$1 \leq$ 几何重数 $\leq$ 代数重数（不可能为 $0$，至少有 $1$ 个特征向量）
     - **特征值的性质**：
       - $\sum\lambda_i = \operatorname{tr}(A)$（迹），$\prod\lambda_i = |A|$（行列式）
-      - $A$ 可逆 $\iff$ 所有特征值 $\neq 0$；$\lambda$ 是 $A^{-1}$ 的特征值 $\frac{1}{\lambda}$
-      - $A$ 与 $A^T$ 特征值相同，不同特征值对应特征向量线性无关
+      - $A$ 可逆 $\iff$ 所有特征值 $\neq 0$；若 $A$ 可逆，则 $A^{-1}$ 的特征值为 $\frac{1}{\lambda}$
+      - $A$ 与 $A^T$ 特征值相同
+      - 若 $\lambda$ 是 $A$ 的 $k$ 重特征值（代数重数），则 $\lambda$ 的几何重数 $\leq k$，即最多有 $k$ 个线性无关的特征向量
+    - **特征向量的性质**：
+      - **不同特征值的特征向量线性无关**：$\lambda_1 \neq \lambda_2 \implies \vec{x}_1, \vec{x}_2$ 线性无关；推广到 $k$ 个互异特征值，对应 $k$ 个特征向量整体线性无关
+      - **同一特征值的特征向量**：构成特征子空间 $V_\lambda = \{\vec{x} \mid A\vec{x} = \lambda\vec{x}\}$，其维数 = 几何重数 $\leq$ 代数重数
+      - **不同特征值拼起来不再是特征向量**
+      - **特征向量是否还是特征向量（常见判定）**（$A\vec{x} = \lambda\vec{x}$ 前提下）：
+
+        | 新矩阵 | $\vec{x}$ 仍是特征向量？ | 特征值 |
+        |--------|:---:|------|
+        | $k\vec{x}\ (k \neq 0)$ | ✓ | $\lambda$（不变） |
+        | $A^m$ | ✓ | $\lambda^m$ |
+        | $A^{-1}$（$A$ 可逆时） | ✓ | $1/\lambda$ |
+        | $A^*$（伴随矩阵，$A$ 可逆时） | ✓ | $\|A\|/\lambda$ |
+        | $aA + kI$ | ✓ | $a\lambda + k$ |
+        | $f(A)$（$f$ 为多项式） | ✓ | $f(\lambda)$ |
+        | $A^T$ | ✗ | — |
+        | $B = P^{-1}AP$（相似变换） | ✗ | $P^{-1}\vec{x}$ 才是，特征值 $\lambda$ |
     - **相似对角化**：$A \sim \Lambda \iff P^{-1}AP = \Lambda = \operatorname{diag}(\lambda_1,\ldots,\lambda_n)$
       - $n$ 阶方阵可对角化 $\iff$ 有 $n$ 个线性无关的特征向量 $\iff$ 每个特征值的几何重数 = 代数重数
       - **实对称矩阵**必可正交对角化：$Q^TAQ = \Lambda$，$Q$ 为正交矩阵
     - **相似不变性**：$A \sim B$ 则 $|A|=|B|$、$\operatorname{tr}(A)=\operatorname{tr}(B)$、特征值相同、秩相同
+    - **实对称矩阵的特殊性质**（$A = A^T$，$A \in \mathbb{R}^{n \times n}$）：
+      - **特征值全为实数**（不会出现复特征值）
+      - **不同特征值的特征向量正交**：$\lambda_1 \neq \lambda_2 \implies \vec{x}_1 \perp \vec{x}_2$（不仅线性无关，更强：正交）
+      - **一定可以正交对角化**：存在正交矩阵 $Q$（$Q^TQ = I$）使 $Q^TAQ = \Lambda = \operatorname{diag}(\lambda_1,\ldots,\lambda_n)$
+      - **几何重数 = 代数重数**：不会出现几何重数小于代数重数的情况，每个 $k$ 重特征值恰好有 $k$ 个正交的特征向量
+      - **秩 = 非零特征值个数**：$\operatorname{rank}(A) =$ 非零特征值的个数（含重数）
+      - **做题 4 步（正交对角化）**：
+        1. **求特征值**：解 $|\lambda I - A| = 0$，得 $\lambda_1,\lambda_2,\ldots,\lambda_n$
+        2. **求特征向量**：对每个 $\lambda_i$，解 $(\lambda_i I - A)\vec{x} = 0$，得基础解系
+        3. **正交化**：同一特征值的特征向量组若不止一个，用施密特正交化使其两两正交（不同特征值的自动正交，无需处理）
+        4. **单位化**：将所有正交向量除以各自的模长，得单位正交向量，按列排成 $Q$，则 $Q^TAQ = \Lambda$
   - 二次型
 
     - **定义**：$f(x_1,\ldots,x_n) = x^T A x$，其中 $A$ 为实对称矩阵。
