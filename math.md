@@ -1,4 +1,4 @@
-- 高数
+- 高数<!-- markmap: foldAll -->
     - 高中数学基础
         - 0.1 函数基础知识
             - 什么是函数
@@ -1822,7 +1822,7 @@
         & \sin(x+ \frac{\pi}{4}) = \sin x \cos {\frac{\pi}{4}} + sin {\frac{\pi}{4}} \cos x
         \end{aligned}
         $$ 
-- 线性代数
+- 线性代数<!-- markmap: foldAll -->
   - $f(ax) = af(x) \quad f(x+y) = f(x)+f(y)$
   - 线性方程组
     $m$ 个方程、$n$ 个未知数的线性方程组：$A\vec{x} = \vec{b}$，其中 $A$ 为 $m \times n$ 系数矩阵。
@@ -2098,46 +2098,20 @@
         $$
       - **性质**：正定矩阵的行列式 $> 0$，对角元 $> 0$，可逆，逆矩阵也正定。
       - **半正定**：$\vec{x}^T A \vec{x} \ge 0$（允许为 $0$），特征值 $\ge 0$，主子式 $\ge 0$。
-  - 施密特正交化（Schmidt Orthogonalization）
-    将线性无关向量组 $\alpha_1, \alpha_2, \ldots, \alpha_n$ 化为正交向量组 $\beta_1, \beta_2, \ldots, \beta_n$：
+    - 施密特正交化（Schmidt Orthogonalization）
+      - 将线性无关向量组 $\alpha_1, \alpha_2, \ldots, \alpha_n$ 化为正交向量组 $\beta_1, \beta_2, \ldots, \beta_n$：
 
-    $$\begin{aligned}
-    \beta_1 &= \alpha_1 \\[4pt]
-    \beta_2 &= \alpha_2 - \frac{(\alpha_2, \beta_1)}{(\beta_1, \beta_1)} \beta_1 \\[4pt]
-    \beta_3 &= \alpha_3 - \frac{(\alpha_3, \beta_1)}{(\beta_1, \beta_1)} \beta_1 - \frac{(\alpha_3, \beta_2)}{(\beta_2, \beta_2)} \beta_2 \\[4pt]
-    &\ \ \vdots \\[4pt]
-    \beta_n &= \alpha_n - \sum_{i=1}^{n-1} \frac{(\alpha_n, \beta_i)}{(\beta_i, \beta_i)} \beta_i
-    \end{aligned}$$
+        $$\begin{aligned}
+        \beta_1 &= \alpha_1 \\[4pt]
+        \beta_2 &= \alpha_2 - \frac{(\alpha_2, \beta_1)}{(\beta_1, \beta_1)} \beta_1 \\[4pt]
+        \beta_3 &= \alpha_3 - \frac{(\alpha_3, \beta_1)}{(\beta_1, \beta_1)} \beta_1 - \frac{(\alpha_3, \beta_2)}{(\beta_2, \beta_2)} \beta_2 \\[4pt]
+        &\ \ \vdots \\[4pt]
+        \beta_n &= \alpha_n - \sum_{i=1}^{n-1} \frac{(\alpha_n, \beta_i)}{(\beta_i, \beta_i)} \beta_i
+        \end{aligned}$$
 
-    其中 $(\alpha, \beta)$ 表示内积（点乘）。
+        其中 $(\alpha, \beta)$ 表示内积（点乘）。
 
-    再**单位化**得标准正交基：$\displaystyle e_i = \frac{\beta_i}{\lVert\beta_i\rVert}$
-  - 特征值与特征向量
-    设 $A$ 为 $n$ 阶方阵，若 $A\vec{x} = \lambda\vec{x}$（$\vec{x} \neq \vec{0}$），则 $\lambda$ 为**特征值**，$\vec{x}$ 为对应的**特征向量**。
-
-    由 $|\lambda E - A| = 0$ 求特征值，代入 $(\lambda E - A)\vec{x} = 0$ 求特征向量。
-
-    - 特征值之和等于迹：$\sum\lambda_i = \operatorname{tr}(A)$
-    - 特征值之积等于行列式：$\prod\lambda_i = |A|$
-    - 不同特征值对应的特征向量线性无关
-  - 矩阵相似对角化
-    若 $A$ 有 $n$ 个线性无关的特征向量，则 $A$ 可对角化：
-
-    $$P^{-1}AP = \Lambda = \begin{pmatrix}
-    \lambda_1 & & \\
-    & \ddots & \\
-    & & \lambda_n
-    \end{pmatrix}$$
-
-    其中 $P$ 的列为对应的特征向量。**实对称矩阵必定可对角化**，且存在正交矩阵 $Q$ 使 $Q^{-1}AQ = \Lambda$。
-  - 二次型
-    $n$ 元二次齐次多项式 $f(\vec{x}) = \vec{x}^T A \vec{x}$（$A$ 为实对称矩阵）。
-
-    通过正交变换 $\vec{x} = Q\vec{y}$ 化为**标准形**：
-
-    $$f = \lambda_1 y_1^2 + \lambda_2 y_2^2 + \cdots + \lambda_n y_n^2$$
-
-    正定判定：$A$ 的特征值全为正 $\Leftrightarrow$ 各阶顺序主子式 $> 0$。
+        再**单位化**得标准正交基：$\displaystyle e_i = \frac{\beta_i}{\lVert\beta_i\rVert}$
 - 方法
   - 整体局部的分类和关系(图形表示)
     - 过程
