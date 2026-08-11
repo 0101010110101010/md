@@ -2240,7 +2240,7 @@
       - 物理存储：
         - **顺序存储**（顺序表）：地址连续，随机存取 $O(1)$，插入删除需移动元素 $O(n)$。
           - **静态分配**：数组大小编译期确定，容量不可变。
-            ```c
+            ```cpp
             #include <stdio.h>
             #define MaxSize 100
             typedef struct {
@@ -2249,17 +2249,72 @@
             } SqList;
             ```
             - 初始化：
-              ```c
+              ```cpp
               void InitList(SqList &L) {
                   L.length = 0;
               }
               ```
-            - 插入：检查是否满以及 $i$ 合法性，从末尾到 $i$ 依次后移，放入新元素，`length++`
-            - 删除：检查是否空及 $i$ 合法性，取出 $i$ 位置值，$i+1$ 到末尾依次前移，`length--`
+            - 插入：检查是否满以及 $i$ 合法性，从末尾到 $i$ 依次后移，放入新元素，`length++`。
+              ```cpp
+              bool InsertList(SqList &L, int i, ElemType e) {
+                  if (i < 1 || i > L.length + 1)  // i 非法
+                      return false;
+                  if (L.length >= MaxSize)        // 表满
+                      return false;
+                  for (int j = L.length; j >= i; j--)
+                      L.data[j] = L.data[j - 1];  // 后移
+                  L.data[i - 1] = e;               // 放入
+                  L.length++;
+                  return true;
+              }
+              ```
+              - 时间复杂度：
+                - **最好** $O(1)$：插入表尾（$i = n+1$），无需移动元素
+                - **最坏** $O(n)$：插入表头（$i = 1$），所有 $n$ 个元素后移
+                - **平均** $O(n)$：设 $p_i$ 为插入到第 $i$ 个位置的等概率，$p_i = \frac{1}{n+1}$，需移动 $n-i+1$ 个元素，期望移动次数 $\displaystyle\sum_{i=1}^{n+1}\frac{1}{n+1}(n-i+1)=\frac{1}{n+1}\cdot\frac{n(n+1)}{2}=\frac{n}{2}$
+            - 删除：检查是否空及 $i$ 合法性，取出 $i$ 位置值，$i+1$ 到末尾依次前移，`length--`。
+              ```cpp
+              bool DeleteList(SqList &L, int i, ElemType &e) {
+                  if (i < 1 || i > L.length)       // i 非法
+                      return false;
+                  e = L.data[i - 1];               // 取值
+                  for (int j = i; j < L.length; j++)
+                      L.data[j - 1] = L.data[j];   // 前移
+                  L.length--;
+                  return true;
+              }
+              ```
+              - 时间复杂度：
+                - **最好** $O(1)$：删除表尾（$i = n$），无需移动元素
+                - **最坏** $O(n)$：删除表头（$i = 1$），所有 $n-1$ 个元素前移
+                - **平均** $O(n)$：等概率 $p_i = \frac{1}{n}$，期望移动次数 $\displaystyle\sum_{i=1}^{n}\frac{1}{n}(n-i)=\frac{1}{n}\cdot\frac{n(n-1)}{2}=\frac{n-1}{2}$
+            - 按位查找：随机存取，直接通过下标访问。
+              ```cpp
+              bool GetElem(SqList L, int i, ElemType &e) {
+                  if (i < 1 || i > L.length)       // i 非法
+                      return false;
+                  e = L.data[i - 1];               // 下标 = i - 1
+                  return true;
+              }
+              ```
+              - 时间复杂度：$O(1)$
+            - 按值查找：遍历比较，返回第一个匹配位置（0 表示未找到）。
+              ```cpp
+              int LocateElem(SqList L, ElemType e) {
+                  for (int i = 0; i < L.length; i++)
+                      if (L.data[i] == e)
+                          return i + 1;            // 返回位序(从1开始)
+                  return 0;                         // 未找到
+              }
+              ```
+              - 时间复杂度：
+                - **最好** $O(1)$：第一个元素即命中
+                - **最坏** $O(n)$：未找到或最后一个
+                - **平均** $O(n)$：设等概率 $p_i = \frac{1}{n}$（查找各位置及未找到共 $n+1$ 种结果），期望比较次数 $\displaystyle\sum_{i=1}^{n}\frac{1}{n}\cdot i + \frac{1}{n}\cdot n = \frac{n+1}{2}+1 = \frac{n+3}{2}$（若只计成功查找则为 $\frac{n+1}{2}$）
             - 优点：代码简单，无需内存分配
             - 缺点：MaxSize 需预估，开太大浪费空间，开太小不够用
           - **动态分配**：运行时分配空间，容量可扩展。
-            ```c
+            ```cpp
             #include <stdio.h>
             #include <stdlib.h>
             #define InitSize 100
@@ -2270,7 +2325,7 @@
             } SeqList;
             ```
             - 初始化：
-              ```c
+              ```cpp
               void InitList(SeqList &L) {
                   L.data = (ElemType*)malloc(InitSize * sizeof(ElemType));
                   L.MaxSize = InitSize;
@@ -2278,7 +2333,7 @@
               }
               ```
             - 扩容：表满时用 `realloc` 或重新 `malloc` 一块更大的空间，数据拷贝过去，释放旧空间，更新 `MaxSize`（通常扩为原来的 $2$ 倍）。
-              ```c
+              ```cpp
               void IncreaseSize(SeqList &L, int len) {
                   ElemType *p = L.data;
                   L.data = (ElemType*)malloc((L.MaxSize + len) * sizeof(ElemType));
@@ -2292,6 +2347,376 @@
             - 优点：容量可按需扩展，避免预判空间
             - 缺点：`malloc`/`realloc` 有时间开销，可能需移动大块数据
         - **链式存储**（链表）：结点 $=$ 数据域 $+$ 指针域，不要求连续空间，插入删除 $O(1)$（已知位置），查找需遍历 $O(n)$。分为单链表、双链表、循环链表。
+          - **单链表**：
+            - **单链表结点定义**：
+              ```cpp
+              typedef struct LNode {
+                  ElemType data;          // 数据域
+                  struct LNode *next;     // 指针域
+              } LNode, *LinkList;
+              ```
+            - **头结点**：不存储数据（或存长度），统一空表与非空表操作，方便在表头插入删除。不带头结点则需特殊处理。
+            - 初始化：
+              - 不带头结点：`L = NULL`（空表）。
+              - 带头结点：
+                ```cpp
+                bool InitList(LinkList &L) {
+                    L = (LNode*)malloc(sizeof(LNode));
+                    if (L == NULL) return false;   // 分配失败
+                    L->next = NULL;
+                    return true;
+                }
+                ```
+            - 建表（带头结点）：
+              - **头插法**：每次新结点插入到表头（头结点之后），读入顺序与链表顺序**相反**，$O(n)$。
+                ```cpp
+                LinkList List_HeadInsert(LinkList &L) {
+                    L = (LNode*)malloc(sizeof(LNode));
+                    L->next = NULL;
+                    LNode *s; ElemType x;
+                    while (/* 读取x */) {
+                        s = (LNode*)malloc(sizeof(LNode));
+                        s->data = x;
+                        s->next = L->next;
+                        L->next = s;
+                    }
+                    return L;
+                }
+                ```
+              - **尾插法**：每次新结点插入到表尾，需尾指针 `r`，读入顺序与链表顺序**相同**，$O(n)$。
+                ```cpp
+                LinkList List_TailInsert(LinkList &L) {
+                    L = (LNode*)malloc(sizeof(LNode));
+                    LNode *s, *r = L;    // r 指向尾结点
+                    ElemType x;
+                    while (/* 读取x */) {
+                        s = (LNode*)malloc(sizeof(LNode));
+                        s->data = x;
+                        r->next = s;
+                        r = s;           // r 指向新的尾结点
+                    }
+                    r->next = NULL;
+                    return L;
+                }
+                ```
+            - 插入（带头结点，在第 $i$ 个位置插 $e$）：用 `GetElem` 找到第 $i-1$ 个结点 $p$，再调用 `InsertNextNode` 后插。
+              ```cpp
+              bool InsertList(LinkList &L, int i, ElemType e) {
+                  if (i < 1) return false;
+                  LNode *p = GetElem(L, i - 1);      // 找第 i-1 个结点
+                  if (p == NULL) return false;
+                  return InsertNextNode(p, e);        // 后插
+              }
+              ```
+              - 时间复杂度：
+                - **最好** $O(1)$：插入表头（$i = 1$），仅需一次 `p = L` 即找到前驱
+                - **最坏** $O(n)$：插入表尾（$i = n+1$），需遍历 $n$ 个结点找到第 $n$ 个结点
+                - **平均** $O(n)$：等概率 $p_i = \frac{1}{n+1}$，查找前驱需比较 $i-1$ 次，期望 $\displaystyle\sum_{i=1}^{n+1}\frac{1}{n+1}(i-1)=\frac{1}{n+1}\cdot\frac{n(n+1)}{2}=\frac{n}{2}$
+            - 插入（不带头结点）：$i=1$ 时需特殊处理，修改头指针 `L` 本身；$i>1$ 时找到第 $i-1$ 个结点后调用 `InsertNextNode`。
+              ```cpp
+              bool InsertList(LinkList &L, int i, ElemType e) {
+                  if (i < 1) return false;
+                  if (i == 1) {                        // 插入表头，特殊处理
+                      LNode *s = (LNode*)malloc(sizeof(LNode));
+                      s->data = e;
+                      s->next = L;
+                      L = s;
+                      return true;
+                  }
+                  LNode *p = L;
+                  int j = 1;                           // 从第1个结点开始
+                  while (p != NULL && j < i - 1) {     // 找第 i-1 个结点
+                      p = p->next;
+                      j++;
+                  }
+                  if (p == NULL) return false;
+                  return InsertNextNode(p, e);         // 后插
+              }
+              ```
+              - **带头结点 vs 不带头结点**：带头结点统一了所有位置的插入逻辑，无需对 $i=1$ 特殊处理，代码更简洁。
+              - **InsertNextNode(&p, e)**：在已知结点 `*p` 之后插入元素 $e$，$O(1)$。
+                ```cpp
+                bool InsertNextNode(LNode *p, ElemType e) {
+                    if (p == NULL) return false;
+                    LNode *s = (LNode*)malloc(sizeof(LNode));
+                    if (s == NULL) return false;      // 分配失败
+                    s->data = e;
+                    s->next = p->next;
+                    p->next = s;
+                    return true;
+                }
+                ```
+              - **InsertPriorNode(&p, e)**：在已知结点 `*p` 之前插入元素 $e$。由于单链表无法直接找到前驱，先执行后插，再交换 `p` 与新结点的 `data`，同样 $O(1)$。
+                ```cpp
+                bool InsertPriorNode(LNode *p, ElemType e) {
+                    if (p == NULL) return false;
+                    LNode *s = (LNode*)malloc(sizeof(LNode));
+                    if (s == NULL) return false;
+                    s->next = p->next;
+                    p->next = s;                  // 后插
+                    s->data = p->data;            // 交换数据
+                    p->data = e;
+                    return true;
+                }
+                ```
+            - 删除（带头结点，删除第 $i$ 个位置，用 `e` 返回）：用 `GetElem` 找第 $i-1$ 个结点 $p$，再删除其后继。
+              ```cpp
+              bool DeleteList(LinkList &L, int i, ElemType &e) {
+                  if (i < 1) return false;
+                  LNode *p = GetElem(L, i - 1);      // 找第 i-1 个结点
+                  if (p == NULL || p->next == NULL) return false;
+                  LNode *q = p->next;                // q 指向被删结点
+                  e = q->data;
+                  p->next = q->next;
+                  free(q);
+                  return true;
+              }
+              ```
+              - 时间复杂度：
+                - **最好** $O(1)$：删除表头（$i = 1$），`p = L` 即找到前驱，无需遍历
+                - **最坏** $O(n)$：删除表尾（$i = n$），需遍历 $n$ 个结点找到第 $n-1$ 个结点
+                - **平均** $O(n)$：等概率 $p_i = \frac{1}{n}$，查找前驱需比较 $i-1$ 次，期望 $\displaystyle\sum_{i=1}^{n}\frac{1}{n}(i-1)=\frac{1}{n}\cdot\frac{n(n-1)}{2}=\frac{n-1}{2}$
+            - **DeleteNode(&p, &e)**：删除指定结点 `*p`，用 `e` 返回被删值。将其后继数据复制到自身，再删后继，$O(1)$。
+              ```cpp
+              bool DeleteNode(LNode *p, ElemType &e) {
+                  if (p == NULL || p->next == NULL) return false;  // 尾结点无法用此法
+                  LNode *q = p->next;        // q 是后继
+                  e = p->data;               // 返回 p 的值
+                  p->data = q->data;         // 后继数据复制到 p
+                  p->next = q->next;         // 跳过 q
+                  free(q);
+                  return true;
+              }
+              ```
+              - 注意：若 `p` 是尾结点（`p->next == NULL`），则无法用此法，需从头遍历找前驱。
+            - 查找：
+              - 按位查找：
+                ```cpp
+                LNode* GetElem(LinkList L, int i) {
+                    if (i < 0) return NULL;
+                    LNode *p = L;
+                    int j = 0;
+                    while (p != NULL && j < i) {
+                        p = p->next;
+                        j++;
+                    }
+                    return p;    // 返回第 i 个结点指针，i=0 返回头结点
+                }
+                ```
+                - 时间复杂度：$O(n)$
+              - 按值查找：
+                ```cpp
+                LNode* LocateElem(LinkList L, ElemType e) {
+                    LNode *p = L->next;              // 跳过头结点
+                    while (p != NULL && p->data != e)
+                        p = p->next;
+                    return p;    // 找到返回结点指针，否则返回 NULL
+                }
+                ```
+                - 时间复杂度：$O(n)$
+            - 求表长（带头结点）：遍历计数，$O(n)$。
+              ```cpp
+              int ListLength(LinkList L) {
+                  int len = 0;
+                  LNode *p = L->next;
+                  while (p != NULL) {
+                      len++;
+                      p = p->next;
+                  }
+                  return len;
+              }
+              ```
+            - 判空（带头结点）：`L->next == NULL`，$O(1)$。
+            - 逆置（原地翻转）：逐个头插法思想，$O(n)$。
+              ```cpp
+              void ReverseList(LinkList &L) {
+                  LNode *p = L->next, *q;
+                  L->next = NULL;
+                  while (p != NULL) {
+                      q = p->next;       // 暂存后继
+                      p->next = L->next; // 头插
+                      L->next = p;
+                      p = q;
+                  }
+              }
+              ```
+            - 优缺点：
+              - 优点：不需要连续空间，插入删除 $O(1)$（已知位置），动态分配不浪费
+              - 缺点：查找需遍历 $O(n)$，指针域额外占用空间
+          - **双链表**：每个结点有两个指针 `prior` 和 `next`，可双向遍历，但指针开销更大。
+            - 结点定义：
+              ```cpp
+              typedef struct DNode {
+                  ElemType data;
+                  struct DNode *prior, *next;
+              } DNode, *DLinkList;
+              ```
+            - 初始化（带头结点）：
+              ```cpp
+              bool InitDLinkList(DLinkList &L) {
+                  L = (DNode*)malloc(sizeof(DNode));
+                  if (L == NULL) return false;
+                  L->prior = NULL;
+                  L->next = NULL;
+                  return true;
+              }
+              ```
+            - 判空：
+              ```cpp
+              bool Empty(DLinkList L) {
+                  return L->next == NULL;
+              }
+              ```
+              - 时间复杂度：$O(1)$
+            - 销毁（释放所有结点，包括头结点）：
+              ```cpp
+              void DestroyList(DLinkList &L) {
+                  DNode *p = L, *q;
+                  while (p != NULL) {
+                      q = p->next;
+                      free(p);
+                      p = q;
+                  }
+                  L = NULL;
+              }
+              ```
+              - 时间复杂度：$O(n)$
+            - 插入（在 `*p` 之后插入 `*s`）：修改 4 根指针，注意顺序。
+              ```cpp
+              bool InsertNextDNode(DNode *p, DNode *s) {
+                  if (p == NULL || s == NULL) return false;
+                  s->next = p->next;        // ① s 后继
+                  if (p->next != NULL)
+                      p->next->prior = s;   // ② 原后继的前驱
+                  s->prior = p;             // ③ s 前驱
+                  p->next = s;              // ④ p 后继
+                  return true;
+              }
+              ```
+              - 时间复杂度：$O(1)$
+            - 删除（删除 `*p` 的后继结点 `*q`）：修改 2 根指针。
+              ```cpp
+              bool DeleteNextDNode(DNode *p, ElemType &e) {
+                  if (p == NULL || p->next == NULL) return false;
+                  DNode *q = p->next;        // q 是被删结点
+                  e = q->data;
+                  p->next = q->next;         // 跳过 q
+                  if (q->next != NULL)
+                      q->next->prior = p;    // q 后继的前驱
+                  free(q);
+                  return true;
+              }
+              ```
+              - 时间复杂度：$O(1)$
+            - 遍历（从表头到尾）：
+              ```cpp
+              void Traverse(DLinkList L) {
+                  DNode *p = L->next;
+                  while (p != NULL) {
+                      // 访问 p->data
+                      p = p->next;
+                  }
+              }
+              ```
+              - 时间复杂度：$O(n)$
+            - 双链表优点：可双向遍历，找前驱 $O(1)$，删除指定结点无需复制数据
+            - 双链表缺点：每个结点多一个指针，存储密度更低
+          - **循环链表**：表中最后一个结点的指针域指向头结点，整个链表形成一个环。
+            - **循环单链表**：
+              - 结点定义同单链表，区别在于表尾 `next` 指向头结点。
+              - 初始化（带头结点）：
+                ```cpp
+                bool InitCLinkList(LinkList &L) {
+                    L = (LNode*)malloc(sizeof(LNode));
+                    if (L == NULL) return false;
+                    L->next = L;       // 头结点 next 指向自身
+                    return true;
+                }
+                ```
+              - 判空：
+                ```cpp
+                bool Empty(LinkList L) {
+                    return L->next == L;
+                }
+                ```
+                - 时间复杂度：$O(1)$
+              - 判表尾：当前结点 `p->next == L` 时为表尾。
+              - 遍历：
+                ```cpp
+                void Traverse(LinkList L) {
+                    LNode *p = L->next;
+                    while (p != L) {     // p != L 作为结束条件
+                        // 访问 p->data
+                        p = p->next;
+                    }
+                }
+                ```
+                - 时间复杂度：$O(n)$
+              - 循环单链表优点：从任意结点出发都可遍历全表，合并两个表只需修改两个尾结点指针 $O(1)$。
+              - 循环单链表缺点：无 `NULL` 标记，遍历时需注意循环结束条件，否则会死循环。
+            - **循环双链表**：
+              - 结点定义同双链表，区别在于头结点的 `prior` 指向尾结点，尾结点的 `next` 指向头结点。
+              - 初始化（带头结点）：
+                ```cpp
+                bool InitCDLinkList(DLinkList &L) {
+                    L = (DNode*)malloc(sizeof(DNode));
+                    if (L == NULL) return false;
+                    L->prior = L;       // 头结点的 prior 指向自身
+                    L->next = L;        // 头结点的 next 指向自身
+                    return true;
+                }
+                ```
+              - 判空：
+                ```cpp
+                bool Empty(DLinkList L) {
+                    return L->next == L;
+                }
+                ```
+                - 时间复杂度：$O(1)$
+              - 判表尾：`p->next == L` 或 `p == L->prior` 时为表尾。
+              - 插入（在 `*p` 之后插入 `*s`，无需判断 `p->next` 是否为 `NULL`）：
+                ```cpp
+                bool InsertNextDNode(DNode *p, DNode *s) {
+                    if (p == NULL || s == NULL) return false;
+                    s->next = p->next;
+                    p->next->prior = s;   // 必有后继（至少是头结点）
+                    s->prior = p;
+                    p->next = s;
+                    return true;
+                }
+                ```
+                - 时间复杂度：$O(1)$
+              - 删除（删除 `*p` 的后继结点，无需判断后继是否为 `NULL`）：
+                ```cpp
+                bool DeleteNextDNode(DNode *p, ElemType &e) {
+                    if (p == NULL || p->next == p) return false;
+                    DNode *q = p->next;
+                    e = q->data;
+                    p->next = q->next;
+                    q->next->prior = p;
+                    free(q);
+                    return true;
+                }
+                ```
+                - 时间复杂度：$O(1)$
+              - 遍历：
+                ```cpp
+                void Traverse(DLinkList L) {
+                    DNode *p = L->next;
+                    while (p != L) {     // p != L 作为结束条件
+                        // 访问 p->data
+                        p = p->next;
+                    }
+                }
+                ```
+                - 时间复杂度：$O(n)$
+              - 循环双链表优点：插入删除代码统一（无需判 `NULL`），双向 + 循环更灵活。
+              - 循环双链表缺点：指针开销更大（两个指针域），存储密度较低。
+        - 顺序表 vs 链表对比：
+          - 存取方式：顺序表随机存取 $O(1)$，链表顺序存取 $O(n)$
+          - 插入删除：顺序表需移动 $O(n)$，链表 $O(1)$（已知位置）
+          - 空间：顺序表预分配/动态分配（密度大），链表动态分配（有指针开销）
+          - 适用场景：表长固定且查找多 → 顺序表；表长变化大且插入删除多 → 链表；频繁取第 $i$ 个 → 顺序表
     - 2 栈和队列
     - 3 串
     - 4 数与二叉树
@@ -2314,6 +2739,9 @@
   - 整体局部的分类和关系(图形表示)
     - 过程
       - 实践(微观)
+        - 方案
+        - 检错
+        - 纠错
       - 认识(宏观)
       - 再实践(宏观)
     - 结果
