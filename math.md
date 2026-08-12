@@ -23,9 +23,9 @@
         & - \left|x \right| < \left|\sin x \right| < \left|x \right| \\
         & \arctan x < x < \arcsin x (0 < x < \frac{\pi}{2}) \\
         & \ln (1 + x) < x < e^x - 1 \\
-        & |a| - |b| \le |a \pm b| \le |a| + |b| \\
-        & \sqrt{ab} \le \frac{a + b}{2} \le \frac{\sqrt{a^2 + b^2}}{2} (a, b > 0) \\
-        & \sqrt[3]{abc} \le \frac{a + b + c}{2} \le \frac{\sqrt{a^2 + b^2 + c^2}}{2} (a, b,c > 0) \\
+        & \big||a| - |b|\big| \le |a \pm b| \le |a| + |b| \\
+        & \sqrt{ab} \le \frac{a + b}{2} \le \sqrt{\frac{a^2 + b^2}{2}} (a, b > 0) \\
+        & \sqrt[3]{abc} \le \frac{a + b + c}{3} \le \sqrt{\frac{a^2 + b^2 + c^2}{3}} (a, b, c > 0) \\
         & 0 < a < x < b, 0 < c<y<d  \to \frac{c}{b} < \frac{y}{x} \to \frac{d}{a} \\
         & |x| < a \to - a < x < a
         \end{aligned}
@@ -167,6 +167,13 @@
           - 推导 $\lim_{x\to 0} \frac{\sin x}{x} = 1 $ 和 $\lim_{n\to \infty} (1 + \frac{1}{x}) = e$
           - 掌握极限准则：夹逼准则、单调有界准则
             - 夹逼准则：在 $x_0$ 的某去心邻域内，存在 $g(x) < f(x) < h(x)$, 且满足 $\lim_{x \to x_0} g(x) = \lim_{x \to x_0} h(x) = A$, 则 $\lim_{x \to x_0} f(x) = A$
+            - 单调有界准则
+              $$
+              a_1 = \sqrt2,a_{n+1} = \sqrt{2 + a_n}， 证明\lim_{n \to \infty} a_n 存在并求值 \\
+              设f(x) = \sqrt{2+x} , f'(x) = \frac{1}{2\sqrt{2+x}}, |f'(x)| < \frac{1}{2}, f(2) = 2.\\
+              |a_n -2| = |f(a_{n-1}) - f(2)| = |(a_{n-1} - 2)f'(\epsilon)|  < \frac{1}{2}|a_{n-1} - 2| \\
+              |a_n - 2| < \frac{1}{2^{n-1}}|a_{1} - 2|,接着应用极限定义，带入a_1 算出n ，用\epsilon语言描述
+              $$
           - 推广到更多极限结果
         - 洛必达法则
           当满足以下三点条件时：
@@ -182,6 +189,9 @@
            - $$
              \lim_{x\to a} \frac{f'(x)}{g'(x)} 存在(或为无穷大)
              $$
+        - 拉格朗日中值定理
+          - 特点：一个函数减去另外一个函数
+          
         - 泰勒公式
           - $$
             \begin{align*}
