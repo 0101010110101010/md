@@ -2879,6 +2879,404 @@
             - 销毁：顺序表置空即可（动态分配需 `free`）；链表逐结点 `free` $O(n)$
           - 适用场景：表长固定且查找多 → 顺序表；表长变化大且插入删除多 → 链表；频繁取第 $i$ 个 → 顺序表
     - 2 栈和队列
+      - 栈
+        - 逻辑结构（定义）：**后进先出（LIFO）** 的受限线性表，只允许在一端（栈顶 `top`）插入和删除，另一端为栈底（`bottom`）。$n=0$ 为空栈。
+        - 基本操作（运算）：
+          - **InitStack(&S)**：初始化空栈
+          - **StackEmpty(S)**：判空，空栈返回真
+          - **Push(&S, e)**：入栈，元素 $e$ 压入栈顶
+          - **Pop(&S, &e)**：出栈，栈顶元素弹出并用 $e$ 返回
+            - 出栈序列个数（卡特兰数）：$n$ 个不同元素依次入栈，可能的出栈序列共有 $\displaystyle\frac{1}{n+1}\binom{2n}{n}=\frac{(2n)!}{(n+1)!\cdot n!}$ 种
+              - 例：$n=3$ 时有 $\frac{1}{4}\binom{6}{3}=5$ 种，合法出栈序列为 $123, 132, 213, 231, 321$；而 $312$ 非法（$3$ 出栈时 $2$ 必在其上）
+          - **GetTop(S, &e)**：读栈顶，仅读取不弹出
+          - **DestroyStack(&S)**：销毁栈
+        - 存储结构：
+          - 顺序栈（数组 + 栈顶指针）：
+            - 结点定义：
+              ```cpp
+              #define MaxSize 50
+              typedef struct {
+                  ElemType data[MaxSize];
+                  int top;            // 栈顶指针，指向栈顶元素
+              } SqStack;
+              ```
+            - 初始化（`top = -1` 表示空栈）：
+              ```cpp
+              void InitStack(SqStack &S) {
+                  S.top = -1;
+              }
+              ```
+            - 判空：
+              ```cpp
+              bool StackEmpty(SqStack S) {
+                  return S.top == -1;
+              }
+              ```
+              - 时间复杂度：$O(1)$
+            - 入栈（先判栈满，`top` 加一后赋值）：
+              ```cpp
+              bool Push(SqStack &S, ElemType e) {
+                  if (S.top == MaxSize - 1)   // 栈满（上溢）
+                      return false;
+                  S.data[++S.top] = e;
+                  return true;
+              }
+              ```
+              - 时间复杂度：$O(1)$
+            - 出栈（先判栈空，取值后 `top` 减一）：
+              ```cpp
+              bool Pop(SqStack &S, ElemType &e) {
+                  if (S.top == -1)            // 栈空（下溢）
+                      return false;
+                  e = S.data[S.top--];
+                  return true;
+              }
+              ```
+              - 时间复杂度：$O(1)$
+            - 读栈顶：
+              ```cpp
+              bool GetTop(SqStack S, ElemType &e) {
+                  if (S.top == -1) return false;
+                  e = S.data[S.top];
+                  return true;
+              }
+              ```
+              - 时间复杂度：$O(1)$
+            - 缺点：容量固定可能溢出；可用"共享栈"让两个栈共用一个数组，各自从两端向中间生长
+          - 链栈（单链表实现，头插头删，不带头结点）：
+            - 结点定义：
+              ```cpp
+              typedef struct SNode {
+                  ElemType data;
+                  struct SNode *next;
+              } SNode, *LiStack;
+              ```
+            - 初始化（空栈 `S = NULL`）：
+              ```cpp
+              void InitStack(LiStack &S) {
+                  S = NULL;
+              }
+              ```
+            - 判空：
+              ```cpp
+              bool StackEmpty(LiStack S) {
+                  return S == NULL;
+              }
+              ```
+              - 时间复杂度：$O(1)$
+            - 入栈（头插法）：
+              ```cpp
+              bool Push(LiStack &S, ElemType e) {
+                  SNode *p = (SNode*)malloc(sizeof(SNode));
+                  if (p == NULL) return false;
+                  p->data = e;
+                  p->next = S;
+                  S = p;              // 新结点成为栈顶
+                  return true;
+              }
+              ```
+              - 时间复杂度：$O(1)$
+            - 出栈（头删法）：
+              ```cpp
+              bool Pop(LiStack &S, ElemType &e) {
+                  if (S == NULL) return false;
+                  SNode *p = S;
+                  e = p->data;
+                  S = S->next;
+                  free(p);
+                  return true;
+              }
+              ```
+              - 时间复杂度：$O(1)$
+            - 优点：不会栈满（除非内存耗尽），容量动态扩展
+        - 应用：
+          - 括号匹配：扫描表达式，遇左括号 `(` `[` `{` 入栈，遇右括号时栈顶应为其匹配的左括号，否则不匹配；扫描结束栈空则全部匹配。
+            - 实现：
+              ```cpp
+              bool BracketMatch(char str[], int n) {
+                  SqStack S;
+                  InitStack(S);
+                  for (int i = 0; i < n; i++) {
+                      if (str[i] == '(' || str[i] == '[' || str[i] == '{')
+                          Push(S, str[i]);        // 左括号入栈
+                      else if (str[i] == ')' || str[i] == ']' || str[i] == '}') {
+                          if (StackEmpty(S)) return false;    // 右括号多
+                          char top;
+                          Pop(S, top);
+                          if (!(top == '(' && str[i] == ')' ||
+                                top == '[' && str[i] == ']' ||
+                                top == '{' && str[i] == '}'))
+                              return false;       // 类型不匹配
+                      }
+                  }
+                  return StackEmpty(S);            // 栈空则全匹配
+              }
+              ```
+              - 时间复杂度：$O(n)$
+          - 表达式求值（中缀转后缀 + 后缀求值）：
+            - 中缀转后缀（从左到右扫描，操作数直接输出；运算符入栈，遇右括号弹出至左括号；栈顶优先级高于或等于当前运算符时弹出）：
+              ```cpp
+              int Priority(char op) {     // 优先级
+                  if (op == '+' || op == '-') return 1;
+                  if (op == '*' || op == '/') return 2;
+                  return 0;
+              }
+              void InfixToPostfix(char infix[], int n, char postfix[], int &k) {
+                  SqStack S;
+                  InitStack(S);
+                  k = 0;
+                  for (int i = 0; i < n; i++) {
+                      char c = infix[i];
+                      if (c >= '0' && c <= '9') {          // 操作数直接输出
+                          postfix[k++] = c;
+                      } else if (c == '(') {
+                          Push(S, c);
+                      } else if (c == ')') {
+                          while (!StackEmpty(S) && S.data[S.top] != '(') {
+                              Pop(S, postfix[k++]);        // 弹出直到左括号
+                          }
+                          char t; Pop(S, t);               // 弹出 '('
+                      } else {                             // 运算符
+                          while (!StackEmpty(S) && S.data[S.top] != '(' &&
+                                 Priority(S.data[S.top]) >= Priority(c))
+                              Pop(S, postfix[k++]);
+                          Push(S, c);
+                      }
+                  }
+                  while (!StackEmpty(S))                   // 剩余运算符出栈
+                      Pop(S, postfix[k++]);
+                  postfix[k] = '\0';
+              }
+              ```
+            - 后缀表达式求值（从左到右扫描，操作数入栈，遇运算符弹出两个操作数计算后压回）：
+              ```cpp
+              int EvalPostfix(char postfix[]) {
+                  SqStack S;
+                  InitStack(S);
+                  for (int i = 0; postfix[i] != '\0'; i++) {
+                      char c = postfix[i];
+                      if (c >= '0' && c <= '9') {
+                          Push(S, c - '0');                // 数字入栈
+                      } else {
+                          int a, b;
+                          Pop(S, b);                       // 先出栈的是右操作数
+                          Pop(S, a);                       // 后出栈的是左操作数
+                          int r;
+                          if (c == '+') r = a + b;
+                          else if (c == '-') r = a - b;
+                          else if (c == '*') r = a * b;
+                          else r = a / b;
+                          Push(S, r);
+                      }
+                  }
+                  int res;
+                  Pop(S, res);
+                  return res;
+              }
+              ```
+              - 时间复杂度：$O(n)$
+          - 其他应用：递归转非递归、函数调用与返回、进制转换
+      - 队列
+        - 逻辑结构（定义）：**先进先出（FIFO）**的受限线性表，只允许在队尾（`rear`）插入、队头（`front`）删除。$n=0$ 为空队列。
+        - 基本操作（运算）：
+          - **InitQueue(&Q)**：初始化空队列
+          - **QueueEmpty(Q)**：判空，空队列返回真
+          - **EnQueue(&Q, e)**：入队，元素 $e$ 插入队尾
+          - **DeQueue(&Q, &e)**：出队，队头元素删除并用 $e$ 返回
+          - **GetHead(Q, &e)**：读队头元素，不删除
+        - 存储结构：
+          - 循环队列（顺序存储，解决"假溢出"）：
+            - 结点定义（牺牲一个存储单元区分队空与队满）：
+              ```cpp
+              #define MaxSize 50
+              typedef struct {
+                  ElemType data[MaxSize];
+                  int front, rear;    // 队头、队尾指针
+              } SqQueue;
+              ```
+            - 初始化（`front = rear = 0`）：
+              ```cpp
+              void InitQueue(SqQueue &Q) {
+                  Q.front = Q.rear = 0;
+              }
+              ```
+            - 判空：
+              ```cpp
+              bool QueueEmpty(SqQueue Q) {
+                  return Q.front == Q.rear;
+              }
+              ```
+              - 时间复杂度：$O(1)$
+            - 队满判断：`(Q.rear + 1) % MaxSize == Q.front`
+            - 入队：
+              ```cpp
+              bool EnQueue(SqQueue &Q, ElemType e) {
+                  if ((Q.rear + 1) % MaxSize == Q.front)  // 队满
+                      return false;
+                  Q.data[Q.rear] = e;
+                  Q.rear = (Q.rear + 1) % MaxSize;        // 队尾指针循环后移
+                  return true;
+              }
+              ```
+              - 时间复杂度：$O(1)$
+            - 出队：
+              ```cpp
+              bool DeQueue(SqQueue &Q, ElemType &e) {
+                  if (Q.front == Q.rear)                   // 队空
+                      return false;
+                  e = Q.data[Q.front];
+                  Q.front = (Q.front + 1) % MaxSize;       // 队头指针循环后移
+                  return true;
+              }
+              ```
+              - 时间复杂度：$O(1)$
+            - 读队头（仅读取，不删除）：
+              ```cpp
+              bool GetHead(SqQueue Q, ElemType &e) {
+                  if (Q.front == Q.rear)       // 队空
+                      return false;
+                  e = Q.data[Q.front];         // 队头元素
+                  return true;
+              }
+              ```
+              - 时间复杂度：$O(1)$
+            - 队列长度（队中元素个数）：$(Q.rear - Q.front + MaxSize) \% MaxSize$
+              - 推导：设 $f=front$，$r=rear$，$M=MaxSize$，$r \in [0,M-1]$，每入队一个元素 $r$ 循环加一。
+                - 无回绕（$r \ge f$）：元素个数 $= r - f$
+                - 有回绕（$r < f$）：$r$ 先走到 $M-1$ 又回到 $0$，元素个数 $= r + M - f$
+                - 统一公式：$(r - f + M) \% M$（当 $r \ge f$ 时等于 $r-f$；当 $r < f$ 时等于 $r+M-f$）
+              - 例：$M=8$，入队 $3$ 个后 $f=0,r=3$，个数 $=3$；再出队 $2$ 个 $f=2,r=3$，个数 $=1$；再入队 $6$ 个 $r$ 回绕到 $1$（$3+6=9 \to 9\%8=1$），$f=2,r=1$，个数 $=(1-2+8)\%8=7$
+          - 链队列（带头结点，`front` 指向头结点）：
+            - 结点定义：
+              ```cpp
+              typedef struct LNode {
+                  ElemType data;
+                  struct LNode *next;
+              } LNode;
+              typedef struct {
+                  LNode *front, *rear;    // 队头、队尾指针
+              } LinkQueue;
+              ```
+            - 初始化：
+              ```cpp
+              void InitQueue(LinkQueue &Q) {
+                  Q.front = Q.rear = (LNode*)malloc(sizeof(LNode));
+                  Q.front->next = NULL;
+              }
+              ```
+            - 判空：
+              ```cpp
+              bool QueueEmpty(LinkQueue Q) {
+                  return Q.front == Q.rear;
+              }
+              ```
+              - 时间复杂度：$O(1)$
+            - 入队（尾插法）：
+              ```cpp
+              bool EnQueue(LinkQueue &Q, ElemType e) {
+                  LNode *p = (LNode*)malloc(sizeof(LNode));
+                  if (p == NULL) return false;
+                  p->data = e;
+                  p->next = NULL;
+                  Q.rear->next = p;       // 新结点链到队尾
+                  Q.rear = p;             // 更新队尾指针
+                  return true;
+              }
+              ```
+              - 时间复杂度：$O(1)$
+            - 出队（头删法）：
+              ```cpp
+              bool DeQueue(LinkQueue &Q, ElemType &e) {
+                  if (Q.front == Q.rear) return false;    // 队空
+                  LNode *p = Q.front->next;
+                  e = p->data;
+                  Q.front->next = p->next;
+                  if (Q.rear == p)         // 队列中只有一个结点
+                      Q.rear = Q.front;    // 置队尾 = 头结点
+                  free(p);
+                  return true;
+              }
+              ```
+              - 时间复杂度：$O(1)$
+        - 队列的应用：树的层次遍历、图的广度优先搜索（BFS）、操作系统进程调度（就绪队列）、打印机缓冲、消息队列
+      - 双端队列（Deque）
+        - 逻辑结构（定义）：允许在**两端**插入和删除的线性表，是栈和队列的推广。
+          - 输出受限的双端队列：两端都可入队，但只有一端（如左端）可出队
+          - 输入受限的双端队列：两端都可出队，但只有一端（如左端）可入队
+        - 与栈、队列的关系：栈（一端插入一端删除）和队列（一端插入另一端删除）都是双端队列的**特例**
+        - 基本操作（运算）：
+          - **InitDeque(&D)**：初始化
+          - **DequeEmpty(D)**：判空
+          - **PushFront(&D, e) / PushBack(&D, e)**：左端/右端入队
+          - **PopFront(&D, &e) / PopBack(&D, &e)**：左端/右端出队
+        - 存储结构（基于循环数组实现，双端循环队列）：
+          - 结点定义（`front` 指向队头，`rear` 指向队尾后一个位置）：
+            ```cpp
+            #define MaxSize 50
+            typedef struct {
+                ElemType data[MaxSize];
+                int front, rear;    // 队头、队尾指针
+            } Deque;
+            ```
+          - 初始化（`front = rear = 0`）：
+            ```cpp
+            void InitDeque(Deque &D) {
+                D.front = D.rear = 0;
+            }
+            ```
+          - 判空：
+            ```cpp
+            bool DequeEmpty(Deque D) {
+                return D.front == D.rear;
+            }
+            ```
+            - 时间复杂度：$O(1)$
+          - 队满判断：`(D.rear + 1) % MaxSize == D.front`（牺牲一个单元）
+          - 左端入队（`front` 循环前移）：
+            ```cpp
+            bool PushFront(Deque &D, ElemType e) {
+                if ((D.rear + 1) % MaxSize == D.front)  // 队满
+                    return false;
+                D.front = (D.front - 1 + MaxSize) % MaxSize; // front 前移
+                D.data[D.front] = e;
+                return true;
+            }
+            ```
+            - 时间复杂度：$O(1)$
+          - 右端入队（`rear` 循环后移）：
+            ```cpp
+            bool PushBack(Deque &D, ElemType e) {
+                if ((D.rear + 1) % MaxSize == D.front)  // 队满
+                    return false;
+                D.data[D.rear] = e;
+                D.rear = (D.rear + 1) % MaxSize;        // rear 后移
+                return true;
+            }
+            ```
+            - 时间复杂度：$O(1)$
+          - 左端出队：
+            ```cpp
+            bool PopFront(Deque &D, ElemType &e) {
+                if (D.front == D.rear)                  // 队空
+                    return false;
+                e = D.data[D.front];
+                D.front = (D.front + 1) % MaxSize;
+                return true;
+            }
+            ```
+            - 时间复杂度：$O(1)$
+          - 右端出队：
+            ```cpp
+            bool PopBack(Deque &D, ElemType &e) {
+                if (D.front == D.rear)                  // 队空
+                    return false;
+                D.rear = (D.rear - 1 + MaxSize) % MaxSize; // rear 前移
+                e = D.data[D.rear];
+                return true;
+            }
+            ```
+            - 时间复杂度：$O(1)$
+        - 应用：滑动窗口最大值（单调双端队列）、Linux 内核任务队列等
     - 3 串
     - 4 数与二叉树
     - 5 图
