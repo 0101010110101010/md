@@ -3360,7 +3360,329 @@
             - 时间复杂度：$O(1)$
         - 应用：滑动窗口最大值（单调双端队列）、Linux 内核任务队列等
     - 3 串
+      - 逻辑结构（定义）：由零个或多个字符组成的**有限序列**，$S = 'a_1a_2\ldots a_n'$，$n$ 为串长，$n=0$ 为空串。串是特殊的线性表，元素是单个字符。
+        - 子串与主串：串中任意个连续字符组成的子序列称为子串，包含子串的串称为主串
+        - 位置：字符在串中的序号（从 1 开始）
+        - 空格串与空串：空格串是含空格的串（串长 $>0$），空串不含任何字符（串长 $=0$）
+        - 串相等：两个串长度相等且对应位置字符相同
+      - 基本操作（运算）：
+        - **StrAssign(&T, chars)**：赋值，把串 `chars` 赋给 `T`
+        - **StrCopy(&T, S)**：复制，`T` 复制为 `S`
+        - **StrEmpty(S)**：判空
+        - **StrLength(S)**：求串长
+        - **ClearString(&S)**：清空串
+        - **DestroyString(&S)**：销毁串（堆分配时释放 `ch` 空间并置 `NULL`，静态分配则 `length = 0`）
+        - **Concat(&T, S1, S2)**：串连接
+        - **SubString(&Sub, S, pos, len)**：求子串，返回 `S` 中第 `pos` 个字符起长度为 `len` 的子串
+        - **Index(S, T)**：定位，求子串 `T` 在主串 `S` 中首次出现的位置（无则返回 0）
+        - **Replace(&S, T, V)**：替换子串
+        - **StrCompare(S, T)**：比较大小（按字典序）
+      - 存储结构：
+        - 定长顺序存储（静态数组，长度可能截断）：
+          ```cpp
+          #define MaxLen 255
+          typedef struct {
+              char ch[MaxLen + 1];   // 0 号单元存串长（或不用）
+              int length;            // 串长
+          } SString;
+          ```
+          - 求串长：
+            ```cpp
+            int StrLength(SString S) {
+                return S.length;
+            }
+            ```
+            - 时间复杂度：$O(1)$
+          - 求子串（返回 `S` 中第 `pos` 个字符起长度为 `len` 的子串）：
+            ```cpp
+            bool SubString(SString &Sub, SString S, int pos, int len) {
+                if (pos < 1 || pos > S.length || len < 0 || pos + len - 1 > S.length)
+                    return false;              // 参数非法
+                for (int i = 0; i < len; i++)
+                    Sub.ch[i] = S.ch[pos - 1 + i];
+                Sub.length = len;
+                return true;
+            }
+            ```
+            - 时间复杂度：$O(len)$
+          - 串比较（按字典序）：
+            ```cpp
+            int StrCompare(SString S, SString T) {
+                for (int i = 0; i < S.length && i < T.length; i++)
+                    if (S.ch[i] != T.ch[i])
+                        return S.ch[i] - T.ch[i];   // 第一个不同字符决定大小
+                return S.length - T.length;         // 前缀相同则长度决定
+            }
+            ```
+            - 时间复杂度：$O(n)$
+          - 串连接（`Concat(&T, S1, S2)`，结果存入 `T`，超长截断）：
+            ```cpp
+            bool Concat(SString &T, SString S1, SString S2) {
+                int len = S1.length + S2.length;
+                if (len > MaxLen) return false;     // 超出容量
+                for (int i = 0; i < S1.length; i++)
+                    T.ch[i] = S1.ch[i];
+                for (int i = 0; i < S2.length; i++)
+                    T.ch[S1.length + i] = S2.ch[i];
+                T.length = len;
+                return true;
+            }
+            ```
+            - 时间复杂度：$O(n)$
+          - 定位（`Index(S, T)`，朴素匹配）：找子串 `T` 在主串 `S` 中首次出现的位置。
+            ```cpp
+            int Index(SString S, SString T) {
+                int i = 1, j = 1;
+                while (i <= S.length && j <= T.length) {
+                    if (S.ch[i - 1] == T.ch[j - 1]) { ++i; ++j; }
+                    else { i = i - j + 2; j = 1; }   // 主串回溯，模式串从头
+                }
+                if (j > T.length) return i - T.length; // 返回起始位置
+                return 0;
+            }
+            ```
+            - 时间复杂度：$O(nm)$（最坏）
+          - 清空串：
+            ```cpp
+            void ClearString(SString &S) {
+                S.length = 0;
+            }
+            ```
+            - 时间复杂度：$O(1)$
+          - 销毁串（静态数组由系统回收，逻辑清空即可）：
+            ```cpp
+            void DestroyString(SString &S) {
+                S.length = 0;
+            }
+            ```
+            - 时间复杂度：$O(1)$
+          - 优点：随机存取单个字符 $O(1)$，空间紧凑
+          - 缺点：长度固定，超过 `MaxLen` 会被截断（可能非法截断）
+        - 堆分配存储（动态数组，按需分配）：
+          ```cpp
+          typedef struct {
+              char *ch;              // 按串长分配存储区
+              int length;            // 串长
+          } HString;
+          ```
+          - 初始化（分配空间）：
+            ```cpp
+            void InitString(HString &S) {
+                S.ch = NULL;
+                S.length = 0;
+            }
+            ```
+            - 时间复杂度：$O(1)$
+          - 赋值（`StrAssign`）：
+            ```cpp
+            void StrAssign(HString &S, const char *chars) {
+                if (S.ch) free(S.ch);              // 释放旧空间
+                int len = strlen(chars);
+                S.ch = (char*)malloc((len + 1) * sizeof(char));
+                strcpy(S.ch, chars);               // 复制（含 '\0'）
+                S.length = len;
+            }
+            ```
+            - 时间复杂度：$O(n)$
+          - 求子串（需动态分配新空间）：
+            ```cpp
+            bool SubString(HString &Sub, HString S, int pos, int len) {
+                if (pos < 1 || pos > S.length || len < 0 || pos + len - 1 > S.length)
+                    return false;
+                if (Sub.ch) free(Sub.ch);
+                Sub.ch = (char*)malloc((len + 1) * sizeof(char));
+                for (int i = 0; i < len; i++)
+                    Sub.ch[i] = S.ch[pos - 1 + i];
+                Sub.ch[len] = '\0';
+                Sub.length = len;
+                return true;
+            }
+            ```
+            - 时间复杂度：$O(len)$
+          - 串连接（动态分配，无截断问题）：
+            ```cpp
+            bool Concat(HString &T, HString S1, HString S2) {
+                if (T.ch) free(T.ch);
+                T.ch = (char*)malloc((S1.length + S2.length + 1) * sizeof(char));
+                for (int i = 0; i < S1.length; i++)
+                    T.ch[i] = S1.ch[i];
+                for (int i = 0; i < S2.length; i++)
+                    T.ch[S1.length + i] = S2.ch[i];
+                T.ch[S1.length + S2.length] = '\0';
+                T.length = S1.length + S2.length;
+                return true;
+            }
+            ```
+            - 时间复杂度：$O(n)$
+          - 销毁串（释放堆空间并置空）：
+            ```cpp
+            void DestroyString(HString &S) {
+                free(S.ch);                // 释放堆区空间
+                S.ch = NULL;               // 防止野指针
+                S.length = 0;
+            }
+            ```
+            - 时间复杂度：$O(1)$
+          - 优点：长度可动态变化，无截断问题
+          - 缺点：需管理堆空间，操作有 `malloc`/`free` 开销
+        - 块链存储（链式，一个结点存多个字符）：
+          - 结点含 `data`（如 4 个字符）和 `next` 指针，末尾不足用 `#` 填充
+          - 结点定义：
+            ```cpp
+            #define NodeSize 4            // 每个结点存 4 个字符
+            typedef struct SNode {
+                char data[NodeSize];      // 字符块
+                struct SNode *next;       // 指向下一结点
+            } SNode, *String;
+            ```
+          - 优点：长度可变，插入删除方便
+          - 缺点：存储密度低（指针开销），单个字符随机存取 $O(n)$
+      - 模式匹配：
+        - 朴素模式匹配（BF 算法）：主串从第 1 个位置起逐位与模式串比较，失配则主串指针回溯到下一位置。
+          - 最好 $O(m)$（首字符即不匹配）、最坏 $O(nm)$（每次比较到最后一个字符才失败）
+        - KMP 算法：主串指针**不回溯**，利用 `next` 数组让模式串右移。
+          - `next` 数组**只依赖模式串本身，与主串无关**，因此可以在匹配之前独立求出（预处理阶段）。
+            - 完整流程：① 预处理：`get_next(T, next)` 求 next 数组 $O(m)$，只依赖模式串，可提前算好 → ② 匹配：`Index_KMP` 扫描主串 $O(n)$，过程中直接查表，不再重复计算
+            - 对比朴素匹配：每次失配主串都要回溯、模式串从头再来，最坏 $O(nm)$；KMP 把"模式串如何跳"提前算好存表，匹配时查表，主串指针不回溯
+          - `next[j]`：模式串第 $j$ 个字符失配时，模式串应跳到第 `next[j]` 个位置继续比较
+            - $next[1] = 0$，$next[j]$ 为 $p_1\ldots p_{j-1}$ 中相等前后缀的最大长度 $+1$
+            - 例：`ababaa` 的 next 为 $0,1,1,2,3,4$
+          - 求 next 数组：
+            ```cpp
+            void get_next(SString T, int next[]) {
+                int i = 1, j = 0;
+                next[1] = 0;
+                while (i < T.length) {
+                    if (j == 0 || T.ch[i] == T.ch[j]) {
+                        ++i; ++j;
+                        next[i] = j;
+                    } else {
+                        j = next[j];
+                    }
+                }
+            }
+            ```
+          - KMP 匹配过程：
+            ```cpp
+            int Index_KMP(SString S, SString T, int next[]) {
+                int i = 1, j = 1;
+                while (i <= S.length && j <= T.length) {
+                    if (j == 0 || S.ch[i] == T.ch[j]) { ++i; ++j; }
+                    else j = next[j];     // 主串 i 不回溯，只移动模式串
+                }
+                if (j > T.length) return i - T.length; // 匹配成功
+                return 0;
+            }
+            ```
+          - 时间复杂度：求 next $O(m)$，匹配 $O(n)$，总 $O(n+m)$
     - 4 数与二叉树
+      - 树的基本概念
+        - 逻辑结构（定义）：$n$（$n \ge 0$）个结点的**有限集合**，有且仅有一个根结点，其余结点划分为 $m$ 个互不相交的子树（一对多，有唯一前驱、多个后继）。
+          - 度：结点拥有的子树个数；树的度为各结点度的最大值
+          - 叶结点（终端结点）：度为 0 的结点；分支结点（非终端结点）：度 $>0$
+          - 结点关系：双亲（父）、孩子（子）、兄弟、祖先、子孙、堂兄弟
+          - 层次与深度：根为第 1 层，最大层次为树的深度（高度）
+          - 有序树 vs 无序树：孩子结点是否有次序
+          - 森林：$m$（$m \ge 0$）棵互不相交的树的集合
+        - 树的性质：
+          - 结点数 $=$ 总度数 $+ 1$
+          - 度为 $m$ 的树第 $i$ 层至多有 $m^{i-1}$ 个结点
+          - 高度为 $h$ 的 $m$ 叉树至多有 $\dfrac{m^h - 1}{m - 1}$ 个结点
+          - $n$ 个结点的 $m$ 叉树最小高度为 $\lceil \log_m(n(m-1)+1) \rceil$
+      - 二叉树
+        - 逻辑结构（定义）：每个结点至多有两棵子树，子树有左右之分（有序树）。
+          - 满二叉树：每层都满，高度 $h$ 有 $2^h - 1$ 个结点
+          - 完全二叉树：除最后一层外每层都满，最后一层结点从左到右连续排列
+          - 二叉排序树、平衡二叉树（后面章节）
+        - 性质：
+          - 第 $i$ 层至多有 $2^{i-1}$ 个结点
+          - 高度 $h$ 至多 $2^h - 1$ 个结点；$n$ 个结点二叉树最小高度 $\lceil \log_2(n+1) \rceil$
+          - 叶结点数 $n_0 = n_2 + 1$（$n_2$ 为度为 2 的结点数）
+          - 完全二叉树：编号为 $i$ 的结点，左孩子 $2i$，右孩子 $2i+1$，双亲 $\lfloor i/2 \rfloor$
+        - 存储结构：
+          - 顺序存储（数组，适合完全二叉树）：
+            ```cpp
+            #define MaxSize 100
+            typedef struct {
+                ElemType data[MaxSize];  // 从下标 1 开始存根
+                int n;                   // 结点个数
+            } SqBiTree;
+            ```
+            - 完全二叉树直接按下标映射；一般二叉树需补空结点，浪费空间
+          - 链式存储（二叉链表）：
+            ```cpp
+            typedef struct BiTNode {
+                ElemType data;
+                struct BiTNode *lchild, *rchild;  // 左右孩子指针
+            } BiTNode, *BiTree;
+            ```
+            - $n$ 个结点的二叉链表有 $n+1$ 个空链域（线索二叉树利用之）
+        - 遍历：
+          - 先序遍历（根左右）：
+            ```cpp
+            void PreOrder(BiTree T) {
+                if (T != NULL) {
+                    visit(T);            // 访问根
+                    PreOrder(T->lchild); // 遍历左子树
+                    PreOrder(T->rchild); // 遍历右子树
+                }
+            }
+            ```
+          - 中序遍历（左根右）：
+            ```cpp
+            void InOrder(BiTree T) {
+                if (T != NULL) {
+                    InOrder(T->lchild);
+                    visit(T);
+                    InOrder(T->rchild);
+                }
+            }
+            ```
+          - 后序遍历（左右根）：
+            ```cpp
+            void PostOrder(BiTree T) {
+                if (T != NULL) {
+                    PostOrder(T->lchild);
+                    PostOrder(T->rchild);
+                    visit(T);
+                }
+            }
+            ```
+            - 三种遍历时间复杂度均为 $O(n)$；已知先序+中序（或后序+中序）可唯一确定二叉树，先序+后序不能唯一确定
+          - 层次遍历（用队列）：
+            ```cpp
+            void LevelOrder(BiTree T) {
+                LinkQueue Q;
+                InitQueue(Q);
+                if (T != NULL) EnQueue(Q, T);
+                while (!QueueEmpty(Q)) {
+                    BiTNode *p;
+                    DeQueue(Q, p);
+                    visit(p);
+                    if (p->lchild != NULL) EnQueue(Q, p->lchild);
+                    if (p->rchild != NULL) EnQueue(Q, p->rchild);
+                }
+            }
+            ```
+            - 时间复杂度 $O(n)$
+        - 线索二叉树：利用 $n+1$ 个空链域存放前驱/后继线索。
+          ```cpp
+          typedef struct ThreadNode {
+              ElemType data;
+              struct ThreadNode *lchild, *rchild;
+              int ltag, rtag;   // 0 表示孩子指针，1 表示线索
+          } ThreadNode, *ThreadTree;
+          ```
+          - 中序线索化后，可 $O(n)$ 中序遍历、$O(1)$ 找前驱/后继
+      - 树与森林
+        - 树的存储：双亲表示法（数组存双亲下标）、孩子表示法（孩子链表）、孩子兄弟表示法（左孩子右兄弟，即二叉链表）
+        - 树与二叉树的转换：孩子兄弟法，左孩子右兄弟一一对应；森林加虚拟根后同理
+        - 树（森林）的遍历：先根遍历 = 对应二叉树先序，后根遍历 = 对应二叉树中序
+      - 哈夫曼树
+        - 定义：带权路径长度（WPL）最小的二叉树，权值大的结点离根近
+        - 构造：每次取权值最小的两棵树合并，重复直到一棵树
+        - 特点：不唯一；只有度为 0 和 2 的结点；$n$ 个叶子共有 $2n-1$ 个结点
+        - 哈夫曼编码：前缀编码，无歧义解码，数据压缩（如 ZIP）
     - 5 图
     - 6 查找
     - 7 排序
