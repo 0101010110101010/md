@@ -820,6 +820,19 @@
           \int_a^{b} f(x) \,\mathrm{d}x 
           =\int_a^{b} f(a+b-x) \,\mathrm{d}x 
           $$
+        - 轮换对称性
+          - **公式**：
+            $$\int_a^b f(x)\,\mathrm{d}x = \int_a^b f(a+b-x)\,\mathrm{d}x$$
+          - **推导**：令 $t = a + b - x$，则 $\mathrm{d}t = -\mathrm{d}x$，积分限 $x:a\to b$ 变为 $t:b\to a$，换序后回到 $[a,b]$：
+            $$\int_a^b f(x)\,\mathrm{d}x = -\int_b^a f(a+b-t)\,\mathrm{d}t = \int_a^b f(a+b-t)\,\mathrm{d}t$$
+          - **核心技巧：与自身相加**
+            $$2I = \int_a^b\big[f(x) + f(a+b-x)\big]\,\mathrm{d}x$$
+            若 $f(x) + f(a+b-x)$ 恰为常数或简单函数，立刻解出 $I$
+          - **适用特点**：
+            - 区间 $[a,b]$ 有限，被积函数复杂、直接求原函数困难
+            - 被积函数关于区间中点有对称/互补关系时最有效（常见 $\sin$、$\cos$、$\ln$、$\arctan$ 混合式）
+            - 常用特例：$[0,1]$ 用 $f(1-x)$，$[0,\pi]$ 用 $f(\pi-x)$，$[-\pi,\pi]$ 用 $f(-x)$（退化为奇偶性）
+            - 典型例：$\displaystyle\int_0^\pi \frac{x\sin x}{1+\cos^2 x}\,\mathrm{d}x$，相加后 $\dfrac{x\sin x}{1+\cos^2x}+\dfrac{(\pi-x)\sin x}{1+\cos^2x}=\dfrac{\pi\sin x}{1+\cos^2x}$ 直接可积
         - 华莱士（Wallis）公式（点火公式）
           $$
           \int_0^{\frac{\pi}{2}} \sin^n x \,\mathrm{d}x 
@@ -830,7 +843,24 @@
             \displaystyle \frac{n-1}{n} \cdot \frac{n-3}{n-2} \cdots \frac{2}{3} \cdot 1, & n \text{ 为奇数}
           \end{cases}
           $$
-      - 变上限积分
+        - 压强（液体静压力）
+          - **基础公式**：压强 $P = \rho g h$
+            - $\rho$ 液体密度，$g$ 重力加速度，$h$ 到液面的深度
+            - 液体内部压强只与深度有关，同一深度压强处处相等
+          - **压力**：$F = P \cdot S$（压强 × 面积）
+            - 若受压面水平（各处深度相同）：直接 $F = \rho g h S$
+            - 若受压面竖直浸入液体（各处深度不同）：需用**微元法**
+          - **微元法**：将受力面切成水平薄片，深度 $x$ 处厚度 $\mathrm{d}x$，压强 $\rho g x$，微元压力
+            $$\mathrm{d}F = \rho g x \cdot l(x)\,\mathrm{d}x$$
+            总压力
+            $$F = \rho g \int_a^b x \cdot l(x)\,\mathrm{d}x$$
+            - $l(x)$ 为深度 $x$ 处薄片的水平宽度，$[a, b]$ 为受压面的深度范围
+          - **适用特点**：
+            - 典型题：竖直矩形/梯形闸门、水坝受水压力
+            - 关键三步：定深度函数 $x$、定宽度函数 $l(x)$、定积分限 $[a, b]$
+            - 注意坐标系：常取液面为原点、向下为 $x$ 轴正向
+            - 单位：$\rho$（kg/m³）、$g$ = 9.8 m/s²（有时取 10）、深度（m）→ 压力（N）
+      - 变上限积分 基本上就是求导数
         - $$
           \int_0^x f(t) \mathrm{d}t = f(x) \\
           \int_0^x e^{t^2} \mathrm{d}t \quad S'(x)=e^{x^2} \\
@@ -845,6 +875,31 @@
           \int_{-\infty}^a f(x) \,\mathrm{d}x  \\
           \int_{-\infty}^{+\infty} f(x) \,\mathrm{d}x  \\
           $$
+        - 指数函数与对数函数的广义积分
+          - **指数函数**（无穷区间型）
+            - $\displaystyle\int_0^{+\infty} e^{-ax}\,\mathrm{d}x = \frac{1}{a} \ (a>0)$，收敛
+            - $\displaystyle\int_{-\infty}^{0} e^{ax}\,\mathrm{d}x = \frac{1}{a} \ (a>0)$，收敛
+            - $\displaystyle\int_0^{+\infty} e^{ax}\,\mathrm{d}x$（$a>0$）发散（$e^{ax}\to+\infty$）
+            - $\displaystyle\int_{-\infty}^{+\infty} e^{-x^2}\,\mathrm{d}x = \sqrt{\pi}$（高斯/泊松积分）
+            - $\displaystyle\int_0^{+\infty} x^n e^{-x}\,\mathrm{d}x = n!$（$\Gamma$ 函数）
+          - **对数函数**（瑕积分型，$x=0$ 为瑕点）
+            - $\displaystyle\int_0^1 \ln x\,\mathrm{d}x = -1$，收敛（$\ln x$ 在 $0$ 处增长极慢，是可积的弱奇点）
+            - 对数弱奇性：$\ln x$ 在 $x\to 0^+$ 时比任何幂函数 $x^{-\alpha}\ (\alpha>0)$ 都弱，故 $\displaystyle\int_0^1 x^\alpha \ln x\,\mathrm{d}x$ 在 $\alpha > -1$ 时恒收敛
+            - $\displaystyle\int_1^{+\infty} \frac{1}{x\ln x}\,\mathrm{d}x$ 发散（$\ln\ln x \to +\infty$），而 $\displaystyle\int_1^{+\infty} \frac{1}{x(\ln x)^p}\,\mathrm{d}x$ 在 $p>1$ 时收敛
+          - **适用特点**：
+            - 指数型：判据是**衰减速度**——$e^{-ax}$（$a>0$）指数衰减必收敛，比任何幂函数都快
+            - 对数型：$x=0$ 处是**弱奇点**（收敛），$x\to+\infty$ 处增长**最慢**（单独 $\ln x$ 发散）
+        - 比较判别法（判断敛散性的核心工具）
+          - **收敛方向**：若 $0 \le f(x) \le g(x)$ 且 $\int g$ 收敛，则 $\int f$ 收敛
+            - "比收敛的还小，必收敛"
+          - **发散方向**：若 $f(x) \ge g(x) \ge 0$ 且 $\int g$ 发散，则 $\int f$ 发散
+            - "比发散的还大，必发散"
+          - **两个前提**：
+            - 非负性：$f \ge 0$；$f$ 有正有负时改用绝对收敛判别（$\int|f|$ 收敛 $\Rightarrow$ $\int f$ 收敛）
+            - 方向不能反：比收敛的大 → 无法判断；比发散的小 → 无法判断
+          - **常用标杆**：
+            - 指数标杆：$e^{-ax}$（$a>0$）——指数衰减比任何幂函数都快，含 $e$ 的被积函数用它
+            - 幂标杆：$\dfrac{1}{x^p}$——用 $p$ 积分判据，$\int_1^{+\infty}\frac{1}{x^p}$ 在 $p>1$ 收敛，$\int_0^1\frac{1}{x^p}$ 在 $p<1$ 收敛
         - $p$ 积分的敛散性（$x^p$ 的广义积分判据）
           $$
           \begin{aligned}
@@ -856,7 +911,7 @@
           &\int_1^{+\infty} \frac{1}{\sqrt{x}} \,\mathrm{d}x \quad &p=\tfrac{1}{2}<1,\ \text{发散（} 2\sqrt{x} \to +\infty \text{）}
           \end{aligned}
           $$
-      - 积分应用 旋转体体积
+      - 积分应用 旋转体体积与面积
           $$
           \begin{aligned}
           &\int_a^b \pi f^2(x) \mathrm{d}x\\[4pt]
@@ -881,6 +936,14 @@
             - 非线性
               - 可分离变量：$y' = f(x)g(y)$
               - 齐次方程：$y' = f(\frac{y}{x})$（令 $u = \frac{y}{x}$）
+                - **替换**：令 $u = \dfrac{y}{x}$，即 $y = ux$
+                - **求导**（乘积法则）：对 $y = ux$ 两边关于 $x$ 求导
+                  $$y' = u + xu'$$
+                - **代入**原方程（$y' = f(u)$）：
+                  $$u + xu' = f(u) \ \Rightarrow\ xu' = f(u) - u$$
+                - **分离变量**：
+                  $$\frac{\mathrm{d}u}{f(u) - u} = \frac{\mathrm{d}x}{x}$$
+                  两边积分得关于 $u$ 的通解，最后用 $u = \dfrac{y}{x}$ 代回
               - 伯努利方程：$y' + P(x)y = Q(x)y^n$（令 $z = y^{1-n}$）
               - 全微分方程
           - 二阶方程
@@ -893,7 +956,7 @@
           - 高阶方程
         - 注意区分：一阶线性齐次（$y'+P(x)y=0$）≠ 齐次方程（$y'=f(y/x)$），是两回事
       - 一阶微分方程
-        - 分离变量法 一阶线性齐次微分方程
+        - 分离变量法 一阶线性齐次微分方程(考虑分母$y$为0)
           $$
           \begin{aligned}
           & y' = 2xy \\
@@ -905,8 +968,6 @@
           & y = Ce^{x^2} \\
           \end{aligned}
           $$
-
-          $$
           \boxed{
           \begin{aligned}
           & y' = P(x)y \\
@@ -914,6 +975,10 @@
           \end{aligned}
           }
           $$
+        - 一阶线性齐次微分方程（$Q(x) = 0$ 的情形）
+          - **形式**：$y' + P(x)y = 0$，即右端为 $0$ 的是齐次
+          - **通解**：$y = Ce^{-\int P(x)\,\mathrm{d}x}$（上面 boxed 公式是 $y' = P(x)y$ 记法，两者等价，$P$ 差一符号）
+          - **解法**：就是分离变量，$\dfrac{\mathrm{d}y}{y} = -P(x)\,\mathrm{d}x$ 两边积分
         - 一阶线性非齐次微分方程
           $$
           \begin{aligned}
@@ -1017,7 +1082,19 @@
           \end{array}
           $$
           注意：若 $y_p$ 的试设形式与齐次解 $y_h$ 的项**重合**，则乘以 $x$（或 $x^k$）以提高次数。
-      - 高阶微分方程
+        - 微分算子法（D 算子法）
+          - **思想**：令算子 $D = \dfrac{\mathrm{d}}{\mathrm{d}x}$，方程化为
+            $$(D^2 + pD + q)\,y = F(D)\,y = f(x)$$
+            特解写成 $y_p = \dfrac{1}{F(D)}f(x)$，把 $F(D)$ 当普通多项式"除"过去
+          - **基本公式**：
+            - $e^{kx}$ 型：$\dfrac{1}{F(D)}e^{kx} = \dfrac{e^{kx}}{F(k)} \ \ (F(k) \neq 0)$
+            - $e^{kx}$ 型共振（$F(k)=0$）：$\dfrac{1}{F(D)}e^{kx} = x\,\dfrac{e^{kx}}{F'(k)} \ \ (F'(k)\neq 0)$
+            - $\sin ax$ / $\cos ax$ 型：把 $D^2$ 直接换成 $-a^2$，即 $\dfrac{1}{F(D^2)}\sin ax = \dfrac{\sin ax}{F(-a^2)}$
+            - 多项式型 $P_n(x)$：将 $\dfrac{1}{F(D)}$ 按 $D$ 幂次长除展开（有限项），逐项作用在 $P_n(x)$ 上
+          - **位移定理**（$e^{kx}$ 乘多项式型）：$\dfrac{1}{F(D)}\,e^{kx}v(x) = e^{kx}\,\dfrac{1}{F(D+k)}\,v(x)$
+          - **适用特点**：
+            - $f(x)$ 为 $e^{kx}$、多项式、$\sin/\cos$ 及其组合时机械好用，免去设待定系数
+            - 与待定系数法结果一致，选择方法看个人习惯；共振（$F(k)=0$）时都要额外乘 $x$
   - 空间向量与解析几何
     - 向量点乘（内积）
       $$
