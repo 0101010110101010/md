@@ -869,6 +869,29 @@
         \end{aligned}
         $$
     - 常微分方程
+      - ==微分方程分类总览==
+        - 按阶数分：一阶 / 二阶 / 高阶
+        - 在每一阶内按线性/非线性分
+        - 只有线性方程才分齐次/非齐次
+        - 结构：
+          - 一阶方程
+            - 线性：$y' + P(x)y = Q(x)$
+              - 齐次（$Q(x)=0$）：通解 $y = Ce^{-\int P(x)\mathrm{d}x}$
+              - 非齐次（$Q(x)\neq 0$）：通解公式（常数变易法）
+            - 非线性
+              - 可分离变量：$y' = f(x)g(y)$
+              - 齐次方程：$y' = f(\frac{y}{x})$（令 $u = \frac{y}{x}$）
+              - 伯努利方程：$y' + P(x)y = Q(x)y^n$（令 $z = y^{1-n}$）
+              - 全微分方程
+          - 二阶方程
+            - 可降阶（非线性特殊解法）
+              - 缺 $y$ 型：$y'' = f(x, y')$ → 令 $y'=p$，$y''=p'$
+              - 缺 $x$ 型：$y'' = f(y, y')$ → 令 $y'=p$，$y''=p\frac{\mathrm{d}p}{\mathrm{d}y}$
+            - 线性
+              - 常系数齐次：$y''+py'+qy=0$ → 特征方程 $r^2+pr+q=0$
+              - 常系数非齐次：$y''+py'+qy=f(x)$ → $y = y_h + y_p$
+          - 高阶方程
+        - 注意区分：一阶线性齐次（$y'+P(x)y=0$）≠ 齐次方程（$y'=f(y/x)$），是两回事
       - 一阶微分方程
         - 分离变量法 一阶线性齐次微分方程
           $$
@@ -3581,7 +3604,12 @@
           - 度：结点拥有的子树个数；树的度为各结点度的最大值
           - 叶结点（终端结点）：度为 0 的结点；分支结点（非终端结点）：度 $>0$
           - 结点关系：双亲（父）、孩子（子）、兄弟、祖先、子孙、堂兄弟
-          - 层次与深度：根为第 1 层，最大层次为树的深度（高度）
+          - 结点的层次：从根开始定义，根为第 1 层，根的孩子为第 2 层，依此类推（个别教材从 0 开始）
+          - 结点的深度：从根结点**自顶向下**逐层累加，根结点深度为 1；即从根到该结点所经路径上的结点总数
+          - 结点的高度：从叶结点**自底向上**逐层累加，叶结点高度为 1；即从该结点到其最远叶结点的最长路径上的结点总数
+          - 树的深度（高度）：树中所有结点深度的最大值，也等于根结点的高度
+            - 关系：树的深度 $=$ 树的高度 $=$ 最大层次 $=$ 最深结点的深度 $=$ 根结点的高度
+            - 例：根结点（第 1 层）深度 1、高度 3；第 3 层的叶结点深度 3、高度 1（取 3 层树为例）
           - 有序树 vs 无序树：孩子结点是否有次序
           - 森林：$m$（$m \ge 0$）棵互不相交的树的集合
         - 树的性质：
@@ -3617,7 +3645,8 @@
             } BiTNode, *BiTree;
             ```
             - $n$ 个结点的二叉链表有 $n+1$ 个空链域（线索二叉树利用之）
-        - 遍历：
+        - 由遍历序列构造二叉树(前中，后中，层中)需要中来确定左右子树
+        - 遍历：(一条线绕一圈，三次经过一个节点，对应三种遍历)
           - 先序遍历（根左右）：
             ```cpp
             void PreOrder(BiTree T) {
@@ -3673,16 +3702,343 @@
               int ltag, rtag;   // 0 表示孩子指针，1 表示线索
           } ThreadNode, *ThreadTree;
           ```
+          - 中序线索化（递归）：
+            ```cpp
+            ThreadNode *pre = NULL;   // 全局变量，指向当前访问结点的前驱
+            void InThread(ThreadTree &p) {
+                if (p != NULL) {
+                    InThread(p->lchild);        // 线索化左子树
+                    if (p->lchild == NULL) {    // 左孩子为空
+                        p->lchild = pre;        // 指向前驱线索
+                        p->ltag = 1;
+                    }
+                    if (pre != NULL && pre->rchild == NULL) {
+                        pre->rchild = p;        // 前驱的右孩子为空
+                        pre->rtag = 1;          // 指向当前结点（后继线索）
+                    }
+                    pre = p;                    // 更新前驱
+                    InThread(p->rchild);        // 线索化右子树
+                }
+            }
+            void CreateInThread(ThreadTree T) {
+                pre = NULL;
+                if (T != NULL) {
+                    InThread(T);
+                    pre->rchild = NULL;         // 最后一个结点右孩子置空
+                    pre->rtag = 1;
+                }
+            }
+            ```
+            - 时间复杂度：$O(n)$（每个结点访问一次）
+            - 中序找后继：
+              ```cpp
+              ThreadNode *InOrderNext(ThreadNode *p) {
+                  if (p->rtag == 1) return p->rchild;   // 右链是线索 → 直接是后继
+                  p = p->rchild;                        // 否则：右子树最左下结点
+                  while (p->ltag == 0) p = p->lchild;
+                  return p;
+              }
+              ```
+              - 时间复杂度：$O(1)$（最坏 $O(h)$）
+            - 中序找前驱：
+              ```cpp
+              ThreadNode *InOrderPre(ThreadNode *p) {
+                  if (p->ltag == 1) return p->lchild;   // 左链是线索 → 直接是前驱
+                  p = p->lchild;                        // 否则：左子树最右下结点
+                  while (p->rtag == 0) p = p->rchild;
+                  return p;
+              }
+              ```
+              - 时间复杂度：$O(1)$（最坏 $O(h)$）
+            - 中序线索遍历（从头到尾，不递归不占栈）：
+              ```cpp
+              void InOrderTraverse(ThreadTree T) {
+                  ThreadNode *p = T;
+                  while (p->ltag == 0) p = p->lchild;   // 找中序第一个结点（最左下）
+                  while (p != NULL) {
+                      visit(p);
+                      p = InOrderNext(p);               // 反复沿后继走
+                  }
+              }
+              ```
+              - 时间复杂度：$O(n)$，空间 $O(1)$
+          - 先序线索化（递归）：
+            ```cpp
+            ThreadNode *pre = NULL;   // 全局变量，指向当前访问结点的前驱
+            void PreThread(ThreadTree &p) {
+                if (p != NULL) {
+                    if (p->lchild == NULL) {    // 左孩子为空
+                        p->lchild = pre;        // 指向前驱线索
+                        p->ltag = 1;
+                    }
+                    if (pre != NULL && pre->rchild == NULL) {
+                        pre->rchild = p;        // 前驱的右孩子为空
+                        pre->rtag = 1;          // 指向当前结点（后继线索）
+                    }
+                    pre = p;                    // 更新前驱
+                    if (p->ltag == 0)           // ★先序需要判断，防止线索干扰递归
+                        PreThread(p->lchild);   // 左孩子非空才递归
+                    if (p->rtag == 0)
+                        PreThread(p->rchild);
+                }
+            }
+            void CreatePreThread(ThreadTree T) {
+                pre = NULL;
+                if (T != NULL) {
+                    PreThread(T);
+                    pre->rchild = NULL;         // 最后一个结点右孩子置空
+                    pre->rtag = 1;
+                }
+            }
+            ```
+            - 与中序的区别：先序**先访问根再递归**，且递归左子树前必须判断 `ltag == 0`（左链可能是刚建的线索，不能当作孩子递归，否则死循环）
+            - 时间复杂度：$O(n)$（每个结点访问一次）
+            - 先序找后继（先序后继很简单，可直接 $O(1)$）：
+              ```cpp
+              ThreadNode *PreOrderNext(ThreadNode *p) {
+                  if (p->rtag == 1) return p->rchild;   // 右链是线索 → 直接是后继
+                  if (p->ltag == 0) return p->lchild;   // 有左孩子 → 后继是左孩子
+                  return p->rchild;                     // 无左孩子 → 后继是右孩子
+              }
+              ```
+              - 时间复杂度：$O(1)$
+            - 先序线索遍历（从根开始沿后继走即可）：
+              ```cpp
+              void PreOrderTraverse(ThreadTree T) {
+                  for (ThreadNode *p = T; p != NULL; p = PreOrderNext(p))
+                      visit(p);
+              }
+              ```
+              - 时间复杂度：$O(n)$，空间 $O(1)$
+            - 先序找前驱：较复杂。`ltag == 1` 时 `lchild` 是前驱；`ltag == 0` 时（有左孩子）**无法直接得到**，需借助父结点指针（三叉链表）：
+              - 若自己是父的左孩子：前驱是父结点
+              - 若自己是父的右孩子：前驱是父结点左子树的最右下结点（无左子树则前驱是父）
+          - 后序线索化（递归）：
+            ```cpp
+            ThreadNode *pre = NULL;   // 全局变量，指向当前访问结点的前驱
+            void PostThread(ThreadTree &p) {
+                if (p != NULL) {
+                    PostThread(p->lchild);      // 先递归左右子树（此时不会碰线索，
+                    PostThread(p->rchild);      // 因为孩子还没被改成线索）
+                    if (p->lchild == NULL) {    // 左孩子为空
+                        p->lchild = pre;        // 指向前驱线索
+                        p->ltag = 1;
+                    }
+                    if (pre != NULL && pre->rchild == NULL) {
+                        pre->rchild = p;        // 前驱的右孩子为空
+                        pre->rtag = 1;          // 指向当前结点（后继线索）
+                    }
+                    pre = p;                    // 更新前驱
+                }
+            }
+            void CreatePostThread(ThreadTree T) {
+                pre = NULL;
+                if (T != NULL) {
+                    PostThread(T);
+                    pre->rchild = NULL;         // 最后一个结点右孩子置空
+                    pre->rtag = 1;
+                }
+            }
+            ```
+            - 与中序的区别：后序**先递归完左右子树再访问根**，递归时孩子还没变成线索，所以无需判断 `ltag/rtag`
+            - 注意：后序线索二叉树中，**找后继可能失败**（需借助父结点或三叉链表），因为结点的右链可能被占作线索
+            - 时间复杂度：$O(n)$（每个结点访问一次）
+            - 后序找前驱（可直接 $O(1)$）：
+              ```cpp
+              ThreadNode *PostOrderPre(ThreadNode *p) {
+                  if (p->ltag == 1) return p->lchild;   // 左链是线索 → 直接是前驱
+                  if (p->rtag == 0) return p->rchild;   // 有右孩子 → 前驱是右孩子
+                  return p->lchild;                     // 无右孩子 → 前驱是左孩子
+              }
+              ```
+              - 时间复杂度：$O(1)$
+            - 后序找后继：**不能直接得到**，需借助父结点指针（三叉链表）：
+              - 若自己是父的右孩子：后继是父结点
+              - 若自己是父的左孩子且父无右孩子：后继是父结点
+              - 若自己是父的左孩子且父有右孩子：后继是父右子树的最左下结点
+            - 后序线索遍历：由于找后继依赖父指针，需用三叉链表实现（二叉链表无法 $O(1)$ 完成），故后序线索化主要用于找前驱
           - 中序线索化后，可 $O(n)$ 中序遍历、$O(1)$ 找前驱/后继
+          - 三种线索化下找前驱/后继对比表：
+
+            | 线索化类型 | 找前驱 | 找后继 | 遍历实现 | 是否需父指针 |
+            |:---:|:---:|:---:|:---:|:---:|
+            | 中序线索化 | $O(1)$ 直接 | $O(1)$ 直接 | $O(n)$，不需栈 | 不需要 |
+            | 先序线索化 | 困难（需父指针） | $O(1)$ 直接 | $O(n)$，不需栈 | 找前驱时需要 |
+            | 后序线索化 | $O(1)$ 直接 | 困难（需父指针） | 无法用二叉链表 $O(1)$ 遍历 | 找后继时需要 |
+
+            - 结论：**中序线索化最实用**（前驱、后继、遍历都 $O(1)$/简单）；先序方便找后继、后序方便找前驱；两者的另一方向都需要父指针（三叉链表）
       - 树与森林
-        - 树的存储：双亲表示法（数组存双亲下标）、孩子表示法（孩子链表）、孩子兄弟表示法（左孩子右兄弟，即二叉链表）
+        - 树的存储
+          - 双亲表示法：顺序存储，每个结点存 `data` 和双亲下标 `parent`，根结点 `parent = -1`。
+            ```cpp
+            #define MAX_TREE_SIZE 100
+            typedef struct {
+                ElemType data;
+                int parent;          // 双亲在数组中的下标，根为 -1
+            } PTNode;
+            typedef struct {
+                PTNode nodes[MAX_TREE_SIZE];
+                int n;               // 结点个数
+            } PTree;
+            ```
+            - 优点：找双亲 $O(1)$；缺点：找孩子需遍历全表 $O(n)$
+          - 孩子表示法：顺序存储结点 + 每个结点挂一个孩子链表。
+            ```cpp
+            typedef struct CNode {   // 孩子链表结点
+                int child;           // 孩子在数组中的下标
+                struct CNode *next;
+            } CNode;
+            typedef struct {
+                ElemType data;
+                CNode *firstchild;   // 指向第一个孩子
+            } CTBox;
+            typedef struct {
+                CTBox nodes[MAX_TREE_SIZE];
+                int n, r;            // 结点数、根的位置
+            } CTree;
+            ```
+            - 优点：找孩子方便；缺点：找双亲需遍历所有孩子链表 $O(n)$（可加 parent 域优化）
+          - 孩子兄弟表示法（左孩子右兄弟，二叉树表示法）：
+            ```cpp
+            typedef struct CSNode {
+                ElemType data;
+                struct CSNode *firstchild, *nextsibling;  // 第一个孩子、右兄弟
+            } CSNode, *CSTree;
+            ```
+            - 优点：树转二叉树方便，易找孩子/兄弟；缺点：找双亲需遍历 $O(n)$
         - 树与二叉树的转换：孩子兄弟法，左孩子右兄弟一一对应；森林加虚拟根后同理
-        - 树（森林）的遍历：先根遍历 = 对应二叉树先序，后根遍历 = 对应二叉树中序
+        - 树（森林）的遍历：先根遍历 = 对应二叉树先序，后根遍历 = 对应二叉树中序，层次遍历
+          - 对应关系表（通过孩子兄弟法转换）：
+
+            | 树/森林的遍历 | 对应二叉树遍历 |
+            |:---|:---|
+            | 树的先根遍历 | 二叉树先序遍历 |
+            | 树的后根遍历 | 二叉树中序遍历 |
+            | 森林的先序遍历 | 二叉树先序遍历 |
+            | 森林的中序遍历 | 二叉树中序遍历 |
+            | 树的层次遍历 | 无直接对应（逐层） |
+
+          - 原理：孩子兄弟法转换规则为**左孩子 = 第一个孩子，右孩子 = 下一个兄弟**，故树先根（根→子树们）对应二叉树先序（根→左→右），树后根（子树们→根）对应二叉树中序（左→根→右）
+          - 注意：树没有"中序遍历"（孩子不止两个，无法定义左-根-右）；森林先序 = 第一棵树根 → 其子树们 → 第二棵树根 → ...，加虚拟根后同树
       - 哈夫曼树
         - 定义：带权路径长度（WPL）最小的二叉树，权值大的结点离根近
         - 构造：每次取权值最小的两棵树合并，重复直到一棵树
         - 特点：不唯一；只有度为 0 和 2 的结点；$n$ 个叶子共有 $2n-1$ 个结点
         - 哈夫曼编码：前缀编码，无歧义解码，数据压缩（如 ZIP）
+      - 二叉排序树（BST）
+        - 逻辑结构（定义）：左子树所有结点值 < 根结点值 < 右子树所有结点值（左小右大），中序遍历得到**递增有序序列**。
+          - 结点定义：
+            ```cpp
+            typedef struct BSTNode {
+                ElemType data;
+                struct BSTNode *lchild, *rchild;
+            } BSTNode, *BSTree;
+            ```
+        - 查找（类似折半，沿一条路径走）：
+          ```cpp
+          BSTNode *BSTSearch(BSTree T, ElemType key) {
+              while (T != NULL && T->data != key) {
+                  if (key < T->data) T = T->lchild;   // 比根小去左子树
+                  else T = T->rchild;                 // 比根大去右子树
+              }
+              return T;    // 找到返回结点，否则 NULL
+          }
+          ```
+          - 时间复杂度：最好 $O(\log n)$（平衡树），最坏 $O(n)$（单支树）
+        - 插入（新结点总是插到叶子位置）：
+          ```cpp
+          bool BSTInsert(BSTree &T, ElemType e) {
+              if (T == NULL) {
+                  T = (BSTNode*)malloc(sizeof(BSTNode));
+                  T->data = e;
+                  T->lchild = T->rchild = NULL;
+                  return true;
+              }
+              if (e == T->data) return false;          // 关键字重复，插入失败
+              if (e < T->data) return BSTInsert(T->lchild, e);
+              else return BSTInsert(T->rchild, e);
+          }
+          ```
+          - 时间复杂度：$O(h)$（$h$ 为树高）
+        - 构造（反复插入）：
+          ```cpp
+          void CreateBST(BSTree &T, ElemType a[], int n) {
+              T = NULL;
+              for (int i = 0; i < n; i++)
+                  BSTInsert(T, a[i]);
+          }
+          ```
+          - 相同关键字序列不同插入顺序 → 不同形态的 BST
+        - 删除：
+          - 叶结点：直接删除
+          - 只有一棵子树：用子树顶替
+          - 有两棵子树：用**左子树最大值**或**右子树最小值**（中序直接前驱/后继）替换被删结点，再删该替换结点（转化为前两种）
+        - 查找效率分析：
+          - 平均查找长度（ASL）取决于树的高度,成功查找长度,失败查找长度
+          - 最好：平衡树 $O(\log n)$；最坏：有序序列插入成单支树 $O(n)$
+      - 平衡二叉树（AVL）: 左右子树高度差（平衡因子）绝对值 $\le 1$，且左右子树都是平衡二叉树。
+        - 平衡因子：结点左子树高度 - 右子树高度，取值为 -1, 0, 1
+        - 旋转方式代码实现（右旋 / 左旋，旋转后要更新平衡因子）：
+          - 右旋（LL，以失衡结点 `A` 的左孩子 `B` 为轴，`B` 上升为根）：
+            ```cpp
+            // 右旋：LL 型调整，传入失衡结点 A，返回新根 B
+            AVLNode *rotateRight(AVLNode *A) {
+                AVLNode *B = A->lchild;     // B = A 的左孩子
+                A->lchild = B->rchild;      // B 的右子树挂到 A 的左
+                B->rchild = A;              // A 成为 B 的右孩子
+                updateHeight(A);            // 先更新低的 A，再更新 B
+                updateHeight(B);
+                return B;                   // 返回新子树根
+            }
+            ```
+          - 左旋（RR，以失衡结点 `A` 的右孩子 `B` 为轴，`B` 上升为根）：
+            ```cpp
+            // 左旋：RR 型调整，传入失衡结点 A，返回新根 B
+            AVLNode *rotateLeft(AVLNode *A) {
+                AVLNode *B = A->rchild;     // B = A 的右孩子
+                A->rchild = B->lchild;      // B 的左子树挂到 A 的右
+                B->lchild = A;              // A 成为 B 的左孩子
+                updateHeight(A);
+                updateHeight(B);
+                return B;                   // 返回新子树根
+            }
+            ```
+          - 失衡调整（插入后从插入点向上找第一个失衡结点，以其为根的子树调整）：
+            - **LL**：左孩子的左子树插入 → 对失衡结点 `A` 右单旋（`rotateRight(A)`）
+            - **RR**：右孩子的右子树插入 → 对失衡结点 `A` 左单旋（`rotateLeft(A)`）
+            - **LR**：左孩子的右子树插入 → 先对 `A->lchild` 左旋（变 LL），再对 `A` 右旋：`A->lchild = rotateLeft(A->lchild); return rotateRight(A);`
+            - **RL**：右孩子的左子树插入 → 先对 `A->rchild` 右旋（变 RR），再对 `A` 左旋：`A->rchild = rotateRight(A->rchild); return rotateLeft(A);`
+          - 插入主流程（递归插入后回溯调整）：
+            ```cpp
+            AVLNode *AVLInsert(AVLNode *&T, ElemType e) {
+                if (T == NULL) {                    // 插入新结点
+                    T = (AVLNode*)malloc(sizeof(AVLNode));
+                    T->data = e;
+                    T->lchild = T->rchild = NULL;
+                    T->height = 1;
+                    return T;
+                }
+                if (e < T->data)      T->lchild = AVLInsert(T->lchild, e);
+                else if (e > T->data) T->rchild = AVLInsert(T->rchild, e);
+                else return T;                      // 重复关键字不插入
+                updateHeight(T);
+                // 计算平衡因子，按四种情况调整
+                int bf = getHeight(T->lchild) - getHeight(T->rchild);
+                if (bf > 1 && e < T->lchild->data) {        // LL
+                    return rotateRight(T);
+                } else if (bf > 1 && e > T->lchild->data) { // LR
+                    T->lchild = rotateLeft(T->lchild);
+                    return rotateRight(T);
+                } else if (bf < -1 && e > T->rchild->data) {// RR
+                    return rotateLeft(T);
+                } else if (bf < -1 && e < T->rchild->data) {// RL
+                    T->rchild = rotateRight(T->rchild);
+                    return rotateLeft(T);
+                }
+                return T;                           // 平衡则直接返回
+            }
+            ```
+        - 性质：$n$ 个结点 AVL 树高 $O(\log n)$，查找 $O(\log n)$
     - 5 图
     - 6 查找
     - 7 排序
