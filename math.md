@@ -4082,9 +4082,153 @@
             ```
           - 失衡调整（插入后从插入点向上找第一个失衡结点，以其为根的子树调整）：
             - **LL**：左孩子的左子树插入 → 对失衡结点 `A` 右单旋（`rotateRight(A)`）
+
+              颜色：==红=失衡结点A==、==橙=旋转中父子关系变化结点==、==蓝=父子关系不变结点==、==绿=新插入结点==、粗描边=旋转后的新根
+              变化结点：==B==（升为根）、==Z==（移到 A 左）、==A==（成为 B 右孩子）；不变结点：`X`、`D`；新插入：==Y==
+
+              <svg viewBox="0 0 780 340" xmlns="http://www.w3.org/2000/svg" width="100%" height="340">
+                <defs><marker id="arr" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto"><polygon points="0 0, 10 3.5, 0 7" fill="#495057"/></marker></defs>
+                <text x="180" y="24" text-anchor="middle" font-size="17" font-weight="bold" fill="#333">旋转前（BF(A)=+2）</text>
+                <text x="560" y="24" text-anchor="middle" font-size="17" font-weight="bold" fill="#333">右旋后（B 升为根）</text>
+                <line x1="150" y1="70" x2="80" y2="160" stroke="#adb5bd" stroke-width="2"/><line x1="150" y1="70" x2="220" y2="160" stroke="#adb5bd" stroke-width="2"/>
+                <line x1="80" y1="160" x2="35" y2="250" stroke="#adb5bd" stroke-width="2"/><line x1="80" y1="160" x2="130" y2="250" stroke="#adb5bd" stroke-width="2"/>
+                <line x1="35" y1="250" x2="20" y2="310" stroke="#adb5bd" stroke-width="2"/>
+                <line x1="290" y1="165" x2="322" y2="165" stroke="#495057" stroke-width="2.5" marker-end="url(#arr)"/>
+                <circle cx="150" cy="70" r="20" fill="#ff8787" stroke="#c92a2a" stroke-width="2.5"/><text x="150" y="70" text-anchor="middle" dominant-baseline="central" font-size="16" font-weight="bold">A</text>
+                <circle cx="80" cy="160" r="20" fill="#ffa94d" stroke="#e8590c" stroke-width="2"/><text x="80" y="160" text-anchor="middle" dominant-baseline="central" font-size="16" font-weight="bold">B</text>
+                <circle cx="35" cy="250" r="20" fill="#a5d8ff" stroke="#1c7ed6" stroke-width="2"/><text x="35" y="250" text-anchor="middle" dominant-baseline="central" font-size="16" font-weight="bold">X</text>
+                <circle cx="20" cy="310" r="18" fill="#8ce99a" stroke="#2b8a3e" stroke-width="2"/><text x="20" y="310" text-anchor="middle" dominant-baseline="central" font-size="14" font-weight="bold">Y</text>
+                <circle cx="130" cy="250" r="20" fill="#ffa94d" stroke="#e8590c" stroke-width="2"/><text x="130" y="250" text-anchor="middle" dominant-baseline="central" font-size="16" font-weight="bold">Z</text>
+                <circle cx="220" cy="160" r="20" fill="#a5d8ff" stroke="#1c7ed6" stroke-width="2"/><text x="220" y="160" text-anchor="middle" dominant-baseline="central" font-size="16" font-weight="bold">D</text>
+                <line x1="560" y1="70" x2="480" y2="160" stroke="#adb5bd" stroke-width="2"/><line x1="560" y1="70" x2="640" y2="160" stroke="#adb5bd" stroke-width="2"/>
+                <line x1="480" y1="160" x2="440" y2="250" stroke="#adb5bd" stroke-width="2"/><line x1="640" y1="160" x2="610" y2="250" stroke="#adb5bd" stroke-width="2"/><line x1="640" y1="160" x2="680" y2="250" stroke="#adb5bd" stroke-width="2"/>
+                <circle cx="560" cy="70" r="22" fill="#ffa94d" stroke="#e8590c" stroke-width="4"/><text x="560" y="70" text-anchor="middle" dominant-baseline="central" font-size="17" font-weight="bold">B</text>
+                <circle cx="480" cy="160" r="20" fill="#a5d8ff" stroke="#1c7ed6" stroke-width="2"/><text x="480" y="160" text-anchor="middle" dominant-baseline="central" font-size="16" font-weight="bold">X</text>
+                <circle cx="440" cy="250" r="18" fill="#8ce99a" stroke="#2b8a3e" stroke-width="2"/><text x="440" y="250" text-anchor="middle" dominant-baseline="central" font-size="14" font-weight="bold">Y</text>
+                <circle cx="640" cy="160" r="20" fill="#ffa94d" stroke="#e8590c" stroke-width="2"/><text x="640" y="160" text-anchor="middle" dominant-baseline="central" font-size="16" font-weight="bold">A</text>
+                <circle cx="610" cy="250" r="20" fill="#ffa94d" stroke="#e8590c" stroke-width="2"/><text x="610" y="250" text-anchor="middle" dominant-baseline="central" font-size="16" font-weight="bold">Z</text>
+                <circle cx="680" cy="250" r="20" fill="#a5d8ff" stroke="#1c7ed6" stroke-width="2"/><text x="680" y="250" text-anchor="middle" dominant-baseline="central" font-size="16" font-weight="bold">D</text>
+                <text x="390" y="330" text-anchor="middle" font-size="13" fill="#666">红=失衡结点A　橙=旋转中父子关系变化结点　蓝=父子关系不变结点　绿=新插入</text>
+              </svg>
             - **RR**：右孩子的右子树插入 → 对失衡结点 `A` 左单旋（`rotateLeft(A)`）
+
+              颜色：==红=失衡结点A==、==橙=旋转中父子关系变化结点==、==蓝=父子关系不变结点==、==绿=新插入结点==、粗描边=旋转后的新根
+              变化结点：==B==（升为根）、==Z==（移到 A 右）、==A==（成为 B 左孩子）；不变结点：`X`、`D`；新插入：==Y==
+
+              <svg viewBox="0 0 780 340" xmlns="http://www.w3.org/2000/svg" width="100%" height="340">
+                <defs><marker id="arr2" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto"><polygon points="0 0, 10 3.5, 0 7" fill="#495057"/></marker></defs>
+                <text x="180" y="24" text-anchor="middle" font-size="17" font-weight="bold" fill="#333">旋转前（BF(A)=-2）</text>
+                <text x="560" y="24" text-anchor="middle" font-size="17" font-weight="bold" fill="#333">左旋后（B 升为根）</text>
+                <line x1="150" y1="70" x2="80" y2="160" stroke="#adb5bd" stroke-width="2"/><line x1="150" y1="70" x2="220" y2="160" stroke="#adb5bd" stroke-width="2"/>
+                <line x1="220" y1="160" x2="175" y2="250" stroke="#adb5bd" stroke-width="2"/><line x1="220" y1="160" x2="265" y2="250" stroke="#adb5bd" stroke-width="2"/>
+                <line x1="265" y1="250" x2="305" y2="310" stroke="#adb5bd" stroke-width="2"/>
+                <line x1="290" y1="165" x2="322" y2="165" stroke="#495057" stroke-width="2.5" marker-end="url(#arr2)"/>
+                <circle cx="150" cy="70" r="20" fill="#ff8787" stroke="#c92a2a" stroke-width="2.5"/><text x="150" y="70" text-anchor="middle" dominant-baseline="central" font-size="16" font-weight="bold">A</text>
+                <circle cx="80" cy="160" r="20" fill="#a5d8ff" stroke="#1c7ed6" stroke-width="2"/><text x="80" y="160" text-anchor="middle" dominant-baseline="central" font-size="16" font-weight="bold">D</text>
+                <circle cx="220" cy="160" r="20" fill="#ffa94d" stroke="#e8590c" stroke-width="2"/><text x="220" y="160" text-anchor="middle" dominant-baseline="central" font-size="16" font-weight="bold">B</text>
+                <circle cx="175" cy="250" r="20" fill="#ffa94d" stroke="#e8590c" stroke-width="2"/><text x="175" y="250" text-anchor="middle" dominant-baseline="central" font-size="16" font-weight="bold">Z</text>
+                <circle cx="265" cy="250" r="20" fill="#a5d8ff" stroke="#1c7ed6" stroke-width="2"/><text x="265" y="250" text-anchor="middle" dominant-baseline="central" font-size="16" font-weight="bold">X</text>
+                <circle cx="305" cy="310" r="18" fill="#8ce99a" stroke="#2b8a3e" stroke-width="2"/><text x="305" y="310" text-anchor="middle" dominant-baseline="central" font-size="14" font-weight="bold">Y</text>
+                <line x1="560" y1="70" x2="480" y2="160" stroke="#adb5bd" stroke-width="2"/><line x1="560" y1="70" x2="640" y2="160" stroke="#adb5bd" stroke-width="2"/>
+                <line x1="480" y1="160" x2="440" y2="250" stroke="#adb5bd" stroke-width="2"/><line x1="480" y1="160" x2="520" y2="250" stroke="#adb5bd" stroke-width="2"/><line x1="640" y1="160" x2="680" y2="250" stroke="#adb5bd" stroke-width="2"/>
+                <circle cx="560" cy="70" r="22" fill="#ffa94d" stroke="#e8590c" stroke-width="4"/><text x="560" y="70" text-anchor="middle" dominant-baseline="central" font-size="17" font-weight="bold">B</text>
+                <circle cx="480" cy="160" r="20" fill="#ffa94d" stroke="#e8590c" stroke-width="2"/><text x="480" y="160" text-anchor="middle" dominant-baseline="central" font-size="16" font-weight="bold">A</text>
+                <circle cx="440" cy="250" r="20" fill="#a5d8ff" stroke="#1c7ed6" stroke-width="2"/><text x="440" y="250" text-anchor="middle" dominant-baseline="central" font-size="16" font-weight="bold">D</text>
+                <circle cx="520" cy="250" r="20" fill="#ffa94d" stroke="#e8590c" stroke-width="2"/><text x="520" y="250" text-anchor="middle" dominant-baseline="central" font-size="16" font-weight="bold">Z</text>
+                <circle cx="640" cy="160" r="20" fill="#a5d8ff" stroke="#1c7ed6" stroke-width="2"/><text x="640" y="160" text-anchor="middle" dominant-baseline="central" font-size="16" font-weight="bold">X</text>
+                <circle cx="680" cy="250" r="18" fill="#8ce99a" stroke="#2b8a3e" stroke-width="2"/><text x="680" y="250" text-anchor="middle" dominant-baseline="central" font-size="14" font-weight="bold">Y</text>
+                <text x="390" y="330" text-anchor="middle" font-size="13" fill="#666">红=失衡结点A　橙=旋转中父子关系变化结点　蓝=父子关系不变结点　绿=新插入</text>
+              </svg>
             - **LR**：左孩子的右子树插入 → 先对 `A->lchild` 左旋（变 LL），再对 `A` 右旋：`A->lchild = rotateLeft(A->lchild); return rotateRight(A);`
+
+              颜色：==红=失衡结点A==、==橙=旋转中父子关系变化结点==、==蓝=父子关系不变结点==、==绿=新插入结点==、粗描边=旋转后的新根
+              变化结点：==C==（最终升为根）、==B==、==X==、==A==；不变结点：`W`、`D`；新插入：==Y==（插入点也可为 X，旋转方式相同）
+
+              <svg viewBox="0 0 780 350" xmlns="http://www.w3.org/2000/svg" width="100%" height="350">
+                <defs><marker id="arr3" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto"><polygon points="0 0, 10 3.5, 0 7" fill="#495057"/></marker></defs>
+                <text x="150" y="24" text-anchor="middle" font-size="15" font-weight="bold" fill="#333">失衡前（BF(A)=+2）</text>
+                <text x="390" y="24" text-anchor="middle" font-size="15" font-weight="bold" fill="#333">第一步：对 B 左旋</text>
+                <text x="640" y="24" text-anchor="middle" font-size="15" font-weight="bold" fill="#333">第二步：对 A 右旋</text>
+                <line x1="120" y1="70" x2="55" y2="160" stroke="#adb5bd" stroke-width="2"/><line x1="120" y1="70" x2="185" y2="160" stroke="#adb5bd" stroke-width="2"/>
+                <line x1="55" y1="160" x2="15" y2="250" stroke="#adb5bd" stroke-width="2"/><line x1="55" y1="160" x2="95" y2="250" stroke="#adb5bd" stroke-width="2"/>
+                <line x1="95" y1="250" x2="62" y2="320" stroke="#adb5bd" stroke-width="2"/><line x1="95" y1="250" x2="130" y2="320" stroke="#adb5bd" stroke-width="2"/>
+                <line x1="240" y1="170" x2="272" y2="170" stroke="#495057" stroke-width="2.5" marker-end="url(#arr3)"/>
+                <line x1="480" y1="170" x2="512" y2="170" stroke="#495057" stroke-width="2.5" marker-end="url(#arr3)"/>
+                <circle cx="120" cy="70" r="20" fill="#ff8787" stroke="#c92a2a" stroke-width="2.5"/><text x="120" y="70" text-anchor="middle" dominant-baseline="central" font-size="16" font-weight="bold">A</text>
+                <circle cx="55" cy="160" r="20" fill="#ffa94d" stroke="#e8590c" stroke-width="2"/><text x="55" y="160" text-anchor="middle" dominant-baseline="central" font-size="16" font-weight="bold">B</text>
+                <circle cx="15" cy="250" r="20" fill="#a5d8ff" stroke="#1c7ed6" stroke-width="2"/><text x="15" y="250" text-anchor="middle" dominant-baseline="central" font-size="16" font-weight="bold">W</text>
+                <circle cx="95" cy="250" r="20" fill="#ffa94d" stroke="#e8590c" stroke-width="2"/><text x="95" y="250" text-anchor="middle" dominant-baseline="central" font-size="16" font-weight="bold">C</text>
+                <circle cx="62" cy="320" r="18" fill="#ffa94d" stroke="#e8590c" stroke-width="2"/><text x="62" y="320" text-anchor="middle" dominant-baseline="central" font-size="14" font-weight="bold">X</text>
+                <circle cx="130" cy="320" r="18" fill="#8ce99a" stroke="#2b8a3e" stroke-width="2"/><text x="130" y="320" text-anchor="middle" dominant-baseline="central" font-size="14" font-weight="bold">Y</text>
+                <circle cx="185" cy="160" r="20" fill="#a5d8ff" stroke="#1c7ed6" stroke-width="2"/><text x="185" y="160" text-anchor="middle" dominant-baseline="central" font-size="16" font-weight="bold">D</text>
+                <line x1="360" y1="70" x2="320" y2="160" stroke="#adb5bd" stroke-width="2"/><line x1="360" y1="70" x2="425" y2="160" stroke="#adb5bd" stroke-width="2"/>
+                <line x1="320" y1="160" x2="285" y2="250" stroke="#adb5bd" stroke-width="2"/><line x1="320" y1="160" x2="360" y2="250" stroke="#adb5bd" stroke-width="2"/>
+                <line x1="285" y1="250" x2="250" y2="320" stroke="#adb5bd" stroke-width="2"/><line x1="285" y1="250" x2="300" y2="320" stroke="#adb5bd" stroke-width="2"/>
+                <circle cx="360" cy="70" r="20" fill="#ffa94d" stroke="#e8590c" stroke-width="2"/><text x="360" y="70" text-anchor="middle" dominant-baseline="central" font-size="16" font-weight="bold">A</text>
+                <circle cx="320" cy="160" r="20" fill="#ffa94d" stroke="#e8590c" stroke-width="2"/><text x="320" y="160" text-anchor="middle" dominant-baseline="central" font-size="16" font-weight="bold">C</text>
+                <circle cx="285" cy="250" r="20" fill="#ffa94d" stroke="#e8590c" stroke-width="2"/><text x="285" y="250" text-anchor="middle" dominant-baseline="central" font-size="16" font-weight="bold">B</text>
+                <circle cx="250" cy="320" r="18" fill="#a5d8ff" stroke="#1c7ed6" stroke-width="2"/><text x="250" y="320" text-anchor="middle" dominant-baseline="central" font-size="14" font-weight="bold">W</text>
+                <circle cx="300" cy="320" r="18" fill="#ffa94d" stroke="#e8590c" stroke-width="2"/><text x="300" y="320" text-anchor="middle" dominant-baseline="central" font-size="14" font-weight="bold">X</text>
+                <circle cx="360" cy="250" r="20" fill="#8ce99a" stroke="#2b8a3e" stroke-width="2"/><text x="360" y="250" text-anchor="middle" dominant-baseline="central" font-size="16" font-weight="bold">Y</text>
+                <circle cx="425" cy="160" r="20" fill="#a5d8ff" stroke="#1c7ed6" stroke-width="2"/><text x="425" y="160" text-anchor="middle" dominant-baseline="central" font-size="16" font-weight="bold">D</text>
+                <line x1="640" y1="70" x2="580" y2="160" stroke="#adb5bd" stroke-width="2"/><line x1="640" y1="70" x2="700" y2="160" stroke="#adb5bd" stroke-width="2"/>
+                <line x1="580" y1="160" x2="545" y2="250" stroke="#adb5bd" stroke-width="2"/><line x1="580" y1="160" x2="590" y2="250" stroke="#adb5bd" stroke-width="2"/>
+                <line x1="700" y1="160" x2="670" y2="250" stroke="#adb5bd" stroke-width="2"/><line x1="700" y1="160" x2="730" y2="250" stroke="#adb5bd" stroke-width="2"/>
+                <circle cx="640" cy="70" r="22" fill="#ffa94d" stroke="#e8590c" stroke-width="4"/><text x="640" y="70" text-anchor="middle" dominant-baseline="central" font-size="17" font-weight="bold">C</text>
+                <circle cx="580" cy="160" r="20" fill="#ffa94d" stroke="#e8590c" stroke-width="2"/><text x="580" y="160" text-anchor="middle" dominant-baseline="central" font-size="16" font-weight="bold">B</text>
+                <circle cx="545" cy="250" r="20" fill="#a5d8ff" stroke="#1c7ed6" stroke-width="2"/><text x="545" y="250" text-anchor="middle" dominant-baseline="central" font-size="16" font-weight="bold">W</text>
+                <circle cx="590" cy="250" r="20" fill="#ffa94d" stroke="#e8590c" stroke-width="2"/><text x="590" y="250" text-anchor="middle" dominant-baseline="central" font-size="16" font-weight="bold">X</text>
+                <circle cx="700" cy="160" r="20" fill="#ffa94d" stroke="#e8590c" stroke-width="2"/><text x="700" y="160" text-anchor="middle" dominant-baseline="central" font-size="16" font-weight="bold">A</text>
+                <circle cx="670" cy="250" r="20" fill="#8ce99a" stroke="#2b8a3e" stroke-width="2"/><text x="670" y="250" text-anchor="middle" dominant-baseline="central" font-size="16" font-weight="bold">Y</text>
+                <circle cx="730" cy="250" r="20" fill="#a5d8ff" stroke="#1c7ed6" stroke-width="2"/><text x="730" y="250" text-anchor="middle" dominant-baseline="central" font-size="16" font-weight="bold">D</text>
+                <text x="390" y="342" text-anchor="middle" font-size="13" fill="#666">红=失衡结点A　橙=旋转中父子关系变化结点　蓝=父子关系不变结点　绿=新插入</text>
+              </svg>
             - **RL**：右孩子的左子树插入 → 先对 `A->rchild` 右旋（变 RR），再对 `A` 左旋：`A->rchild = rotateRight(A->rchild); return rotateLeft(A);`
+
+              颜色：==红=失衡结点A==、==橙=旋转中父子关系变化结点==、==蓝=父子关系不变结点==、==绿=新插入结点==、粗描边=旋转后的新根
+              变化结点：==C==（最终升为根）、==A==、==X==、==B==；不变结点：`W`、`D`；新插入：==Y==（插入点也可为 X，旋转方式相同）
+
+              <svg viewBox="0 0 780 350" xmlns="http://www.w3.org/2000/svg" width="100%" height="350">
+                <defs><marker id="arr4" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto"><polygon points="0 0, 10 3.5, 0 7" fill="#495057"/></marker></defs>
+                <text x="150" y="24" text-anchor="middle" font-size="15" font-weight="bold" fill="#333">失衡前（BF(A)=-2）</text>
+                <text x="390" y="24" text-anchor="middle" font-size="15" font-weight="bold" fill="#333">第一步：对 B 右旋</text>
+                <text x="640" y="24" text-anchor="middle" font-size="15" font-weight="bold" fill="#333">第二步：对 A 左旋</text>
+                <line x1="120" y1="70" x2="60" y2="160" stroke="#adb5bd" stroke-width="2"/><line x1="120" y1="70" x2="185" y2="160" stroke="#adb5bd" stroke-width="2"/>
+                <line x1="185" y1="160" x2="150" y2="250" stroke="#adb5bd" stroke-width="2"/><line x1="185" y1="160" x2="225" y2="250" stroke="#adb5bd" stroke-width="2"/>
+                <line x1="150" y1="250" x2="118" y2="320" stroke="#adb5bd" stroke-width="2"/><line x1="150" y1="250" x2="185" y2="320" stroke="#adb5bd" stroke-width="2"/>
+                <line x1="240" y1="170" x2="272" y2="170" stroke="#495057" stroke-width="2.5" marker-end="url(#arr4)"/>
+                <line x1="480" y1="170" x2="512" y2="170" stroke="#495057" stroke-width="2.5" marker-end="url(#arr4)"/>
+                <circle cx="120" cy="70" r="20" fill="#ff8787" stroke="#c92a2a" stroke-width="2.5"/><text x="120" y="70" text-anchor="middle" dominant-baseline="central" font-size="16" font-weight="bold">A</text>
+                <circle cx="60" cy="160" r="20" fill="#a5d8ff" stroke="#1c7ed6" stroke-width="2"/><text x="60" y="160" text-anchor="middle" dominant-baseline="central" font-size="16" font-weight="bold">D</text>
+                <circle cx="185" cy="160" r="20" fill="#ffa94d" stroke="#e8590c" stroke-width="2"/><text x="185" y="160" text-anchor="middle" dominant-baseline="central" font-size="16" font-weight="bold">B</text>
+                <circle cx="150" cy="250" r="20" fill="#ffa94d" stroke="#e8590c" stroke-width="2"/><text x="150" y="250" text-anchor="middle" dominant-baseline="central" font-size="16" font-weight="bold">C</text>
+                <circle cx="118" cy="320" r="18" fill="#a5d8ff" stroke="#1c7ed6" stroke-width="2"/><text x="118" y="320" text-anchor="middle" dominant-baseline="central" font-size="14" font-weight="bold">X</text>
+                <circle cx="185" cy="320" r="18" fill="#8ce99a" stroke="#2b8a3e" stroke-width="2"/><text x="185" y="320" text-anchor="middle" dominant-baseline="central" font-size="14" font-weight="bold">Y</text>
+                <circle cx="225" cy="250" r="20" fill="#a5d8ff" stroke="#1c7ed6" stroke-width="2"/><text x="225" y="250" text-anchor="middle" dominant-baseline="central" font-size="16" font-weight="bold">W</text>
+                <line x1="360" y1="70" x2="310" y2="160" stroke="#adb5bd" stroke-width="2"/><line x1="360" y1="70" x2="415" y2="160" stroke="#adb5bd" stroke-width="2"/>
+                <line x1="415" y1="160" x2="350" y2="250" stroke="#adb5bd" stroke-width="2"/><line x1="415" y1="160" x2="480" y2="250" stroke="#adb5bd" stroke-width="2"/>
+                <line x1="480" y1="250" x2="440" y2="320" stroke="#adb5bd" stroke-width="2"/><line x1="480" y1="250" x2="520" y2="320" stroke="#adb5bd" stroke-width="2"/>
+                <circle cx="360" cy="70" r="20" fill="#ffa94d" stroke="#e8590c" stroke-width="2"/><text x="360" y="70" text-anchor="middle" dominant-baseline="central" font-size="16" font-weight="bold">A</text>
+                <circle cx="310" cy="160" r="20" fill="#a5d8ff" stroke="#1c7ed6" stroke-width="2"/><text x="310" y="160" text-anchor="middle" dominant-baseline="central" font-size="16" font-weight="bold">D</text>
+                <circle cx="415" cy="160" r="20" fill="#ffa94d" stroke="#e8590c" stroke-width="2"/><text x="415" y="160" text-anchor="middle" dominant-baseline="central" font-size="16" font-weight="bold">C</text>
+                <circle cx="480" cy="250" r="20" fill="#ffa94d" stroke="#e8590c" stroke-width="2"/><text x="480" y="250" text-anchor="middle" dominant-baseline="central" font-size="16" font-weight="bold">B</text>
+                <circle cx="350" cy="250" r="18" fill="#a5d8ff" stroke="#1c7ed6" stroke-width="2"/><text x="350" y="250" text-anchor="middle" dominant-baseline="central" font-size="14" font-weight="bold">X</text>
+                <circle cx="520" cy="320" r="18" fill="#a5d8ff" stroke="#1c7ed6" stroke-width="2"/><text x="520" y="320" text-anchor="middle" dominant-baseline="central" font-size="14" font-weight="bold">W</text>
+                <circle cx="440" cy="320" r="20" fill="#8ce99a" stroke="#2b8a3e" stroke-width="2"/><text x="440" y="320" text-anchor="middle" dominant-baseline="central" font-size="16" font-weight="bold">Y</text>
+                <line x1="640" y1="70" x2="580" y2="160" stroke="#adb5bd" stroke-width="2"/><line x1="640" y1="70" x2="700" y2="160" stroke="#adb5bd" stroke-width="2"/>
+                <line x1="580" y1="160" x2="545" y2="250" stroke="#adb5bd" stroke-width="2"/><line x1="580" y1="160" x2="595" y2="250" stroke="#adb5bd" stroke-width="2"/>
+                <line x1="700" y1="160" x2="670" y2="250" stroke="#adb5bd" stroke-width="2"/><line x1="700" y1="160" x2="730" y2="250" stroke="#adb5bd" stroke-width="2"/>
+                <circle cx="640" cy="70" r="22" fill="#ffa94d" stroke="#e8590c" stroke-width="4"/><text x="640" y="70" text-anchor="middle" dominant-baseline="central" font-size="17" font-weight="bold">C</text>
+                <circle cx="580" cy="160" r="20" fill="#ffa94d" stroke="#e8590c" stroke-width="2"/><text x="580" y="160" text-anchor="middle" dominant-baseline="central" font-size="16" font-weight="bold">A</text>
+                <circle cx="545" cy="250" r="20" fill="#a5d8ff" stroke="#1c7ed6" stroke-width="2"/><text x="545" y="250" text-anchor="middle" dominant-baseline="central" font-size="16" font-weight="bold">D</text>
+                <circle cx="595" cy="250" r="20" fill="#ffa94d" stroke="#e8590c" stroke-width="2"/><text x="595" y="250" text-anchor="middle" dominant-baseline="central" font-size="16" font-weight="bold">X</text>
+                <circle cx="700" cy="160" r="20" fill="#ffa94d" stroke="#e8590c" stroke-width="2"/><text x="700" y="160" text-anchor="middle" dominant-baseline="central" font-size="16" font-weight="bold">B</text>
+                <circle cx="670" cy="250" r="20" fill="#8ce99a" stroke="#2b8a3e" stroke-width="2"/><text x="670" y="250" text-anchor="middle" dominant-baseline="central" font-size="16" font-weight="bold">Y</text>
+                <circle cx="730" cy="250" r="20" fill="#a5d8ff" stroke="#1c7ed6" stroke-width="2"/><text x="730" y="250" text-anchor="middle" dominant-baseline="central" font-size="16" font-weight="bold">W</text>
+                <text x="390" y="342" text-anchor="middle" font-size="13" fill="#666">红=失衡结点A　橙=旋转中父子关系变化结点　蓝=父子关系不变结点　绿=新插入</text>
+              </svg>
+            - 记忆：**LL 右旋、RR 左旋**；LR 是"先左后右"、RL 是"先右后左"（字母顺序即旋转顺序的镜像）
+            - 说明：上面为 SVG 图（红=失衡结点 A、橙=旋转中父子关系变化结点、蓝=父子关系不变结点、绿=新插入结点、粗描边=旋转后的新根）；若预览不渲染 SVG，可参考下方文字版
           - 插入主流程（递归插入后回溯调整）：
             ```cpp
             AVLNode *AVLInsert(AVLNode *&T, ElemType e) {
@@ -4117,6 +4261,95 @@
             ```
         - 性质：$n$ 个结点 AVL 树高 $O(\log n)$，查找 $O(\log n)$
     - 5 图
+      - 基本概念
+        - 定义：图 $G=(V,E)$，$V$ 为顶点集、$E$ 为边集；边集可为空($E=\varnothing$，可以为空表空树不可以为空图，一定有点）
+        - 有向图/无向图：边有方向 / 边无方向（无向边 = 两条有向边）
+        - 弧（有向边）：有序对 $\langle v_i, v_j \rangle$；起点 $v_i$ 为==弧尾==，终点 $v_j$ 为==弧头==，箭头指向弧头
+        - 无向边：无序对 $(v_i, v_j)$，两个端点地位相同；$\langle v_i, v_j \rangle \ne \langle v_j, v_i \rangle$，但 $(v_i, v_j) = (v_j, v_i)$
+        - 无向完全图：任意两顶点之间都有边，$n$ 顶点共 $\frac{n(n-1)}{2}$ 条边，记为 $K_n$；每顶点度 $n-1$
+        - 有向完全图：任意两顶点之间==双向==都有弧，$n$ 顶点共 $n(n-1)$ 条边（比无向多一倍）；每顶点入度 = 出度 = $n-1$
+        - 简单图：==无重复边==、==无自环==（顶点到自身的边）的图；数据结构课程默认讨论的都是简单图
+        - 多重图：==允许重边==（两顶点间多条平行边）、==允许自环==的图；如地铁线路、通信网络；多重图不满足握手定理的边数上限 $n(n-1)/2$
+        - 带权图/网：边或弧上附有权值的图（权值表示距离、代价、时间等）；权值通常 $\ge 0$；==带权路径长度== = 路径上所有边权值之和；最短路径问题就是求带权路径长度最小的路径
+        - 顶点的度：无向图 $TD(v)$；有向图 $ID(v)$ 入度 + $OD(v)$ 出度；==握手定理==：$\sum TD(v)=2|E|$
+        - 连通图/连通分量（无向图）：任意两顶点间都有路径为==连通图==；==连通分量==为极大连通子图；$n$ 顶点连通图至少 $n-1$ 条边；非连通图有多个连通分量
+        - 强连通图/强连通分量（有向图）：任意两顶点==互相可达==（$v_i\to v_j$ 和 $v_j\to v_i$ 都有路径）为==强连通图==；==强连通分量==为极大强连通子图；$n$ 顶点强连通图至少 $n$ 条边（构成一个环）；有向图中每个顶点自身也构成一个强连通分量
+        - 弱连通/单向连通（有向图）：忽略方向后连通为==弱连通==；任意两顶点至少一个方向可达为==单向连通==
+        - 子图/生成子图：顶点集和边集都是原图子集的图为==子图==；==生成子图==为包含原图==全部顶点==的子图（边可有删减）；生成子图概念不要求连通
+        - 生成树：连通图的极小连通子图，含 $n$ 顶点、$n-1$ 条边；非连通图的各连通分量生成树组成生成森林
+        - 路径：顶点序列 $v_0,v_1,\dots,v_m$ 且 $(v_{i-1},v_i)$ 都是边；路径上边的数目 $m$ 为==路径长度==
+        - 简单路径：路径上==顶点不重复==；否则存在重复顶点则不是简单路径
+        - 回路/环：路径首尾顶点相同 $v_0 = v_m$；==简单回路==：除首尾外其他顶点不重复的回路
+        - 距离：两点间==最短路径长度== $d(v_i,v_j)$；==无路径则距离为 $\infty$==；无向图距离具有对称性 $d(v_i,v_j)=d(v_j,v_i)$，有向图不一定
+        - 稀疏图/稠密图：$|E| \ll n(n-1)/2$ 为稀疏图
+      - 三要素：逻辑结构 = 多对多的非线性结构；数据的运算 = 遍历、求路径/最短路径、连通性判断、MST 等；存储结构 = 邻接矩阵（顺序）/邻接表（链式）
+      - 存储结构
+        - 邻接矩阵（顺序存储，适合稠密图）
+          ```cpp
+          #define MaxVertexNum 100
+          typedef struct {
+              char Vex[MaxVertexNum];                 // 顶点表
+              int Edge[MaxVertexNum][MaxVertexNum];   // 邻接矩阵，1 表示相邻
+              int vexnum, arcnum;                     // 顶点数、边数
+          } MGraph;   // 无向图矩阵关于主对角线对称；空间 O(n^2)
+          ```
+        - 邻接表（链式存储，适合稀疏图）
+          ```cpp
+          typedef struct ArcNode {    // 边表结点
+              int adjvex;             // 该边指向的顶点下标
+              struct ArcNode *next;   // 下一条边
+              // int weight;          // 网（带权图）再加权值域
+          } ArcNode;
+          typedef struct VNode {      // 顶点表结点
+              char data;
+              ArcNode *first;         // 第一条边
+          } VNode;
+          typedef struct {
+              VNode vertices[MaxVertexNum];
+              int vexnum, arcnum;
+          } ALGraph;                  // 空间 O(n+e)
+          ```
+        - 十字链表：有向图的邻接表 + 逆邻接表合并为一个结构（方便求入度/出度）
+        - 邻接多重表：无向图的邻接表改进，每条边只存一个边结点
+        - 对比表格
+          | 存储结构 | 空间复杂度 | 求度 | 判相邻 | 适合 |
+          |---|---|---|---|---|
+          | 邻接矩阵 | O(n²) | 无向 O(n)、有向 O(n) | O(1) | 稠密图 |
+          | 邻接表 | O(n+e) | 无向 O(1)、有向 O(n) | O(度) | 稀疏图 |
+      - 遍历
+        - ==深度优先搜索 DFS==（类似树的先序遍历，递归 / 栈实现）
+          ```cpp
+          bool visited[MaxVertexNum];
+          void DFS(ALGraph G, int v) {
+              visit(v); visited[v] = true;            // 访问后标记
+              for (ArcNode *p = G.vertices[v].first; p; p = p->next)
+                  if (!visited[p->adjvex]) DFS(G, p->adjvex);
+          }   // 时间 O(n+e)（邻接表）/ O(n^2)（邻接矩阵）；空间 O(n)（递归栈）
+          ```
+        - ==广度优先搜索 BFS==（类似树的层序遍历，队列实现）
+          ```cpp
+          void BFS(ALGraph G, int v) {
+              queue<int> q;
+              visit(v); visited[v] = true; q.push(v);
+              while (!q.empty()) {
+                  int u = q.front(); q.pop();
+                  for (ArcNode *p = G.vertices[u].first; p; p = p->next)
+                      if (!visited[p->adjvex]) {
+                          visit(p->adjvex); visited[p->adjvex] = true; q.push(p->adjvex);
+                      }
+              }
+          }   // 时间 O(n+e) / O(n^2)；空间 O(n)（队列）
+          ```
+        - 非连通图需对每个未访问顶点调用一次 DFS/BFS；遍历生成的边构成==生成森林==
+      - 应用
+        - ==最小生成树 MST==：连通无向带权图的极小生成子图（$n$ 顶点、$n-1$ 边、权值和最小，不唯一）
+          - ==Prim（加点）==：任选起点，每次并入"到已选点集距离最近"的顶点；$O(n^2)$，适合稠密图
+          - ==Kruskal（加边）==：按权值从小到大选边，用并查集判断不构成回路；$O(e\log e)$，适合稀疏图
+        - 最短路径
+          - ==Dijkstra（单源）==：贪心，每次确定一个最短路径顶点；不能含负权边；$O(n^2)$
+          - ==Floyd（多源）==：动态规划，逐步允许中间顶点；允许负权但不能有负环；$O(n^3)$
+        - ==拓扑排序==（AOV 网）：每轮取一个入度为 0 的顶点输出并删去其出边；结果不唯一；==有环则无法拓扑排序==；$O(n+e)$
+        - ==关键路径==（AOE 网）：从源点到汇点的最长路径决定最短工期；求事件最早/最迟发生时间、活动最早/最迟开始时间；==余量为 0 的活动为关键活动==，关键路径上所有活动是关键活动
     - 6 查找
     - 7 排序
     - 算法 45
