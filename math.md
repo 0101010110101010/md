@@ -4293,6 +4293,10 @@
               int vexnum, arcnum;                     // 顶点数、边数
           } MGraph;   // 无向图矩阵关于主对角线对称；空间 O(n^2)
           ```
+        - 邻接矩阵求路径数：$A^k$ 中元素 $a_{ij}^{(k)}$ ==从 $v_i$ 到 $v_j$ 长度恰为 $k$ 的路径数目==
+          - 原理：$(A^2)_{ij}=\sum_t a_{it}a_{tj}$，先到中间点 $v_t$ 再到 $v_j$，即长度 2 的路径数；同理 $A^k=A^{k-1}A$ 递推
+          - $a_{ii}^{(k)}$ 为==长度 $k$ 的回路==数目；$\sum_i a_{ii}^{(k)}$ = 长度为 $k$ 的回路总数
+          - 应用：求任意长度路径数；$B=A+A^2+\cdots+A^{n-1}$ 的非零元素位置给出==可达矩阵==（判连通性）
         - 邻接表（链式存储，适合稀疏图）
           ```cpp
           typedef struct ArcNode {    // 边表结点
@@ -4309,13 +4313,361 @@
               int vexnum, arcnum;
           } ALGraph;                  // 空间 O(n+e)
           ```
-        - 十字链表：有向图的邻接表 + 逆邻接表合并为一个结构（方便求入度/出度）
-        - 邻接多重表：无向图的邻接表改进，每条边只存一个边结点
+        - 十字链表（有向图专用）：把==邻接表 + 逆邻接表合并==到一套结构中，一条弧只存一次
+          - 示意图：以有向图 $V_0\!\to\!V_1,\ V_0\!\to\!V_2,\ V_1\!\to\!V_0,\ V_1\!\to\!V_2,\ V_2\!\to\!V_0$ 共 5 条弧为例（按 head 分列：同列 headvex 相同；
+            按 tail 分行：绿线=出边链 firstout/tlink，紫线=入边链 firstin/hlink，红 ✕=NULL；tailvex 域与 firstout 同色、headvex 域与 firstin 同色）
+
+            <svg width="100%" height="605" viewBox="-70 -40 1050 645" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <marker id="arrowG" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#2e7d32"/></marker>
+                <marker id="arrowP" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#6a1b9a"/></marker>
+                <marker id="arrowB" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#495057"/></marker>
+              </defs>
+              <rect x="15" y="445" width="950" height="150" rx="8" fill="#f8f9fa" stroke="#ced4da" stroke-width="1"/>
+              <text x="32" y="467" font-size="15" font-weight="bold" fill="#333">图例：</text>
+              <rect x="82" y="453" width="20" height="18" fill="#e3f2fd" stroke="#1565c0" stroke-width="1.5"/><text x="92" y="466" font-size="10" fill="#1565c0" font-weight="bold">V0</text><rect x="106" y="453" width="20" height="18" fill="#ffebee" stroke="#c62828" stroke-width="1.5"/><text x="116" y="466" font-size="10" fill="#c62828" font-weight="bold">V1</text><rect x="130" y="453" width="20" height="18" fill="#fff9c4" stroke="#f9a825" stroke-width="1.5"/><text x="140" y="466" font-size="10" fill="#f9a825" font-weight="bold">V2</text><text x="160" y="467" font-size="14" font-weight="bold" fill="#333">顶点结点 VexNode（data/firstin/firstout）</text>
+              <rect x="400" y="453" width="18" height="18" fill="#fff3e0" stroke="#e65100" stroke-width="1.5"/><text x="424" y="467" font-size="14" font-weight="bold" fill="#333">弧结点 ArcBox（tailvex/headvex/tlink/hlink/info）</text>
+              <line x1="82" y1="490" x2="120" y2="490" stroke="#2e7d32" stroke-width="3"/><text x="128" y="495" font-size="14" font-weight="bold" fill="#333">出边链 tlink</text>
+              <line x1="260" y1="490" x2="298" y2="490" stroke="#6a1b9a" stroke-width="3" stroke-dasharray="5,3"/><text x="306" y="495" font-size="14" font-weight="bold" fill="#333">入边链 hlink</text>
+              <text x="430" y="497" font-size="18" font-weight="bold" fill="#d32f2f">✕</text><text x="450" y="495" font-size="14" font-weight="bold" fill="#333">NULL（红色✕=空指针）</text>
+              <rect x="82" y="503" width="18" height="18" fill="#c8e6c9" stroke="#2e7d32" stroke-width="1.5"/><text x="106" y="517" font-size="14" font-weight="bold" fill="#333">tailvex 域（与 firstout 同色）</text><rect x="292" y="503" width="18" height="18" fill="#e1bee7" stroke="#6a1b9a" stroke-width="1.5"/><text x="316" y="517" font-size="14" font-weight="bold" fill="#333">headvex 域（与 firstin 同色）</text>
+              <text x="32" y="535" font-size="14" font-weight="bold" fill="#555">按 head 分列：每列 headvex 相同（列顶 head=0/1/2 标注）；按 tail 分行：tlink 横向串联同尾弧、hlink 纵向串联同头弧。firstout 指出边链头、firstin 指入边链头。</text>
+              <text x="32" y="555" font-size="14" font-weight="bold" fill="#555">结点内格子与下方结构体字段一一对应：顶点三格 data/firstin/firstout；弧结点五格 tailvex/headvex/tlink/hlink/info。</text>
+              <text x="32" y="575" font-size="14" font-weight="bold" fill="#555">颜色对应：tailvex 域与顶点 firstout 同色（出边体系）、headvex 域与 firstin 同色（入边体系）；域内数值为顶点下标。</text>
+              <rect x="20" y="15" width="90" height="100" rx="6" fill="#e3f2fd" stroke="#1565c0" stroke-width="1.5"/>
+              <line x1="20" y1="45" x2="110" y2="45" stroke="#1565c0" stroke-width="1"/>
+              <line x1="20" y1="80" x2="110" y2="80" stroke="#1565c0" stroke-width="1"/>
+              <text x="65" y="36" text-anchor="middle" font-size="16" font-weight="bold" fill="#1565c0">V0</text>
+              <text x="65" y="59" text-anchor="middle" font-size="9" font-weight="bold" fill="#2e7d32">firstout</text>
+              <text x="65" y="73" text-anchor="middle" font-size="12" font-weight="bold" fill="#2e7d32">→</text>
+              <text x="65" y="94" text-anchor="middle" font-size="9" font-weight="bold" fill="#6a1b9a">firstin</text>
+              <text x="65" y="108" text-anchor="middle" font-size="12" font-weight="bold" fill="#6a1b9a">←</text>
+              <rect x="20" y="150" width="90" height="100" rx="6" fill="#ffebee" stroke="#c62828" stroke-width="1.5"/>
+              <line x1="20" y1="180" x2="110" y2="180" stroke="#c62828" stroke-width="1"/>
+              <line x1="20" y1="215" x2="110" y2="215" stroke="#c62828" stroke-width="1"/>
+              <text x="65" y="171" text-anchor="middle" font-size="16" font-weight="bold" fill="#c62828">V1</text>
+              <text x="65" y="194" text-anchor="middle" font-size="9" font-weight="bold" fill="#2e7d32">firstout</text>
+              <text x="65" y="208" text-anchor="middle" font-size="12" font-weight="bold" fill="#2e7d32">→</text>
+              <text x="65" y="229" text-anchor="middle" font-size="9" font-weight="bold" fill="#6a1b9a">firstin</text>
+              <text x="65" y="243" text-anchor="middle" font-size="12" font-weight="bold" fill="#6a1b9a">←</text>
+              <rect x="20" y="285" width="90" height="100" rx="6" fill="#fff9c4" stroke="#f9a825" stroke-width="1.5"/>
+              <line x1="20" y1="315" x2="110" y2="315" stroke="#f9a825" stroke-width="1"/>
+              <line x1="20" y1="350" x2="110" y2="350" stroke="#f9a825" stroke-width="1"/>
+              <text x="65" y="306" text-anchor="middle" font-size="16" font-weight="bold" fill="#f9a825">V2</text>
+              <text x="65" y="329" text-anchor="middle" font-size="9" font-weight="bold" fill="#2e7d32">firstout</text>
+              <text x="65" y="343" text-anchor="middle" font-size="12" font-weight="bold" fill="#2e7d32">→</text>
+              <text x="65" y="364" text-anchor="middle" font-size="9" font-weight="bold" fill="#6a1b9a">firstin</text>
+              <text x="65" y="378" text-anchor="middle" font-size="12" font-weight="bold" fill="#6a1b9a">←</text>
+              <text x="290" y="11" text-anchor="middle" font-size="13" font-weight="bold" fill="#6a1b9a">head=0</text>
+              <text x="470" y="11" text-anchor="middle" font-size="13" font-weight="bold" fill="#6a1b9a">head=1</text>
+              <text x="650" y="11" text-anchor="middle" font-size="13" font-weight="bold" fill="#6a1b9a">head=2</text>
+              <rect x="400" y="15" width="140" height="95" rx="6" fill="#fff3e0" stroke="#e65100" stroke-width="1.5"/>
+              <rect x="401" y="16" width="68" height="34" rx="3" fill="#c8e6c9"/>
+              <rect x="471" y="16" width="68" height="34" rx="3" fill="#e1bee7"/>
+              <rect x="401" y="51" width="68" height="34" rx="3" fill="#c8e6c9"/>
+              <rect x="471" y="51" width="68" height="34" rx="3" fill="#e1bee7"/>
+              <line x1="470" y1="15" x2="470" y2="50" stroke="#e65100" stroke-width="1"/>
+              <line x1="400" y1="50" x2="540" y2="50" stroke="#e65100" stroke-width="1"/>
+              <line x1="400" y1="85" x2="540" y2="85" stroke="#e65100" stroke-width="1"/>
+              <text x="435" y="33" text-anchor="middle" font-size="9" font-weight="bold" fill="#666">tailvex</text>
+              <text x="505" y="33" text-anchor="middle" font-size="9" font-weight="bold" fill="#666">headvex</text>
+              <text x="435" y="46" text-anchor="middle" font-size="12" font-weight="bold" fill="#333">0</text>
+              <text x="505" y="46" text-anchor="middle" font-size="12" font-weight="bold" fill="#333">1</text>
+              <text x="435" y="68" text-anchor="middle" font-size="9" font-weight="bold" fill="#2e7d32">tlink</text>
+              <text x="435" y="81" text-anchor="middle" font-size="11" font-weight="bold" fill="#2e7d32">→</text>
+              <text x="505" y="68" text-anchor="middle" font-size="9" font-weight="bold" fill="#6a1b9a">hlink</text>
+              <text x="505" y="81" text-anchor="middle" font-size="13" font-weight="bold" fill="#d32f2f">✕</text>
+              <text x="470" y="102" text-anchor="middle" font-size="9" font-weight="bold" fill="#aaa">info</text>
+              <rect x="580" y="15" width="140" height="95" rx="6" fill="#fff3e0" stroke="#e65100" stroke-width="1.5"/>
+              <rect x="581" y="16" width="68" height="34" rx="3" fill="#c8e6c9"/>
+              <rect x="651" y="16" width="68" height="34" rx="3" fill="#e1bee7"/>
+              <rect x="581" y="51" width="68" height="34" rx="3" fill="#c8e6c9"/>
+              <rect x="651" y="51" width="68" height="34" rx="3" fill="#e1bee7"/>
+              <line x1="650" y1="15" x2="650" y2="50" stroke="#e65100" stroke-width="1"/>
+              <line x1="580" y1="50" x2="720" y2="50" stroke="#e65100" stroke-width="1"/>
+              <line x1="580" y1="85" x2="720" y2="85" stroke="#e65100" stroke-width="1"/>
+              <text x="615" y="33" text-anchor="middle" font-size="9" font-weight="bold" fill="#666">tailvex</text>
+              <text x="685" y="33" text-anchor="middle" font-size="9" font-weight="bold" fill="#666">headvex</text>
+              <text x="615" y="46" text-anchor="middle" font-size="12" font-weight="bold" fill="#333">0</text>
+              <text x="685" y="46" text-anchor="middle" font-size="12" font-weight="bold" fill="#333">2</text>
+              <text x="615" y="68" text-anchor="middle" font-size="9" font-weight="bold" fill="#2e7d32">tlink</text>
+              <text x="615" y="81" text-anchor="middle" font-size="13" font-weight="bold" fill="#d32f2f">✕</text>
+              <text x="685" y="68" text-anchor="middle" font-size="9" font-weight="bold" fill="#6a1b9a">hlink</text>
+              <text x="685" y="81" text-anchor="middle" font-size="11" font-weight="bold" fill="#6a1b9a">↓</text>
+              <text x="650" y="102" text-anchor="middle" font-size="9" font-weight="bold" fill="#aaa">info</text>
+              <rect x="220" y="150" width="140" height="95" rx="6" fill="#fff3e0" stroke="#e65100" stroke-width="1.5"/>
+              <rect x="221" y="151" width="68" height="34" rx="3" fill="#c8e6c9"/>
+              <rect x="291" y="151" width="68" height="34" rx="3" fill="#e1bee7"/>
+              <rect x="221" y="186" width="68" height="34" rx="3" fill="#c8e6c9"/>
+              <rect x="291" y="186" width="68" height="34" rx="3" fill="#e1bee7"/>
+              <line x1="290" y1="150" x2="290" y2="185" stroke="#e65100" stroke-width="1"/>
+              <line x1="220" y1="185" x2="360" y2="185" stroke="#e65100" stroke-width="1"/>
+              <line x1="220" y1="220" x2="360" y2="220" stroke="#e65100" stroke-width="1"/>
+              <text x="255" y="168" text-anchor="middle" font-size="9" font-weight="bold" fill="#666">tailvex</text>
+              <text x="325" y="168" text-anchor="middle" font-size="9" font-weight="bold" fill="#666">headvex</text>
+              <text x="255" y="181" text-anchor="middle" font-size="12" font-weight="bold" fill="#333">1</text>
+              <text x="325" y="181" text-anchor="middle" font-size="12" font-weight="bold" fill="#333">0</text>
+              <text x="255" y="203" text-anchor="middle" font-size="9" font-weight="bold" fill="#2e7d32">tlink</text>
+              <text x="255" y="216" text-anchor="middle" font-size="11" font-weight="bold" fill="#2e7d32">→</text>
+              <text x="325" y="203" text-anchor="middle" font-size="9" font-weight="bold" fill="#6a1b9a">hlink</text>
+              <text x="325" y="216" text-anchor="middle" font-size="11" font-weight="bold" fill="#6a1b9a">↓</text>
+              <text x="290" y="237" text-anchor="middle" font-size="9" font-weight="bold" fill="#aaa">info</text>
+              <rect x="580" y="150" width="140" height="95" rx="6" fill="#fff3e0" stroke="#e65100" stroke-width="1.5"/>
+              <rect x="581" y="151" width="68" height="34" rx="3" fill="#c8e6c9"/>
+              <rect x="651" y="151" width="68" height="34" rx="3" fill="#e1bee7"/>
+              <rect x="581" y="186" width="68" height="34" rx="3" fill="#c8e6c9"/>
+              <rect x="651" y="186" width="68" height="34" rx="3" fill="#e1bee7"/>
+              <line x1="650" y1="150" x2="650" y2="185" stroke="#e65100" stroke-width="1"/>
+              <line x1="580" y1="185" x2="720" y2="185" stroke="#e65100" stroke-width="1"/>
+              <line x1="580" y1="220" x2="720" y2="220" stroke="#e65100" stroke-width="1"/>
+              <text x="615" y="168" text-anchor="middle" font-size="9" font-weight="bold" fill="#666">tailvex</text>
+              <text x="685" y="168" text-anchor="middle" font-size="9" font-weight="bold" fill="#666">headvex</text>
+              <text x="615" y="181" text-anchor="middle" font-size="12" font-weight="bold" fill="#333">1</text>
+              <text x="685" y="181" text-anchor="middle" font-size="12" font-weight="bold" fill="#333">2</text>
+              <text x="615" y="203" text-anchor="middle" font-size="9" font-weight="bold" fill="#2e7d32">tlink</text>
+              <text x="615" y="216" text-anchor="middle" font-size="13" font-weight="bold" fill="#d32f2f">✕</text>
+              <text x="685" y="203" text-anchor="middle" font-size="9" font-weight="bold" fill="#6a1b9a">hlink</text>
+              <text x="685" y="216" text-anchor="middle" font-size="13" font-weight="bold" fill="#d32f2f">✕</text>
+              <text x="650" y="237" text-anchor="middle" font-size="9" font-weight="bold" fill="#aaa">info</text>
+              <rect x="220" y="285" width="140" height="95" rx="6" fill="#fff3e0" stroke="#e65100" stroke-width="1.5"/>
+              <rect x="221" y="286" width="68" height="34" rx="3" fill="#c8e6c9"/>
+              <rect x="291" y="286" width="68" height="34" rx="3" fill="#e1bee7"/>
+              <rect x="221" y="321" width="68" height="34" rx="3" fill="#c8e6c9"/>
+              <rect x="291" y="321" width="68" height="34" rx="3" fill="#e1bee7"/>
+              <line x1="290" y1="285" x2="290" y2="320" stroke="#e65100" stroke-width="1"/>
+              <line x1="220" y1="320" x2="360" y2="320" stroke="#e65100" stroke-width="1"/>
+              <line x1="220" y1="355" x2="360" y2="355" stroke="#e65100" stroke-width="1"/>
+              <text x="255" y="303" text-anchor="middle" font-size="9" font-weight="bold" fill="#666">tailvex</text>
+              <text x="325" y="303" text-anchor="middle" font-size="9" font-weight="bold" fill="#666">headvex</text>
+              <text x="255" y="316" text-anchor="middle" font-size="12" font-weight="bold" fill="#333">2</text>
+              <text x="325" y="316" text-anchor="middle" font-size="12" font-weight="bold" fill="#333">0</text>
+              <text x="255" y="338" text-anchor="middle" font-size="9" font-weight="bold" fill="#2e7d32">tlink</text>
+              <text x="255" y="351" text-anchor="middle" font-size="13" font-weight="bold" fill="#d32f2f">✕</text>
+              <text x="325" y="338" text-anchor="middle" font-size="9" font-weight="bold" fill="#6a1b9a">hlink</text>
+              <text x="325" y="351" text-anchor="middle" font-size="13" font-weight="bold" fill="#d32f2f">✕</text>
+              <text x="290" y="372" text-anchor="middle" font-size="9" font-weight="bold" fill="#aaa">info</text>
+              <line x1="110" y1="73" x2="401" y2="73" stroke="#2e7d32" stroke-width="2" marker-end="url(#arrowG)"/>
+              <text x="120" y="66" font-size="11" font-weight="bold" fill="#2e7d32">firstout</text>
+              <line x1="459" y1="67" x2="581" y2="67" stroke="#2e7d32" stroke-width="2" marker-end="url(#arrowG)"/>
+              <text x="465" y="60" font-size="11" font-weight="bold" fill="#2e7d32">tlink</text>
+              <line x1="110" y1="208" x2="221" y2="208" stroke="#2e7d32" stroke-width="2" marker-end="url(#arrowG)"/>
+              <text x="120" y="201" font-size="11" font-weight="bold" fill="#2e7d32">firstout</text>
+              <line x1="289" y1="203" x2="581" y2="203" stroke="#2e7d32" stroke-width="2" marker-end="url(#arrowG)"/>
+              <text x="295" y="196" font-size="11" font-weight="bold" fill="#2e7d32">tlink</text>
+              <line x1="110" y1="343" x2="221" y2="343" stroke="#2e7d32" stroke-width="2" marker-end="url(#arrowG)"/>
+              <text x="120" y="336" font-size="11" font-weight="bold" fill="#2e7d32">firstout</text>
+              <polyline points="20,108 -50,108 -50,-34 325,-34 325,151" fill="none" stroke="#6a1b9a" stroke-width="2" stroke-dasharray="4,3" marker-end="url(#arrowP)"/>
+              <text x="-46" y="96" font-size="11" font-weight="bold" fill="#6a1b9a">firstin</text>
+              <polyline points="325,220 325,321" fill="none" stroke="#6a1b9a" stroke-width="2" stroke-dasharray="4,3" marker-end="url(#arrowP)"/>
+              <text x="333" y="275" font-size="11" font-weight="bold" fill="#6a1b9a">hlink</text>
+              <polyline points="20,243 -35,243 -35,-28 505,-28 505,16" fill="none" stroke="#6a1b9a" stroke-width="2" stroke-dasharray="4,3" marker-end="url(#arrowP)"/>
+              <text x="-31" y="231" font-size="11" font-weight="bold" fill="#6a1b9a">firstin</text>
+              <polyline points="20,378 -20,378 -20,-22 685,-22 685,16" fill="none" stroke="#6a1b9a" stroke-width="2" stroke-dasharray="4,3" marker-end="url(#arrowP)"/>
+              <text x="-16" y="366" font-size="11" font-weight="bold" fill="#6a1b9a">firstin</text>
+              <polyline points="685,85 685,186" fill="none" stroke="#6a1b9a" stroke-width="2" stroke-dasharray="4,3" marker-end="url(#arrowP)"/>
+              <text x="693" y="140" font-size="11" font-weight="bold" fill="#6a1b9a">hlink</text>
+              <rect x="780" y="25" width="185" height="360" rx="8" fill="#ffffff" stroke="#adb5bd" stroke-width="1"/>
+              <text x="872" y="52" text-anchor="middle" font-size="15" font-weight="bold" fill="#333">原图（5 条弧）</text>
+              <circle cx="800" cy="90" r="24" fill="#e3f2fd" stroke="#1565c0" stroke-width="2"/><text x="800" y="95" text-anchor="middle" font-size="14" font-weight="bold" fill="#1565c0">V0</text>
+              <circle cx="800" cy="335" r="24" fill="#ffebee" stroke="#c62828" stroke-width="2"/><text x="800" y="340" text-anchor="middle" font-size="14" font-weight="bold" fill="#c62828">V1</text>
+              <circle cx="945" cy="210" r="24" fill="#fff9c4" stroke="#f9a825" stroke-width="2"/><text x="945" y="215" text-anchor="middle" font-size="14" font-weight="bold" fill="#f9a825">V2</text>
+              <path d="M 820,110 C 900,140 900,290 820,315" fill="none" stroke="#495057" stroke-width="1.5" marker-end="url(#arrowB)"/>
+              <text x="888" y="215" text-anchor="middle" font-size="10" font-weight="bold" fill="#495057">V0→V1</text>
+              <path d="M 822,80 C 860,60 890,120 924,190" fill="none" stroke="#495057" stroke-width="1.5" marker-end="url(#arrowB)"/>
+              <text x="870" y="92" text-anchor="middle" font-size="10" font-weight="bold" fill="#495057">V0→V2</text>
+              <path d="M 820,316 C 880,310 890,160 825,112" fill="none" stroke="#495057" stroke-width="1.5" marker-end="url(#arrowB)"/>
+              <text x="848" y="240" text-anchor="middle" font-size="10" font-weight="bold" fill="#495057">V1→V0</text>
+              <path d="M 822,352 C 880,360 900,280 925,232" fill="none" stroke="#495057" stroke-width="1.5" marker-end="url(#arrowB)"/>
+              <text x="892" y="322" text-anchor="middle" font-size="10" font-weight="bold" fill="#495057">V1→V2</text>
+              <path d="M 923,206 C 900,170 880,120 822,104" fill="none" stroke="#495057" stroke-width="1.5" marker-end="url(#arrowB)"/>
+              <text x="905" y="140" text-anchor="middle" font-size="10" font-weight="bold" fill="#495057">V2→V0</text>
+            </svg>
+          - 弧结点：==tailvex==（弧尾）、==headvex==（弧头）、==hlink==（指向下一个弧头相同的弧）、==tlink==（指向下一个弧尾相同的弧）、==info==（权值等附加信息）
+          - 顶点结点：==data==（数据）、==firstin==（指向第一条入边）、==firstout==（指向第一条出边）
+          ```cpp
+          typedef struct ArcBox {     // 弧结点
+              int tailvex, headvex;   // 弧尾、弧头顶点下标
+              struct ArcBox *hlink;   // 指向下一个弧头相同的弧（同列）
+              struct ArcBox *tlink;   // 指向下一个弧尾相同的弧（同行）
+              // InfoType info;        // 权值等附加信息
+          } ArcBox;
+          typedef struct VexNode {    // 顶点结点
+              char data;
+              ArcBox *firstin;        // 第一条入边
+              ArcBox *firstout;       // 第一条出边
+          } VexNode;
+          typedef struct {
+              VexNode xlist[MaxVertexNum];
+              int vexnum, arcnum;     // 顶点数、弧数
+          } OLGraph;                  // 空间 O(n+e)
+          ```
+          - 求度：==出度==沿 firstout 走 tlink 链，==入度==沿 firstin 走 hlink 链，都只需 O(1) 起步、O(度) 数完，克服邻接表求入度困难的缺点
+          - 空间复杂度：**O(n+e)**。顶点结点 n 个（每个含 data/firstin/firstout，O(1)）+ 弧结点 e 个（每个含 tailvex/headvex/tlink/hlink/info，O(1)），各占一份
+            - ==一条弧只存一个结点==：十字链表是"邻接表（出边）+ 逆邻接表（入边）"的合并，若分开建两套链表需 2n+2e 个结点，十字链表约省一半弧结点空间
+            - 对比邻接矩阵 O(n²)：稀疏图（$e \ll n^2$）下优势明显；代价是弧结点含 tlink/hlink 两个指针，指针开销比邻接表略大，但换来入度也能 O(度) 直接求
+          - 应用：适合需频繁求入度/出度或做边的增删的有向图；每条弧仅一个结点，无冗余
+        - 邻接多重表（无向图专用）：无向图的邻接表改进，==每条边只存一个边结点==（邻接表中无向边要存两遍）
+          - 示意图：以无向图 $V_0V_1,\ V_0V_2,\ V_0V_3,\ V_1V_2$ 共 4 条边为例
+            （每条边一个结点：ivex 格淡蓝、jvex 格淡红；
+            ilink 从 ivex 侧引出=蓝实线，串联同 ivex 的边；
+            jlink 从 jvex 侧引出=红虚线，串联同 jvex 的边；
+            红 ✕=NULL；firstedge 指向顶点的第一条关联边）
+
+            <svg width="100%" height="620" viewBox="0 0 980 620" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <marker id="arrowI" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#1565c0"/></marker>
+                <marker id="arrowJ" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#c62828"/></marker>
+                <marker id="arrowF" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#495057"/></marker>
+              </defs>
+              <rect x="15" y="530" width="950" height="90" rx="8" fill="#f8f9fa" stroke="#ced4da" stroke-width="1"/>
+              <text x="32" y="552" font-size="15" font-weight="bold" fill="#333">图例：</text>
+              <rect x="82" y="538" width="20" height="18" fill="#e3f2fd" stroke="#1565c0" stroke-width="1.5"/><text x="92" y="551" font-size="10" fill="#1565c0" font-weight="bold">V0</text><text x="106" y="553" font-size="14" font-weight="bold" fill="#333">顶点结点 VexBox（data/firstedge）</text>
+              <rect x="400" y="538" width="18" height="18" fill="#fff3e0" stroke="#e65100" stroke-width="1.5"/><text x="424" y="553" font-size="14" font-weight="bold" fill="#333">边结点 EBox（ivex/jvex/ilink/jlink/info）</text>
+              <line x1="82" y1="572" x2="120" y2="572" stroke="#1565c0" stroke-width="3"/><text x="128" y="577" font-size="14" font-weight="bold" fill="#333">ilink 链（同 ivex）</text>
+              <line x1="270" y1="572" x2="308" y2="572" stroke="#c62828" stroke-width="3" stroke-dasharray="5,3"/><text x="316" y="577" font-size="14" font-weight="bold" fill="#333">jlink 链（同 jvex）</text>
+              <line x1="500" y1="572" x2="538" y2="572" stroke="#495057" stroke-width="2.5"/><text x="546" y="577" font-size="14" font-weight="bold" fill="#333">firstedge</text>
+              <text x="640" y="579" font-size="18" font-weight="bold" fill="#d32f2f">✕</text><text x="660" y="577" font-size="14" font-weight="bold" fill="#333">NULL（红 ✕=空指针）</text>
+              <text x="32" y="600" font-size="14" font-weight="bold" fill="#555">每条边只存一个结点：ilink 从 ivex 侧引出（蓝实线）串联同 ivex 的边（如 i=0 链：边(0,1)→(0,2)→(0,3)），jlink 从 jvex 侧引出（红虚线）串联同 jvex 的边（如 j=2 链：边(1,2)→(0,2)）。</text>
+              <text x="32" y="617" font-size="14" font-weight="bold" fill="#555">空间 O(n+e)：顶点 n 个 + 边 e 个，每条边仅存一次；对比无向图邻接表（每条边存两遍）约省一半边结点，删边/找关联边也更快。</text>
+              <rect x="20" y="15" width="90" height="95" rx="6" fill="#e3f2fd" stroke="#1565c0" stroke-width="1.5"/>
+              <line x1="20" y1="70" x2="110" y2="70" stroke="#1565c0" stroke-width="1"/>
+              <text x="65" y="51" text-anchor="middle" font-size="16" font-weight="bold" fill="#1565c0">V0</text>
+              <text x="65" y="86" text-anchor="middle" font-size="9" font-weight="bold" fill="#495057">firstedge</text>
+              <text x="65" y="100" text-anchor="middle" font-size="12" font-weight="bold" fill="#495057">→</text>
+              <rect x="20" y="140" width="90" height="95" rx="6" fill="#ffebee" stroke="#c62828" stroke-width="1.5"/>
+              <line x1="20" y1="195" x2="110" y2="195" stroke="#c62828" stroke-width="1"/>
+              <text x="65" y="176" text-anchor="middle" font-size="16" font-weight="bold" fill="#c62828">V1</text>
+              <text x="65" y="211" text-anchor="middle" font-size="9" font-weight="bold" fill="#495057">firstedge</text>
+              <text x="65" y="225" text-anchor="middle" font-size="12" font-weight="bold" fill="#495057">→</text>
+              <rect x="20" y="265" width="90" height="95" rx="6" fill="#fff9c4" stroke="#f9a825" stroke-width="1.5"/>
+              <line x1="20" y1="320" x2="110" y2="320" stroke="#f9a825" stroke-width="1"/>
+              <text x="65" y="301" text-anchor="middle" font-size="16" font-weight="bold" fill="#f9a825">V2</text>
+              <text x="65" y="336" text-anchor="middle" font-size="9" font-weight="bold" fill="#495057">firstedge</text>
+              <text x="65" y="350" text-anchor="middle" font-size="12" font-weight="bold" fill="#495057">→</text>
+              <rect x="20" y="390" width="90" height="95" rx="6" fill="#e1bee7" stroke="#6a1b9a" stroke-width="1.5"/>
+              <line x1="20" y1="445" x2="110" y2="445" stroke="#6a1b9a" stroke-width="1"/>
+              <text x="65" y="426" text-anchor="middle" font-size="16" font-weight="bold" fill="#6a1b9a">V3</text>
+              <text x="65" y="461" text-anchor="middle" font-size="9" font-weight="bold" fill="#495057">firstedge</text>
+              <text x="65" y="475" text-anchor="middle" font-size="12" font-weight="bold" fill="#495057">→</text>
+              <rect x="400" y="15" width="160" height="95" rx="6" fill="#fff3e0" stroke="#e65100" stroke-width="1.5"/>
+              <rect x="401" y="16" width="68" height="34" rx="3" fill="#e3f2fd"/>
+              <rect x="471" y="16" width="68" height="34" rx="3" fill="#ffebee"/>
+              <line x1="470" y1="15" x2="470" y2="50" stroke="#e65100" stroke-width="1"/>
+              <line x1="400" y1="50" x2="560" y2="50" stroke="#e65100" stroke-width="1"/>
+              <line x1="400" y1="85" x2="560" y2="85" stroke="#e65100" stroke-width="1"/>
+              <text x="435" y="28" text-anchor="middle" font-size="9" font-weight="bold" fill="#666">ivex</text>
+              <text x="505" y="28" text-anchor="middle" font-size="9" font-weight="bold" fill="#666">jvex</text>
+              <text x="435" y="43" text-anchor="middle" font-size="12" font-weight="bold" fill="#333">0</text>
+              <text x="505" y="43" text-anchor="middle" font-size="12" font-weight="bold" fill="#333">1</text>
+              <text x="435" y="66" text-anchor="middle" font-size="9" font-weight="bold" fill="#1565c0">ilink</text>
+              <text x="435" y="79" text-anchor="middle" font-size="11" font-weight="bold" fill="#1565c0">↓</text>
+              <text x="505" y="66" text-anchor="middle" font-size="9" font-weight="bold" fill="#c62828">jlink</text>
+              <text x="505" y="79" text-anchor="middle" font-size="13" font-weight="bold" fill="#d32f2f">✕</text>
+              <text x="480" y="93" text-anchor="middle" font-size="9" font-weight="bold" fill="#aaa">info</text>
+              <rect x="400" y="140" width="160" height="95" rx="6" fill="#fff3e0" stroke="#e65100" stroke-width="1.5"/>
+              <rect x="401" y="141" width="68" height="34" rx="3" fill="#e3f2fd"/>
+              <rect x="471" y="141" width="68" height="34" rx="3" fill="#ffebee"/>
+              <line x1="470" y1="140" x2="470" y2="175" stroke="#e65100" stroke-width="1"/>
+              <line x1="400" y1="175" x2="560" y2="175" stroke="#e65100" stroke-width="1"/>
+              <line x1="400" y1="210" x2="560" y2="210" stroke="#e65100" stroke-width="1"/>
+              <text x="435" y="153" text-anchor="middle" font-size="9" font-weight="bold" fill="#666">ivex</text>
+              <text x="505" y="153" text-anchor="middle" font-size="9" font-weight="bold" fill="#666">jvex</text>
+              <text x="435" y="168" text-anchor="middle" font-size="12" font-weight="bold" fill="#333">1</text>
+              <text x="505" y="168" text-anchor="middle" font-size="12" font-weight="bold" fill="#333">2</text>
+              <text x="435" y="191" text-anchor="middle" font-size="9" font-weight="bold" fill="#1565c0">ilink</text>
+              <text x="435" y="204" text-anchor="middle" font-size="13" font-weight="bold" fill="#d32f2f">✕</text>
+              <text x="505" y="191" text-anchor="middle" font-size="9" font-weight="bold" fill="#c62828">jlink</text>
+              <text x="505" y="204" text-anchor="middle" font-size="11" font-weight="bold" fill="#c62828">↓</text>
+              <text x="480" y="218" text-anchor="middle" font-size="9" font-weight="bold" fill="#aaa">info</text>
+              <rect x="400" y="265" width="160" height="95" rx="6" fill="#fff3e0" stroke="#e65100" stroke-width="1.5"/>
+              <rect x="401" y="266" width="68" height="34" rx="3" fill="#e3f2fd"/>
+              <rect x="471" y="266" width="68" height="34" rx="3" fill="#ffebee"/>
+              <line x1="470" y1="265" x2="470" y2="300" stroke="#e65100" stroke-width="1"/>
+              <line x1="400" y1="300" x2="560" y2="300" stroke="#e65100" stroke-width="1"/>
+              <line x1="400" y1="335" x2="560" y2="335" stroke="#e65100" stroke-width="1"/>
+              <text x="435" y="278" text-anchor="middle" font-size="9" font-weight="bold" fill="#666">ivex</text>
+              <text x="505" y="278" text-anchor="middle" font-size="9" font-weight="bold" fill="#666">jvex</text>
+              <text x="435" y="293" text-anchor="middle" font-size="12" font-weight="bold" fill="#333">0</text>
+              <text x="505" y="293" text-anchor="middle" font-size="12" font-weight="bold" fill="#333">2</text>
+              <text x="435" y="316" text-anchor="middle" font-size="9" font-weight="bold" fill="#1565c0">ilink</text>
+              <text x="435" y="329" text-anchor="middle" font-size="11" font-weight="bold" fill="#1565c0">↓</text>
+              <text x="505" y="316" text-anchor="middle" font-size="9" font-weight="bold" fill="#c62828">jlink</text>
+              <text x="505" y="329" text-anchor="middle" font-size="13" font-weight="bold" fill="#d32f2f">✕</text>
+              <text x="480" y="343" text-anchor="middle" font-size="9" font-weight="bold" fill="#aaa">info</text>
+              <rect x="400" y="390" width="160" height="95" rx="6" fill="#fff3e0" stroke="#e65100" stroke-width="1.5"/>
+              <rect x="401" y="391" width="68" height="34" rx="3" fill="#e3f2fd"/>
+              <rect x="471" y="391" width="68" height="34" rx="3" fill="#ffebee"/>
+              <line x1="470" y1="390" x2="470" y2="425" stroke="#e65100" stroke-width="1"/>
+              <line x1="400" y1="425" x2="560" y2="425" stroke="#e65100" stroke-width="1"/>
+              <line x1="400" y1="460" x2="560" y2="460" stroke="#e65100" stroke-width="1"/>
+              <text x="435" y="403" text-anchor="middle" font-size="9" font-weight="bold" fill="#666">ivex</text>
+              <text x="505" y="403" text-anchor="middle" font-size="9" font-weight="bold" fill="#666">jvex</text>
+              <text x="435" y="418" text-anchor="middle" font-size="12" font-weight="bold" fill="#333">0</text>
+              <text x="505" y="418" text-anchor="middle" font-size="12" font-weight="bold" fill="#333">3</text>
+              <text x="435" y="441" text-anchor="middle" font-size="9" font-weight="bold" fill="#1565c0">ilink</text>
+              <text x="435" y="454" text-anchor="middle" font-size="13" font-weight="bold" fill="#d32f2f">✕</text>
+              <text x="505" y="441" text-anchor="middle" font-size="9" font-weight="bold" fill="#c62828">jlink</text>
+              <text x="505" y="454" text-anchor="middle" font-size="13" font-weight="bold" fill="#d32f2f">✕</text>
+              <text x="480" y="468" text-anchor="middle" font-size="9" font-weight="bold" fill="#aaa">info</text>
+              <polyline points="401,68 355,68 355,318 401,318" fill="none" stroke="#1565c0" stroke-width="2" marker-end="url(#arrowI)"/>
+              <polyline points="401,318 355,318 355,443 401,443" fill="none" stroke="#1565c0" stroke-width="2" marker-end="url(#arrowI)"/>
+              <polyline points="539,193 580,193 580,318 539,318" fill="none" stroke="#c62828" stroke-width="2" stroke-dasharray="4,3" marker-end="url(#arrowJ)"/>
+              <polyline points="110,100 401,100" fill="none" stroke="#495057" stroke-width="2" marker-end="url(#arrowF)"/>
+              <text x="120" y="92" font-size="11" font-weight="bold" fill="#495057">firstedge</text>
+              <polyline points="110,225 401,225" fill="none" stroke="#495057" stroke-width="2" marker-end="url(#arrowF)"/>
+              <text x="120" y="217" font-size="11" font-weight="bold" fill="#495057">firstedge</text>
+              <polyline points="110,350 401,350" fill="none" stroke="#495057" stroke-width="2" marker-end="url(#arrowF)"/>
+              <text x="120" y="342" font-size="11" font-weight="bold" fill="#495057">firstedge</text>
+              <polyline points="110,475 401,475" fill="none" stroke="#495057" stroke-width="2" marker-end="url(#arrowF)"/>
+              <text x="120" y="467" font-size="11" font-weight="bold" fill="#495057">firstedge</text>
+              <rect x="780" y="25" width="185" height="360" rx="8" fill="#ffffff" stroke="#adb5bd" stroke-width="1"/>
+              <text x="872" y="52" text-anchor="middle" font-size="15" font-weight="bold" fill="#333">原图（4 顶点 4 边）</text>
+              <line x1="800" y1="90" x2="800" y2="330" stroke="#495057" stroke-width="1.5"/><text x="788" y="215" text-anchor="end" font-size="10" font-weight="bold" fill="#495057">V0-V1</text>
+              <line x1="800" y1="90" x2="935" y2="90" stroke="#495057" stroke-width="1.5"/><text x="867" y="80" text-anchor="middle" font-size="10" font-weight="bold" fill="#495057">V0-V3</text>
+              <line x1="800" y1="330" x2="935" y2="330" stroke="#495057" stroke-width="1.5"/><text x="867" y="352" text-anchor="middle" font-size="10" font-weight="bold" fill="#495057">V1-V2</text>
+              <line x1="800" y1="90" x2="935" y2="330" stroke="#495057" stroke-width="1.5"/><text x="875" y="205" text-anchor="middle" font-size="10" font-weight="bold" fill="#495057">V0-V2</text>
+              <circle cx="800" cy="90" r="24" fill="#e3f2fd" stroke="#1565c0" stroke-width="2"/><text x="800" y="95" text-anchor="middle" font-size="14" font-weight="bold" fill="#1565c0">V0</text>
+              <circle cx="935" cy="90" r="24" fill="#e1bee7" stroke="#6a1b9a" stroke-width="2"/><text x="935" y="95" text-anchor="middle" font-size="14" font-weight="bold" fill="#6a1b9a">V3</text>
+              <circle cx="800" cy="330" r="24" fill="#ffebee" stroke="#c62828" stroke-width="2"/><text x="800" y="335" text-anchor="middle" font-size="14" font-weight="bold" fill="#c62828">V1</text>
+              <circle cx="935" cy="330" r="24" fill="#fff9c4" stroke="#f9a825" stroke-width="2"/><text x="935" y="335" text-anchor="middle" font-size="14" font-weight="bold" fill="#f9a825">V2</text>
+            </svg>
+          - 边结点：==ivex、jvex==（两个端点）、==ilink==（指向下一条依附于 ivex 的边）、==jlink==（指向下一条依附于 jvex 的边）、==info==（权值）
+          - 顶点结点：==data==（数据）、==firstedge==（指向第一条依附于该顶点的边）
+          ```cpp
+          typedef struct EBox {     // 边结点
+              int ivex, jvex;       // 边的两个端点
+              struct EBox *ilink;   // 指向下一条依附于 ivex 的边
+              struct EBox *jlink;   // 指向下一条依附于 jvex 的边
+              // InfoType info;      // 权值等附加信息
+          } EBox;
+          typedef struct VexBox {   // 顶点结点
+              char data;
+              EBox *firstedge;      // 第一条依附于该顶点的边
+          } VexBox;
+          ```
+          - 空间复杂度：**O(n+e)**（顶点 n 个 data/firstedge + 边 e 个 ivex/jvex/ilink/jlink/info，各一份）；对比无向图邻接表（每条边要存两遍）约省一半边结点空间，且删边只需改两端指针
+          - 优点：删边、找某顶点所有关联边方便；每条边仅存一次，节省空间、避免重复修改
         - 对比表格
-          | 存储结构 | 空间复杂度 | 求度 | 判相邻 | 适合 |
-          |---|---|---|---|---|
-          | 邻接矩阵 | O(n²) | 无向 O(n)、有向 O(n) | O(1) | 稠密图 |
-          | 邻接表 | O(n+e) | 无向 O(1)、有向 O(n) | O(度) | 稀疏图 |
+          | 存储结构 | 空间复杂度(有向) | 空间复杂度(无向) | 求度 | 判相邻 | 找邻边 | 删顶点 | 删边 | 遍历(DFS/BFS) | 表示是否唯一 | 适合 |
+          |---|---|---|---|---|---|---|---|---|---|---|
+          | 邻接矩阵 | O(n²) | O(n²)（对称，可只存上/下三角省一半） | 无向/有向 O(n) | O(1) | O(n)（扫一行，==较方便==） | O(n²)（删行列整体重构，==不方便==） | O(1)（直接置 0，==方便==） | O(n²) | ==唯一== | 稠密图 |
+          | 邻接表 | O(n+e) | O(n+2e)（每条边存 2 个边表结点） | 无向 O(1)、有向入度 O(n+e) | O(度) | O(度)（顺着边表走，==方便==） | O(n+e)（删顶点表项并清理各边表，==较麻烦==） | O(度)（链表删除，==较方便==） | O(n+e) | 不唯一 | 稀疏图 |
+          | 十字链表 | O(n+e) | —（不适用于无向图） | 出度/入度均 O(度) | O(度)（沿出边链） | O(度)（出边走 firstout/tlink，入边走 firstin/hlink，==方便==） | O(n+e)（同时清理出、入两套链，==较麻烦==） | O(1)（改 tlink、hlink 前驱指针，==方便==） | O(n+e) | 不唯一 | 有向图，需频繁求入度出度 |
+          | 邻接多重表 | —（不适用于有向图） | O(n+e) | O(度) | O(度) | O(度)（沿 firstedge 边链，==方便==） | O(n+e)（删顶点并清理其边链，==较麻烦==） | O(1)（改两端顶点的 ilink/jlink，==方便==） | O(n+e) | 不唯一 | 无向图，删边/找关联边方便 |
+        - ==找邻边/删改是否方便==：==找邻边==——矩阵 O(n) 扫一行（简单但慢）、三种链表结构都 O(度) 顺着链走（快，且十字链表入边/出边、多重表从任一端点都能找）；==删顶点==——矩阵 O(n²) 重构最差、链表结构 O(n+e)（要清理关联边，十字链表要清两套链、多重表要清边链两端）；==删边==——矩阵 O(1) 置 0、十字链表与邻接多重表 O(1) 改前驱指针最方便（边只存一份、一次改完），邻接表 O(度) 需先查找
+        - ==空间复杂度分有向/无向==：邻接矩阵有无向都 O(n²)，但无向图矩阵对称、可压缩存一半；邻接表==无向图每条边在两端顶点各存一个边表结点（共 2e 个），有向图每条弧只存一个边表结点（e 个）==，故无向记 O(n+2e)、有向记 O(n+e)；十字链表==仅用于有向图==（n 顶点结点 + e 弧结点）；邻接多重表==仅用于无向图==（n 顶点结点 + e 边结点）
+        - ==表示是否唯一==：邻接矩阵==唯一确定==（顶点编号固定则矩阵唯一）；邻接表、十字链表、邻接多重表均==不唯一==——链表内结点次序可任意（取决于插入顺序），同一张图可有多种等价表示，但表示的图唯一
+        - 复杂度分析要点
+          - ==邻接矩阵==：空间固定 O(n²)，与边数无关；判相邻 O(1)、找邻边 O(n)；无向图矩阵==对称==，可只存上三角省一半空间；遍历全图 O(n²)（边密集时 n² 与 n+e 同量级，故稠密图用矩阵）
+          - ==邻接表==：空间 O(n+e)，随边数增长（注意：==无向图每条边要存两遍，实际为 O(n+2e)==）；判相邻需遍历链表 O(度)；有向图求==入度==需遍历所有顶点表 O(n+e)；遍历全图 O(n+e)（每条边只走一次，故稀疏图用邻接表）
+          - 选择原则：边数 $e \approx n^2$ 用邻接矩阵，$e \ll n^2$ 用邻接表；顶点多边少（稀疏）时邻接表空间优势明显
+        - 优缺点对比
+          - ==邻接矩阵==
+            - 优点：判相邻 O(1)、求度/找邻边实现简单（数组下标直接访问）；结构清晰易实现；方便用矩阵运算（如 $A^k$ 求路径数）
+            - 缺点：空间 O(n²) 固定浪费，稀疏图大量存 0；增删顶点需整体改动矩阵；无向图矩阵冗余（对称存两遍，可优化存三角）
+          - ==邻接表==
+            - 优点：空间 O(n+e) 随边数伸缩，稀疏图省空间；方便快速找某点的所有邻边 O(度)；增删边方便（链表插入/删除）
+            - 缺点：判相邻需遍历链表 O(度) 较慢；求有向图入度困难 O(n+e)；链表指针域额外开销（每条边多存 next），结构较复杂、实现易错
       - 遍历
         - ==深度优先搜索 DFS==（类似树的先序遍历，递归 / 栈实现）
           ```cpp
@@ -4394,3 +4746,5 @@
       - 方法
 - 书籍
   - [ ] DR_CAN 控制之美
+  - [ ] 离散数学
+  - [ ] 通讯原理
