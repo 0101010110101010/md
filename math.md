@@ -4668,40 +4668,449 @@
           - ==邻接表==
             - 优点：空间 O(n+e) 随边数伸缩，稀疏图省空间；方便快速找某点的所有邻边 O(度)；增删边方便（链表插入/删除）
             - 缺点：判相邻需遍历链表 O(度) 较慢；求有向图入度困难 O(n+e)；链表指针域额外开销（每条边多存 next），结构较复杂、实现易错
-      - 遍历
-        - ==深度优先搜索 DFS==（类似树的先序遍历，递归 / 栈实现）
+      - 基本操作
+        - 图的 ADT 基本操作（教材常用）
+          - ==顶点操作==
+            - LocateVex(G,v)：按值定位顶点下标，O(n)
+            - GetVex / PutVex：读 / 改顶点值
+            - FirstAdjVex / NextAdjVex：依次取 v 的第一个 / 下一个邻边，配合遍历找邻边（==FirstNeighbor/NextNeighbor 即 FirstAdjVex/NextAdjVex 的别名==，见查询操作）
+          - ==结构操作==
+            - InsertVex / DeleteVex：插入 / 删除顶点
+            - ==AddEdge / DeleteEdge==：加边 / 删边（无向图常用叫法）
+            - InsertArc / DeleteArc：插入 / 删除弧（有向图常用叫法，与 AddEdge/DeleteEdge 本质相同，只是习惯用词不同）
+            - CreateGraph / DestroyGraph：建图 / 销毁图
+          - ==查询操作==
+            - 判空 / 判满
+            - 求顶点数 / 边数
+            - 求某顶点的度
+            - ==Adjacent(G,v,w)==：判相邻，v、w 之间是否有边/弧（也叫 Edge / ExistEdge）
+            - ==GetEdgeValue(G,v,w)==：读取边 (v,w) 的权值（无边返回 ∞ 或约定值；邻接表需先沿边表找到该边）
+            - ==SetEdgeValue(G,v,w,val)==：设置边 (v,w) 的权值（带权图/网图用；邻接表需先找到该边再改）
+            - ==Neighbors(G,v)==：找 v 的所有邻点，返回邻点集合/数组（与 FirstAdjVex/NextAdjVex 等价，只是批量返回）
+            - ==FirstNeighbor(G,x)==：返回 x 的第一个邻接顶点，无邻接顶点或 x 不存在则返回 -1（与 FirstAdjVex 等价，王道教材叫法）
+            - ==NextNeighbor(G,x,y)==：返回 x 的邻接顶点中 ==y 之后的下一个==邻接顶点；y 是 x 的最后一个邻接顶点或无则返回 -1（与 NextAdjVex 等价，王道教材叫法）
+        - 各结构下基本操作的复杂度速查（与对比表格一致）
+          | 操作 | 邻接矩阵 | 邻接表 | 十字链表 | 邻接多重表 |
+          |---|---|---|---|---|
+          | 判相邻 | O(1) | O(度) | O(度) | O(度) |
+          | 求度 | O(n) | 无向 O(1)、有向入度 O(n+e) | 出度/入度均 O(度) | O(度) |
+          | 找邻边 | O(n) | O(度) | O(度) | O(度) |
+          | 插边/删边 | O(1) | O(度) | O(1) | O(1) |
+          | 插顶点 | O(n)（扩行列） | O(1)（表尾插入） | O(1) | O(1) |
+          | 删顶点 | O(n²)（整体重构） | O(n+e) | O(n+e) | O(n+e) |
+        - 典型实现示例（无向图）
           ```cpp
-          bool visited[MaxVertexNum];
-          void DFS(ALGraph G, int v) {
-              visit(v); visited[v] = true;            // 访问后标记
+          /* ============ 邻接矩阵（完整） ============ */
+          // 建图：读 n 个顶点、e 条边
+          void CreateGraph(MGraph &G, int n, int e) {
+              G.vexnum = n; G.arcnum = e;
+              for (int i = 0; i < n; i++) std::cin >> G.Vex[i];          // 读顶点
+              for (int i = 0; i < n; i++)
+                  for (int j = 0; j < n; j++) G.Edge[i][j] = 0;          // 矩阵清零
+              for (int k = 0; k < e; k++) {
+                  int i, j; std::cin >> i >> j;                          // 读一条边 (i,j)
+                  G.Edge[i][j] = G.Edge[j][i] = 1;                       // 无向图对称置 1
+              }                                                          // O(n²+e)
+          }
+          // 判相邻 + 加边 + 删边
+          bool Adjacent(MGraph G, int v, int w) { return G.Edge[v][w] != 0; }   // O(1)
+          bool Edge(MGraph G, int i, int j) { return G.Edge[i][j] != 0; }        // O(1)
+          void AddEdge(MGraph &G, int i, int j) { G.Edge[i][j] = G.Edge[j][i] = 1; G.arcnum++; } // O(1)
+          void DeleteEdge(MGraph &G, int i, int j) { G.Edge[i][j] = G.Edge[j][i] = 0; G.arcnum--; } // O(1)
+          void InsertArc(MGraph &G, int i, int j) { AddEdge(G, i, j); }          // 有向图叫法，本质同 AddEdge
+          // 读/写边权：带权图（网）中 Edge 存权值；无权图权值即 1
+          int GetEdgeValue(MGraph G, int v, int w) { return G.Edge[v][w]; }   // O(1)，无边约定返回 0/∞
+          void SetEdgeValue(MGraph &G, int v, int w, int val) {               // O(1)
+              G.Edge[v][w] = G.Edge[w][v] = val;                             // 无向图对称赋值
+          }
+          // 求顶点 v 的度（无向图：扫一行）
+          int Degree(MGraph G, int v) {
+              int cnt = 0;
+              for (int j = 0; j < G.vexnum; j++) cnt += G.Edge[v][j];   // O(n)
+              return cnt;
+          }
+          // 找 v 的第一个/下一个邻点：配合遍历
+          int FirstAdjVex(MGraph G, int v) {
+              for (int j = 0; j < G.vexnum; j++) if (G.Edge[v][j]) return j; // O(n)
+              return -1;
+          }
+          int FirstNeighbor(MGraph G, int x) { return FirstAdjVex(G, x); }   // 别名，等价
+          // NextNeighbor：返回 x 的邻点中 y 之后的下一个（从 y+1 列继续扫）
+          int NextNeighbor(MGraph G, int x, int y) {
+              for (int j = y + 1; j < G.vexnum; j++)
+                  if (G.Edge[x][j]) return j;                               // O(n)
+              return -1;                                                    // 无下一个邻点
+          }
+          int NextAdjVex(MGraph G, int v, int w) { return NextNeighbor(G, v, w); } // 别名，等价
+          // Neighbors：收集 v 的所有邻点（无向图扫第 v 行即可）
+          int Neighbors(MGraph G, int v, int res[]) {
+              int k = 0;
+              for (int j = 0; j < G.vexnum; j++)
+                  if (G.Edge[v][j]) res[k++] = j;                        // O(n)
+              return k;                                                  // 返回邻点个数
+          }
+          // 删顶点：删除下标 v 的行列（后面的行列整体前移），O(n²)
+          void DeleteVex(MGraph &G, int v) {
+              for (int i = v; i < G.vexnum - 1; i++) G.Vex[i] = G.Vex[i + 1];
+              for (int i = v; i < G.vexnum - 1; i++)                       // 行前移
+                  for (int j = 0; j < G.vexnum; j++) G.Edge[i][j] = G.Edge[i + 1][j];
+              for (int j = v; j < G.vexnum - 1; j++)                       // 列前移
+                  for (int i = 0; i < G.vexnum; i++) G.Edge[i][j] = G.Edge[i][j + 1];
+              G.vexnum--;
+          }
+
+          /* ============ 邻接表（完整） ============ */
+          // 建图：n 个顶点、e 条边（头插法，边表逆序）
+          void CreateGraph(ALGraph &G, int n, int e) {
+              G.vexnum = n; G.arcnum = e;
+              for (int i = 0; i < n; i++) { std::cin >> G.vertices[i].data; G.vertices[i].first = NULL; }
+              for (int k = 0; k < e; k++) {
+                  int i, j; std::cin >> i >> j;                            // 读一条边 (i,j)
+                  ArcNode *p = new ArcNode; p->adjvex = j;                 // 无向图插两端
+                  p->next = G.vertices[i].first; G.vertices[i].first = p;
+                  p = new ArcNode; p->adjvex = i;
+                  p->next = G.vertices[j].first; G.vertices[j].first = p;
+              }                                                            // O(n+e)
+          }
+          // Adjacent 判相邻（无向图只需查一端；有向图沿弧尾查出边）
+          bool Adjacent(ALGraph G, int v, int w) {
               for (ArcNode *p = G.vertices[v].first; p; p = p->next)
-                  if (!visited[p->adjvex]) DFS(G, p->adjvex);
-          }   // 时间 O(n+e)（邻接表）/ O(n^2)（邻接矩阵）；空间 O(n)（递归栈）
+                  if (p->adjvex == w) return true;                         // O(度)
+              return false;
+          }
+          // 求顶点 v 的度（无向图）
+          int Degree(ALGraph G, int v) {
+              int cnt = 0;
+              for (ArcNode *p = G.vertices[v].first; p; p = p->next) cnt++; // O(度)
+              return cnt;
+          }
+          // 找 v 的第一个邻点（配合 DFS/BFS 用）
+          int FirstAdjVex(ALGraph G, int v) {
+              return G.vertices[v].first ? G.vertices[v].first->adjvex : -1; // O(1)
+          }
+          int FirstNeighbor(ALGraph G, int x) { return FirstAdjVex(G, x); }  // 别名，等价
+          // NextNeighbor：返回 x 的邻点中 y 之后的下一个（沿边表找到 y 后继续走）
+          int NextNeighbor(ALGraph G, int x, int y) {
+              ArcNode *p = G.vertices[x].first;
+              while (p && p->adjvex != y) p = p->next;                      // 先找到 y
+              if (p && p->next) return p->next->adjvex;                     // O(度)
+              return -1;                                                    // y 是最后一个或无
+          }
+          int NextAdjVex(ALGraph G, int v, int w) { return NextNeighbor(G, v, w); } // 别名，等价
+          // 读/写边权：邻接表需先沿边表找到该边（ArcNode 中增 info/weight 域存权值）
+          int GetEdgeValue(ALGraph G, int v, int w) {                        // O(度)
+              for (ArcNode *p = G.vertices[v].first; p; p = p->next)
+                  if (p->adjvex == w) return p->weight;                      // 找到返回权值
+              return INF;                                                    // 无边返回约定值 INF
+          }
+          void SetEdgeValue(ALGraph &G, int v, int w, int val) {             // O(度)
+              for (ArcNode *p = G.vertices[v].first; p; p = p->next)
+                  if (p->adjvex == w) { p->weight = val; return; }           // 找到即改
+              // 边不存在：可报错或自动补插（此处略）
+          }
+          // Neighbors：收集 v 的所有邻点（沿边表走一遍）
+          int Neighbors(ALGraph G, int v, int res[]) {
+              int k = 0;
+              for (ArcNode *p = G.vertices[v].first; p; p = p->next)
+                  res[k++] = p->adjvex;                                     // O(度)
+              return k;                                                  // 返回邻点个数
+          }
+          // 加边 (i,j)：无向图两端各插一个边表结点（头插法）
+          void AddEdge(ALGraph &G, int i, int j) {
+              ArcNode *p = new ArcNode; p->adjvex = j;
+              p->next = G.vertices[i].first; G.vertices[i].first = p;      // 头插 O(1)
+              p = new ArcNode; p->adjvex = i;
+              p->next = G.vertices[j].first; G.vertices[j].first = p;
+              G.arcnum++;
+          }
+          void InsertArc(ALGraph &G, int i, int j) { AddEdge(G, i, j); }   // 有向图叫法，本质同 AddEdge
+          // 删边 (i,j)：无向图需从 i、j 两个边表各摘一次
+          void DeleteArc(ALGraph &G, int i, int j) {
+              ArcNode *p = G.vertices[i].first, *pre = NULL;
+              while (p && p->adjvex != j) { pre = p; p = p->next; }        // 先找到
+              if (p) {                                                     // O(度)
+                  if (pre) pre->next = p->next; else G.vertices[i].first = p->next;
+                  delete p;
+              }
+              p = G.vertices[j].first; pre = NULL;                         // 再删 j 表里的 i
+              while (p && p->adjvex != i) { pre = p; p = p->next; }
+              if (p) {
+                  if (pre) pre->next = p->next; else G.vertices[j].first = p->next;
+                  delete p;
+              }
+              G.arcnum--;
+          }
           ```
-        - ==广度优先搜索 BFS==（类似树的层序遍历，队列实现）
+        - ==Adjacent 各结构实现思路==：矩阵直接查 `Edge[v][w]` O(1)；邻接表沿 v 的边表找 w（有向图沿 firstout/tlink 出边链）O(度)；十字链表沿 firstout 出边链找 w O(度)；邻接多重表沿 firstedge 边链看 ivex/jvex 是否等于 w O(度)
+        - ==Neighbors 各结构实现思路==：矩阵扫第 v 行收集非零列 O(n)；邻接表沿 v 边表收集 adjvex O(度)；十字链表收集出边走 firstout/tlink、入边走 firstin/hlink O(度)；邻接多重表沿 firstedge 边链收集另一端（ivex/jvex 中不等于 v 的那个）O(度)。==返回集合即度的大小==，与求度/FirstAdjVex 同源
+        - 选择原则：判相邻为主/边密集 → 邻接矩阵；需频繁增删边、求度、找邻边 → 链式结构；==无向图删边 → 邻接多重表 O(1)、有向图求入度 → 十字链表 O(度)==，这是两种改进结构各自的用武之地
+      - 遍历
+        - ==深度优先搜索 DFS==（类似树的先序遍历，递归 / 栈实现，不依赖 STL）
           ```cpp
+          #define MaxVertexNum 100
+          int visited[MaxVertexNum];                 // 访问标记数组（0/1，全局）
+          int visit(int v) { /* 访问顶点 v 的操作，按需实现 */ return 0; }
+
+          // DFS 从顶点 v 出发的连通分量遍历
+          void DFS(ALGraph G, int v) {
+              ArcNode *p;
+              visit(v);
+              visited[v] = 1;                        // 访问后标记
+              for (p = G.vertices[v].first; p; p = p->next)
+                  if (!visited[p->adjvex])
+                      DFS(G, p->adjvex);             // 递归访问未访问的邻点
+          }   // 时间 O(n+e)（邻接表）/ O(n^2)（邻接矩阵）；空间 O(n)（递归栈）
+
+          // DFS 遍历全图（处理非连通：对每个未访问顶点都调用一次）
+          void DFSTraverse(ALGraph G) {
+              int i;
+              for (i = 0; i < G.vexnum; i++) visited[i] = 0;   // 标记清零
+              for (i = 0; i < G.vexnum; i++)
+                  if (!visited[i]) DFS(G, i);                  // 遍历每个连通分量
+          }   // 对非连通图生成 ==生成森林==
+          ```
+        - ==广度优先搜索 BFS==（类似树的层序遍历，数组循环队列实现，不依赖 STL）
+          ```cpp
+          // BFS 从顶点 v 出发的连通分量遍历
           void BFS(ALGraph G, int v) {
-              queue<int> q;
-              visit(v); visited[v] = true; q.push(v);
-              while (!q.empty()) {
-                  int u = q.front(); q.pop();
-                  for (ArcNode *p = G.vertices[u].first; p; p = p->next)
+              int queue[MaxVertexNum];               // 数组实现循环队列
+              int front = 0, rear = 0;               // 队空条件：front == rear
+              ArcNode *p;
+              visit(v);
+              visited[v] = 1;
+              queue[rear] = v;                       // 入队
+              rear = (rear + 1) % MaxVertexNum;
+              while (front != rear) {                // 队不空
+                  int u = queue[front];              // 出队
+                  front = (front + 1) % MaxVertexNum;
+                  for (p = G.vertices[u].first; p; p = p->next)
                       if (!visited[p->adjvex]) {
-                          visit(p->adjvex); visited[p->adjvex] = true; q.push(p->adjvex);
+                          visit(p->adjvex);
+                          visited[p->adjvex] = 1;
+                          queue[rear] = p->adjvex;   // 入队
+                          rear = (rear + 1) % MaxVertexNum;
                       }
               }
           }   // 时间 O(n+e) / O(n^2)；空间 O(n)（队列）
+
+          // BFS 遍历全图（处理非连通，思路同 DFSTraverse）
+          void BFSTraverse(ALGraph G) {
+              int i;
+              for (i = 0; i < G.vexnum; i++) visited[i] = 0;
+              for (i = 0; i < G.vexnum; i++)
+                  if (!visited[i]) BFS(G, i);
+          }
           ```
-        - 非连通图需对每个未访问顶点调用一次 DFS/BFS；遍历生成的边构成==生成森林==
+        - 非连通图遍历结果边构成==生成森林==；连通图（从一个顶点出发）则得==生成树==
+      - 生成树与生成森林
+        - ==生成树==：连通图的==包含全部顶点的极小连通子图==，$n$ 个顶点、==$n-1$ 条边==；加一条边必成回路，减一条边必不连通（==极大无回路、极小连通==）
+        - ==广度优先生成树==：由 BFS 遍历产生的生成树。遍历过程中==每个顶点首次入队所经过的那条边==（从出队顶点指向该顶点）构成树边，共 $n-1$ 条
+          - 树根 = BFS 起点；树上从根到顶点 u 的路径 = ==原图中根到 u 的最短路径（按边数计）==
+          - 由数组循环队列实现，层序推进，故生成树==高度较小==（相对 DFS 生成树更"宽"）
+          - ==不唯一==：起点不同、或邻接表中边表结点次序不同，都会得到不同的广度优先生成树
+        - ==深度优先生成树==：由 DFS 遍历产生，树边是==递归深入首次访问未访问顶点所经过的边==；非连通图多次调用 DFS 得到==生成森林==
+        - 两者对比
+          | 对比项 | 深度优先生成树 | 广度优先生成树 |
+          |---|---|---|
+          | 产生方式 | DFS 递归深入（栈） | BFS 层序推进（队列） |
+          | 树边 | 首次递归访问所经的边 | 首次入队所经的边 |
+          | 形态 | 树高较大、偏"深" | 树高较小、偏"宽" |
+          | 等价用途 | 判回路、求连通分量、拓扑排序 | ==求无权图单源最短路径（按边数）== |
+          | 唯一性 | 不唯一（依赖起点与边表次序） | 不唯一（依赖起点与边表次序） |
+        - 说明：==只有连通图才有生成树==，非连通图对应==生成森林==（每个连通分量一棵树）；$n$ 顶点图的生成森林边数为 $n-c$（$c$ 为连通分量数）
       - 应用
         - ==最小生成树 MST==：连通无向带权图的极小生成子图（$n$ 顶点、$n-1$ 边、权值和最小，不唯一）
           - ==Prim（加点）==：任选起点，每次并入"到已选点集距离最近"的顶点；$O(n^2)$，适合稠密图
           - ==Kruskal（加边）==：按权值从小到大选边，用并查集判断不构成回路；$O(e\log e)$，适合稀疏图
-        - 最短路径
-          - ==Dijkstra（单源）==：贪心，每次确定一个最短路径顶点；不能含负权边；$O(n^2)$
-          - ==Floyd（多源）==：动态规划，逐步允许中间顶点；允许负权但不能有负环；$O(n^3)$
-        - ==拓扑排序==（AOV 网）：每轮取一个入度为 0 的顶点输出并删去其出边；结果不唯一；==有环则无法拓扑排序==；$O(n+e)$
-        - ==关键路径==（AOE 网）：从源点到汇点的最长路径决定最短工期；求事件最早/最迟发生时间、活动最早/最迟开始时间；==余量为 0 的活动为关键活动==，关键路径上所有活动是关键活动
+        - ==最短路径==
+          - 适用情况速查
+            | 算法 | 问题类型 | ==有权图== | ==无权图== | 负权边 | ==负权回路== | 时间复杂度 |
+            |---|---|---|---|---|---|---|
+            | BFS | 单源 | ==不支持== | ==支持==（等价边权全 1） | 不支持 | 不支持 | $O(n+e)$ |
+            | Dijkstra | 单源 | ==支持==（仅非负权） | 支持（边权全 1） | ==不支持==（结果错误） | ==不支持==（结果错误） | $O(n^2)$ |
+            | Floyd | 多源 | ==支持== | 支持 | 支持 | ==不支持==（结果无效；对角元 $\text{dist}[i][i]<0$ 可辅助判断） | $O(n^3)$ |
+            | Bellman-Ford | 单源 | ==支持== | 支持 | ==支持== | ==能检测==（第 $n$ 轮仍可松弛即存在负环） | $O(ne)$ |
+            - ==负权回路（负环）==：==环上边权之和为负==，沿环绕行一圈总权值减小；源点可达时无限绕行使路径权值和 ==趋向 $-\infty$==，==最短路径不存在==
+            - ==负权边 ≠ 负权回路==：有负权边不一定有负环；最短路径上不可能有负环，也==不可能有重复顶点==；故无负环时最短路径最多 $n-1$ 条边（Bellman-Ford 松弛 $n-1$ 轮的依据）
+          - ==BFS==（==仅无权图==单源）：$O(n+e)$；==层号即最短距离==（按边数计），见广度优先生成树
+            - ==为什么带权图不行==：BFS 按"边数最少"分层，假设每条边代价相同；带权时边数少的路径总权未必最小（反例：1 条权 100 的边 vs 3 条权 1 的边）
+          - ==Dijkstra==（单源，一个起点到其余各点）：贪心，每次确定一个最短路径顶点
+            - ==适用有权图（非负权）==；也可用于无权图（等价于边权全为 1）
+            - ==不能含负权边==：贪心基于"已确定顶点的距离不再变小"，负权会使已出队的顶点距离被后续更新，破坏正确性
+            - $O(n^2)$（稠密图适用）；堆优化 $O(e\log n)$（稀疏图适用）
+          - ==Floyd==（多源，任意两点之间）：动态规划，逐步允许中间顶点
+            - ==适用有权图==（含负权边），也适用无权图
+            - ==允许负权==，但==图中不能有负环==（负环上路径可无限变小，最短路径无意义）
+            - $O(n^3)$；可同时求任意两点间最短路径长度与中转点
+          - ==Bellman-Ford==（单源）：对==所有边==松弛 $n-1$ 轮
+            - ==允许负权边==，是唯一能处理负权的单源算法；第 $n$ 轮若仍能松弛则说明==存在负环==
+            - $O(ne)$，效率低于 Dijkstra，仅在有负权边时使用
+          - 代码实现（C/C++ 通用写法，邻接矩阵存带权图；$n$ 顶点、$e$ 边）
+            ```cpp
+            #define INF 0x3f3f3f3f                    // 无穷大（不可达）
+            #define MAXV 100
+            typedef struct {
+                int Edge[MAXV][MAXV];                 // 邻接矩阵，Edge[i][j] = 边权（无边为 INF）
+                int vexnum, arcnum;
+            } MGraph;
+            ```
+          - BFS 求无权图单源最短距离（$O(n+e)$，邻接表版）
+            ```cpp
+            // dist[] 存起点 v0 到各点的最短边数（不可达为 -1），path[] 存前驱
+            void BFS_MIN_Distance(ALGraph G, int v0, int dist[], int path[]) {
+                int queue[MAXV], front = 0, rear = 0;
+                ArcNode *p;
+                int i;
+                for (i = 0; i < G.vexnum; i++) { dist[i] = -1; path[i] = -1; }
+                dist[v0] = 0;
+                queue[rear++] = v0;                   // 起点入队
+                while (front < rear) {
+                    int u = queue[front++];
+                    for (p = G.vertices[u].first; p; p = p->next) {
+                        int w = p->adjvex;
+                        if (dist[w] == -1) {          // 未访问
+                            dist[w] = dist[u] + 1;    // 层号即最短距离
+                            path[w] = u;              // 记录前驱
+                            queue[rear++] = w;
+                        }
+                    }
+                }
+            }
+            ```
+          - Dijkstra（单源，非负权，$O(n^2)$）
+            ```cpp
+            // dist[]：v0 到各点最短路径长度；path[]：前驱顶点（回溯路径）；vis[]：是否已确定
+            void Dijkstra(MGraph G, int v0, int dist[], int path[]) {
+                int vis[MAXV];                        // vis[i]=1 表示 i 的最短距离已确定
+                int i, j, u, min;
+                for (i = 0; i < G.vexnum; i++) {      // 初始化
+                    vis[i] = 0;                       // 初始都不确定
+                    dist[i] = G.Edge[v0][i];          // 直达距离
+                    path[i] = (dist[i] < INF) ? v0 : -1;
+                }
+                vis[v0] = 1; dist[v0] = 0; path[v0] = -1;
+                for (i = 1; i < G.vexnum; i++) {      // 每轮确定一个顶点，共 n-1 轮
+                    min = INF; u = -1;
+                    for (j = 0; j < G.vexnum; j++)    // 选未确定中距离最小的 u
+                        if (!vis[j] && dist[j] < min) { min = dist[j]; u = j; }
+                    if (u == -1) break;               // 剩余顶点均不可达
+                    vis[u] = 1;                       // 确定 u（并入最终集合）
+                    for (j = 0; j < G.vexnum; j++)    // 用 u 松弛其余顶点
+                        if (!vis[j] && dist[u] + G.Edge[u][j] < dist[j]) {
+                            dist[j] = dist[u] + G.Edge[u][j];
+                            path[j] = u;
+                        }
+                }
+            }   // 每轮 O(n) 选最小 + O(n) 松弛 → O(n^2)
+            // 注：语义上的 final 集合此处用 vis[] 表示，因为 final 是 C++11 关键字，不能作标识符
+            ```
+          - Floyd（多源，允许负权不可有负环，$O(n^3)$）
+            ```cpp
+            // dist[i][j]：i 到 j 的最短长度；path[i][j]：i→j 路径上 j 的前驱（-1 表示直达）
+            void Floyd(MGraph G, int dist[][MAXV], int path[][MAXV]) {
+                int i, j, k;
+                for (i = 0; i < G.vexnum; i++)        // 初始化为邻接矩阵
+                    for (j = 0; j < G.vexnum; j++) {
+                        dist[i][j] = G.Edge[i][j];
+                        path[i][j] = (i != j && dist[i][j] < INF) ? i : -1;
+                    }
+                for (k = 0; k < G.vexnum; k++)        // 逐步允许 k 作为中间点
+                    for (i = 0; i < G.vexnum; i++)
+                        for (j = 0; j < G.vexnum; j++)
+                            if (dist[i][k] + dist[k][j] < dist[i][j]) {
+                                dist[i][j] = dist[i][k] + dist[k][j];
+                                path[i][j] = path[k][j];
+                            }
+            }   // 三重循环必须 k 在最外层（动态规划按阶段推进）
+            ```
+          - Bellman-Ford（单源，允许负权、可判负环，$O(ne)$）
+            ```cpp
+            // 返回 1 表示成功；返回 0 表示存在从 v0 可达的负环
+            typedef struct { int a, b, w; } Edge;     // 边集数组：a→b 权 w
+            int BellmanFord(MGraph G, Edge edges[], int v0, int dist[], int path[]) {
+                int i, k, a, b, w, flag;
+                for (i = 0; i < G.vexnum; i++) { dist[i] = INF; path[i] = -1; }
+                dist[v0] = 0;
+                for (k = 1; k < G.vexnum; k++) {      // 对所有边松弛 n-1 轮
+                    flag = 0;
+                    for (i = 0; i < G.arcnum; i++) {
+                        a = edges[i].a; b = edges[i].b; w = edges[i].w;
+                        if (dist[a] < INF && dist[a] + w < dist[b]) {
+                            dist[b] = dist[a] + w;
+                            path[b] = a;
+                            flag = 1;
+                        }
+                    }
+                    if (!flag) return 1;              // 本轮无松弛，提前结束
+                }
+                for (i = 0; i < G.arcnum; i++) {      // 第 n 轮：仍能松弛则有负环
+                    a = edges[i].a; b = edges[i].b; w = edges[i].w;
+                    if (dist[a] < INF && dist[a] + w < dist[b]) return 0;
+                }
+                return 1;
+            }
+            ```
+          - 选用原则：==无权图求最短距离 → BFS==（最快）；==非负权 → Dijkstra==；==含负权边 → Bellman-Ford==；==需任意两点间 → Floyd==
+        - ==有向无环图 DAG 的应用==（AOV 网、AOE 网、描述表达式，三者均==要求图无环==）
+          - ==DAG==（Directed Acyclic Graph）：==无环的有向图==；==有环则拓扑排序/关键路径均无法进行==（AOV、AOE 网的定义本身即要求无环）
+          - ==拓扑排序==（==AOV 网==，Activity On Vertex）：==顶点表示活动==，==有向边表示活动的先后制约关系==（$v_i \to v_j$ 表示 $v_i$ 必须先于 $v_j$ 完成）
+            - 算法：每轮取一个==入度为 0== 的顶点输出，并删去其所有出边（后继顶点入度减 1）；重复至空
+            - ==结果不唯一==（入度为 0 的顶点可能多个）；==有环则无法拓扑排序==（剩余顶点入度均非 0）
+            - ==判环方法==：拓扑排序输出的顶点数 ==少于图顶点总数 → 图中存在环==
+            - 时间复杂度 $O(n+e)$；基于邻接表实现，需维护入度数组与栈/队列
+          - ==逆拓扑排序==（==出度为 0 优先==）：拓扑排序的"反向版本"，每轮取==出度为 0== 的顶点输出，并删去其所有入边（前驱顶点出度减 1）
+            - 等价说法：==将拓扑序列逆序输出==，或对图的==所有边反向后做普通拓扑排序==
+            - 实现：基于==逆邻接表==（存入边）维护出度数组，或对==原图做 DFS==，按==顶点==退栈先后==记录，得到的==逆序==即为拓扑序列==
+            - ==结果同样不唯一==；有环时同样无法完成
+            - ==用途==：==关键路径中求 $vl$（事件最迟发生时间）==必须沿逆拓扑序从汇点倒推；也可用于求"哪些活动能影响某事件"等逆向分析问题
+            - 时间复杂度 $O(n+e)$
+          - ==关键路径==（==AOE 网==，Activity On Edge）：==顶点表示事件==、==有向边表示活动==、==边权 ==$d$== 表示活动的持续时间==（即完成该活动所需时间，也记作 $\text{dut}$）；通常==一个源点（入度 0，工程开始）、一个汇点（出度 0，工程结束）==
+            - 核心量（活动 $a_i$ 由弧 $\langle v_j, v_k\rangle$ 表示，其持续时间为 $d$）
+              | 量 | 含义 | 求法 |
+              |---|---|---|
+              | ==$d$== | ==活动的持续时间==（弧的权值） | 题目给出 |
+              | $ve(j)$ | 事件 $v_j$ 的==最早==发生时间 | 从源点按==拓扑序==正向求：$ve(j)=\max\{ve(i)+d_{ij}\}$ |
+              | $vl(k)$ | 事件 $v_k$ 的==最迟==发生时间 | 从汇点按==逆拓扑序==倒推：$vl(k)=\min\{vl(j)-d_{kj}\}$ |
+              | $e(i)$ | 活动 $a_i$ 的==最早开始==时间 | $e(i)=ve(j)$（==弧尾事件的 ve==） |
+              | $l(i)$ | 活动 $a_i$ 的==最迟开始==时间 | $l(i)=vl(k)-d$（==弧头事件的 vl 减去持续时间==） |
+              | $l(i)-e(i)$ | 活动的==时间余量== | 余量为 0 ⇒ 关键活动 |
+            - ==易混辨析：$d$ ≠ 时间余量==（两者是完全不同的量，数值上也无必然关系）
+              | 对比 | ==$d$（持续时间）== | ==$l-e$（时间余量）== |
+              |---|---|---|
+              | 含义 | 完成该活动==需要花==多少时间 | 该活动==可以推迟多久开工==而不影响总工期 |
+              | 来源 | 题目给定的弧权，==固定不变== | 由 $ve$/$vl$ 推算得出 |
+              | 作用 | 参与计算 $ve$、$vl$、$l$ | 判定==关键活动==（为 0 即关键） |
+              - 举例：某活动 $d=3$（要干 3 天），$e=5$、$l=6$ ⇒ 时间余量 $=6-5=1$（可推迟 1 天开工，第 9 天完成，工期不变）；此处 $d=3$ 与余量 $=1$ 无关
+              - ==关键活动余量为 0==（一刻不能拖）；==非关键活动余量 > 0==（有缓冲）
+            - 初值：$ve(\text{源点})=0$；$vl(\text{汇点})=ve(\text{汇点})$（==汇点最迟 = 最早==，总工期不变）
+            - ==余量 $l-e=0$ 的活动为==关键活动====，关键路径上所有活动均为关键活动
+            - ==关键路径 = 从源点到汇点的==最长路径==（决定最短工期）；缩短工期只能==缩短关键活动==（且关键路径可能变为多条）
+            - 时间复杂度 $O(n+e)$；需先在 DAG 上做==拓扑排序==（求 ve）+ ==逆拓扑排序==（求 vl）
+          - ==描述表达式==（含公共子式的算术表达式）：用 DAG 描述，==共享公共子表达式==以节省存储空间
+            - 为什么用 DAG 而不是二叉树
+              | 对比 | 二叉树描述表达式 | ==DAG 描述表达式== |
+              |---|---|---|
+              | 结构 | 每个运算符/操作数一个结点 | 公共子式==只存一份==，被多个父结点共享 |
+              | 重复子式 | ==重复出现、各存各的== | ==合并为一个顶点==，多个入边指向它 |
+              | 顶点数 | 随表达式长度线性增长 | ==更少==（等于不同子式数 + 不同操作数个数） |
+              | 求值 | 可能重复计算相同子式 | ==可共享计算结果==，避免重复计算 |
+            - 经典例子：==$((a+b)*(b*(c+d))+(c+d)*e)*((c+d)*e)$==
+              - 二叉树：$(c+d)$ 出现 2 次、$(c+d)*e$ 出现 2 次，均重复存储
+              - DAG：$(c+d)$ 与 $(c+d)*e$ ==各合并为一个顶点==，被两处父结点共同指向
+            - 构建方法：==自底向上==逐层生成（对表达式树后序/递归），每生成一个子表达式前先检查==是否已存在"运算符 + 左运算对象 + 右运算对象"三者完全相同==的顶点
+              - 若存在 → ==不再新建，令本结点指针指向该已有顶点==（实现共享）
+              - 若不存在 → 新建顶点
+              - 故 DAG 中==同一顶点可有多个前驱（入度 > 1）==，这是与表达式树（每结点入度恒为 1）的关键区别
+            - 结构特征：==叶子顶点 = 操作数==（无出边）；==内部顶点 = 运算符==（出边指向其运算对象或子表达式顶点）；==无环==
+            - 考点：给定表达式画 DAG 并指出哪些子式被共享；求顶点/边数；与表达式二叉树对比空间节省；DAG 上求值可复用子式结果
+          - 三者对比
+            | 对比项 | AOV 网 | AOE 网 | 描述表达式 |
+            |---|---|---|---|
+            | 顶点含义 | ==活动== | ==事件== | ==运算符或操作数== |
+            | 边含义 | 活动的先后制约 | ==活动==（带权=持续时间） | 运算符→运算对象 |
+            | 是否带权 | 通常不带权 | ==带权== | 不带权 |
+            | 求解目标 | 拓扑序列（可行执行顺序） | ==关键路径、最短工期== | 表达式的值 / 共享子式 |
+            | 共同前提 | ==均为 DAG，有环则无解== | | |
     - 6 查找
     - 7 排序
     - 算法 45
