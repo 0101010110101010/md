@@ -5121,7 +5121,19 @@
         - ==平均查找长度 ASL==（==衡量查找算法效率的核心指标==）：为确定某元素位置所进行的==关键字比较次数的期望值==
           $$\text{ASL}=\sum_{i=1}^{n} P_i C_i$$
           - $P_i$ = 查找第 $i$ 个元素的概率（==等概率==时 $P_i=\frac{1}{n}$）；$C_i$ = 找到第 $i$ 个元素所需的==比较次数==
-          - ==查找成功 ASL==（元素在表中）与==查找失败 ASL==（元素不在表中）要==分别计算==，考点常只问其一
+          - ==查找成功 ASL==（元素在表中）与==查找失败 ASL==（元素不在表中）==必须分别计算==，考点常只问其一，务必看清题干问哪个
+            - ==成功==：对==表中的 $n$ 个元素==各自比较次数求平均，==分母为 $n$==
+              $$\text{ASL}_{\text{成功}}=\sum_{i=1}^{n} P_i C_i \quad(\text{等概率 }=\frac{1}{n}\sum_{i=1}^{n} C_i)$$
+            - ==失败==：对所有==可能的失败情况==（==失败结点==，通常共 $n+1$ 种）各自比较次数求平均，==分母为失败情况数==
+              $$\text{ASL}_{\text{失败}}=\sum_{j} P_j C'_j \quad(\text{等概率 }=\frac{1}{\text{失败情况数}}\sum_{j} C'_j)$$
+            - ==两者分母不同==（$n$ vs 失败情况数），这是最容易算错的地方
+          - 常见算法的成功/失败 ASL
+            | 算法 | 成功 ASL | 失败 ASL |
+            |---|---|---|
+            | ==顺序查找== | $\frac{n+1}{2}$ | $n$（无哨兵）/ $n+1$（含哨兵判定） |
+            | ==折半查找== | $\approx\log_2(n+1)-1$（按判定树层号加权） | 按==失败结点父层==加权（满树时 $=\lceil\log_2(n+1)\rceil$） |
+            | ==分块查找== | $\frac{b+1}{2}+\frac{s+1}{2}$（索引顺序） | 块内需==比完 $s$ 个==才判失败 |
+            | ==散列表== | 拉链 $1+\frac{\alpha}{2}$ | 拉链 $\approx\alpha$；线性探测 $\frac12\left(1+\frac{1}{(1-\alpha)^2}\right)$ |
           - ==ASL 越小，查找效率越高==；ASL 同时反映时间复杂度量级
       - ==顺序查找==（线性查找，适用于==顺序表或链表==，元素可无序）
         - 思想：从头到尾逐个比较关键字，相等则查找成功
@@ -5158,16 +5170,39 @@
           - 结点 = 表中元素，==树高 $h=\lceil\log_2(n+1)\rceil$==（表中元素个数为 $n$）
           - 判定树==平衡==（任意两结点层次差 $\le 1$），但==不一定是满二叉树==；失败结点为方形外部结点
           - 某元素的==比较次数 = 它在判定树中的层数==
-        - ASL（$n$ 较大时）：$\text{ASL}\approx\log_2(n+1)-1$，即 $O(\log_2 n)$；精确值按判定树逐层加权求和
+        - ASL（==必须分成功与失败分别计算==，$n$ 为表中元素个数）
+          - ==查找成功==：$\text{ASL}_{\text{成功}}=\frac{1}{n}\sum_{i=1}^{n} l_i$（$l_i$ = 第 $i$ 个元素在判定树中的==层数==，根为第 1 层）
+            - 判定树为==满二叉树==（$n=2^h-1$）时精确值：
+              $$\text{ASL}_{\text{成功}}=\frac{1}{n}\left(1\times 1+2\times 2+3\times 4+\cdots+h\times 2^{h-1}\right)=\frac{n+1}{n}\log_2(n+1)-1$$
+            - $n$ 较大时近似：$\text{ASL}_{\text{成功}}\approx\log_2(n+1)-1$，即 $O(\log_2 n)$
+          - ==查找失败==：比较到==判定树的失败结点==（方形外部结点）为止，比较次数 ==失败结点父结点所在层数==
+            - 判定树为满二叉树时：失败结点共 $n+1$ 个，均在第 $h+1$ 层，故
+              $$\text{ASL}_{\text{失败}}=\frac{(n+1)\cdot h}{n+1}=h=\lceil\log_2(n+1)\rceil$$
+            - 非满时需按判定树==逐个失败结点==按其父层加权求和（==常考手工计算==）
+          - ==成功与失败的比较次数都 $\le$ 树高 $h=\lceil\log_2(n+1)\rceil$==，故复杂度均为 $O(\log_2 n)$
+          - 举例（$n=11$，元素下标 $1\sim 11$，判定树高 4）：各层结点数 1、2、4、4
+            - ==成功==：$\text{ASL}=\dfrac{1\times1+2\times2+3\times4+4\times4}{11}=\dfrac{33}{11}=3$（==各层结点数 × 层号==求和 ÷ $n$）
+            - ==失败==：共 $n+1=12$ 个失败结点——==4 个==挂在==第 3 层==结点（如 a[1] 的左空孩子，比较 3 次）、==8 个==挂在==第 4 层==结点（4 个叶结点各 2 个空孩子，比较 4 次）
+              $$\text{ASL}_{\text{失败}}=\frac{4\times3+8\times4}{12}=\frac{44}{12}=\frac{11}{3}$$
+            - ==结论==：失败 ASL 分子是 ==失败结点个数 × 其父层号== 之和，分母是 ==失败结点总数 $n+1$==
         - 优缺点：==效率高==；但==要求有序 + 顺序存储==，==插入删除需移动元素== $O(n)$，故==适合静态查找表==
         - 注意：折半查找==不一定比顺序查找快==（$n$ 很小时，顺序查找的常数因子更小）
-      - ==分块查找==（索引顺序查找）：兼顾顺序查找的"插入删除方便"与折半查找的"高效"
+      - ==分块查找==（索引顺序查找,一般选择题不考代码，兼顾顺序查找的"插入删除方便"与折半查找的"高效"
         - 结构：把表分成若干==块==，==块内无序、块间有序==（第 $i$ 块的最大关键字 < 第 $i+1$ 块的最小关键字）；另建==索引表==记录每块的==最大关键字==与==块起始地址==
         - 查找过程：==先查索引表==（确定所在块，顺序或折半）→ ==再在块内顺序查找==
-        - ASL（$n$ 个元素、分 $b$ 块、每块 $s$ 个，$n=b\cdot s$）
-          - 索引==顺序==查找：$\text{ASL}=\frac{b+1}{2}+\frac{s+1}{2}$
-          - 索引==折半==查找：$\text{ASL}=\lceil\log_2(b+1)\rceil+\frac{s+1}{2}$
-          - ==最优分块==：取 $s=\sqrt{n}$（即 $b=\sqrt{n}$）时 ASL 最小，$\text{ASL}_{\min}\approx\sqrt{n}+1$
+        - ASL（$n$ 个元素、分 $b$ 块、每块 $s$ 个，$n=b\cdot s$；==成功与失败要分别算==）
+          - ==查找成功==：ASL = ==索引表的平均查找长度== + ==块内的平均查找长度==
+            - 索引==顺序==查找索引表：$\text{ASL}_{\text{成功}}=\dfrac{b+1}{2}+\dfrac{s+1}{2}$
+            - 索引==折半==查找索引表：$\text{ASL}_{\text{成功}}=\lceil\log_2(b+1)\rceil+\dfrac{s+1}{2}$
+            - 记忆：前半是==定块==代价、后半是==块内顺序找==代价
+          - ==查找失败==（元素不在表中）
+            - 情形一：==索引表中即可判定不属于任何块==（如待查值大于所有块最大关键字）
+              - 索引顺序查：比较 $b$ 次（查完整个索引表）；索引折半查：比较 $\lceil\log_2(b+1)\rceil$ 次
+            - 情形二：==落入某一块内但块中无此元素==（最常见考法）
+              - ==索引查找 + 块内查完 $s$ 个元素==：索引顺序查时 $\text{ASL}_{\text{失败}}=\dfrac{b+1}{2}+s$
+              - 若还要求==走出块尾==再判失败，则再加 1（按题目约定，需注意==是否计算越界判断==）
+            - ==注意==：块内无序 ⇒ 判定"该块没有"必须==比完块内全部 $s$ 个元素==，这是与折半查找失败的关键差异
+          - ==最优分块==：取 $s=\sqrt{n}$（即 $b=\sqrt{n}$）时成功 ASL 最小，$\text{ASL}_{\min}\approx\sqrt{n}+1$
       - 树型查找（BST / AVL 详见"4 数与二叉树"，此处只记查找效率）
         - ==二叉排序树 BST==：查找效率==取决于树的形态==
           - 最好：==平衡==时树高 $\approx\log_2 n$，查找 $O(\log_2 n)$
@@ -5200,6 +5235,222 @@
         - B 树的插入与删除（考点：结点==关键字个数超出==上界或==低于下界==时的处理）
           - 插入：先插入到叶结点；若关键字数 $>m-1$ 则==分裂==（中间关键字上移，可能使父结点继续分裂，直到根，==树高 +1==）
           - 删除：若删除后关键字数 $<\lceil m/2\rceil-1$ 则==借位==（向兄弟借）或==合并==（与兄弟合并，父结点关键字下移，可能使树高 −1）
+          - 插入实例（3 阶，上界 2 个关键字）：依次插入 $\{1,2,3,4,5,6,7\}$，演示==叶结点上溢分裂==与==向上传播使树高 +1==
+            - 插入 $1,2$：根结点 $[1,2]$（2 个关键字，合法）
+            - 插入 $3$：叶将变 $[1,2,3]$（$3>2$ 上溢）⇒ ==分裂==：中位数 $2$ 上移为根，左右各成叶 $[1]$、$[3]$；此时 根$[2]$ 子女 $[1]$、$[3]$
+            - 插入 $4,5$：落到右子树；$[3]\to[3,4]$（合法），再插 $5$ 变 $[3,4,5]$ 上溢 ⇒ 中位数 $4$ 上移，父 $[2]$ 收 $4$ 成 $[2,4]$（合法），右子分裂为 $[3]$、$[5]$；此时 根$[2,4]$ 子女 $[1]$、$[3]$、$[5]$
+            - 插入 $6$：最右子 $[5]\to[5,6]$（合法）
+            - 插入 $7$：最右子 $[5,6]$ 加 $7$ 变 $[5,6,7]$ 上溢 ⇒ 中位数 $6$ 上移；父 $[2,4]$ 收 $6$ 变 $[2,4,6]$ 也上溢 ⇒ ==父结点继续分裂==：中位数 $4$ 上移为==新根==，原父分裂为 $[2]$、$[6]$；最终 根$[4]$ 子女 $[2]$、$[6]$，其中 $[2]$ 子女 $[1]$、$[3]$，$[6]$ 子女 $[5]$、$[7]$
+            - 要点：==插入只在叶结点发生==；上溢从叶向父逐层==分裂==，直到==根分裂==才使==树高 +1==（本例根分裂 2 次，树高 +2）
+
+              <svg width="100%" height="540" viewBox="0 0 980 540" xmlns="http://www.w3.org/2000/svg">
+                <rect width="100%" height="100%" fill="#ffffff"/>
+                <text x="247" y="32" text-anchor="middle" font-size="14" font-weight="bold" fill="#333">插入 1,2：根 [1,2]</text>
+                <text x="737" y="32" text-anchor="middle" font-size="14" font-weight="bold" fill="#333">插入 3：首次分裂，根 [2]</text>
+                <text x="247" y="282" text-anchor="middle" font-size="14" font-weight="bold" fill="#333">插入 4,5：根 [2,4]</text>
+                <text x="737" y="282" text-anchor="middle" font-size="14" font-weight="bold" fill="#333">插入 6,7：根 [4]（树高 +1）</text>
+                <rect x="212" y="113" width="70" height="34" rx="4" fill="#c8e6c9" stroke="#2e7d32" stroke-width="1.5" stroke-dasharray="5,3"/>
+                <text x="230" y="130" text-anchor="middle" dominant-baseline="central" font-size="14" font-weight="bold" fill="#333">1</text>
+                <text x="264" y="130" text-anchor="middle" dominant-baseline="central" font-size="14" font-weight="bold" fill="#333">2</text>
+                <line x1="737" y1="112" x2="640" y2="168" stroke="#495057" stroke-width="1.2"/>
+                <line x1="737" y1="112" x2="834" y2="168" stroke="#495057" stroke-width="1.2"/>
+                <rect x="702" y="78" width="70" height="34" rx="4" fill="#fff3e0" stroke="#e65100" stroke-width="1.5"/>
+                <text x="737" y="95" text-anchor="middle" dominant-baseline="central" font-size="14" font-weight="bold" fill="#333">2</text>
+                <rect x="605" y="168" width="70" height="34" rx="4" fill="#c8e6c9" stroke="#2e7d32" stroke-width="1.5" stroke-dasharray="5,3"/>
+                <text x="640" y="185" text-anchor="middle" dominant-baseline="central" font-size="14" font-weight="bold" fill="#333">1</text>
+                <rect x="799" y="168" width="70" height="34" rx="4" fill="#c8e6c9" stroke="#2e7d32" stroke-width="1.5" stroke-dasharray="5,3"/>
+                <text x="834" y="185" text-anchor="middle" dominant-baseline="central" font-size="14" font-weight="bold" fill="#333">3</text>
+                <line x1="247" y1="362" x2="130" y2="418" stroke="#495057" stroke-width="1.2"/>
+                <line x1="247" y1="362" x2="247" y2="418" stroke="#495057" stroke-width="1.2"/>
+                <line x1="247" y1="362" x2="364" y2="418" stroke="#495057" stroke-width="1.2"/>
+                <rect x="212" y="328" width="70" height="34" rx="4" fill="#fff3e0" stroke="#e65100" stroke-width="1.5"/>
+                <text x="230" y="345" text-anchor="middle" dominant-baseline="central" font-size="14" font-weight="bold" fill="#333">2</text>
+                <text x="264" y="345" text-anchor="middle" dominant-baseline="central" font-size="14" font-weight="bold" fill="#333">4</text>
+                <rect x="95" y="418" width="70" height="34" rx="4" fill="#c8e6c9" stroke="#2e7d32" stroke-width="1.5" stroke-dasharray="5,3"/>
+                <text x="130" y="435" text-anchor="middle" dominant-baseline="central" font-size="14" font-weight="bold" fill="#333">1</text>
+                <rect x="212" y="418" width="70" height="34" rx="4" fill="#c8e6c9" stroke="#2e7d32" stroke-width="1.5" stroke-dasharray="5,3"/>
+                <text x="247" y="435" text-anchor="middle" dominant-baseline="central" font-size="14" font-weight="bold" fill="#333">3</text>
+                <rect x="329" y="418" width="70" height="34" rx="4" fill="#c8e6c9" stroke="#2e7d32" stroke-width="1.5" stroke-dasharray="5,3"/>
+                <text x="364" y="435" text-anchor="middle" dominant-baseline="central" font-size="14" font-weight="bold" fill="#333">5</text>
+                <line x1="737" y1="337" x2="640" y2="383" stroke="#495057" stroke-width="1.2"/>
+                <line x1="737" y1="337" x2="834" y2="383" stroke="#495057" stroke-width="1.2"/>
+                <line x1="640" y1="417" x2="600" y2="453" stroke="#495057" stroke-width="1.2"/>
+                <line x1="640" y1="417" x2="680" y2="453" stroke="#495057" stroke-width="1.2"/>
+                <line x1="834" y1="417" x2="795" y2="453" stroke="#495057" stroke-width="1.2"/>
+                <line x1="834" y1="417" x2="875" y2="453" stroke="#495057" stroke-width="1.2"/>
+                <rect x="702" y="303" width="70" height="34" rx="4" fill="#fff3e0" stroke="#e65100" stroke-width="1.5"/>
+                <text x="737" y="320" text-anchor="middle" dominant-baseline="central" font-size="14" font-weight="bold" fill="#333">4</text>
+                <rect x="605" y="383" width="70" height="34" rx="4" fill="#fff3e0" stroke="#e65100" stroke-width="1.5"/>
+                <text x="640" y="400" text-anchor="middle" dominant-baseline="central" font-size="14" font-weight="bold" fill="#333">2</text>
+                <rect x="799" y="383" width="70" height="34" rx="4" fill="#fff3e0" stroke="#e65100" stroke-width="1.5"/>
+                <text x="834" y="400" text-anchor="middle" dominant-baseline="central" font-size="14" font-weight="bold" fill="#333">6</text>
+                <rect x="565" y="453" width="70" height="34" rx="4" fill="#c8e6c9" stroke="#2e7d32" stroke-width="1.5" stroke-dasharray="5,3"/>
+                <text x="600" y="470" text-anchor="middle" dominant-baseline="central" font-size="14" font-weight="bold" fill="#333">1</text>
+                <rect x="645" y="453" width="70" height="34" rx="4" fill="#c8e6c9" stroke="#2e7d32" stroke-width="1.5" stroke-dasharray="5,3"/>
+                <text x="680" y="470" text-anchor="middle" dominant-baseline="central" font-size="14" font-weight="bold" fill="#333">3</text>
+                <rect x="760" y="453" width="70" height="34" rx="4" fill="#c8e6c9" stroke="#2e7d32" stroke-width="1.5" stroke-dasharray="5,3"/>
+                <text x="795" y="470" text-anchor="middle" dominant-baseline="central" font-size="14" font-weight="bold" fill="#333">5</text>
+                <rect x="840" y="453" width="70" height="34" rx="4" fill="#c8e6c9" stroke="#2e7d32" stroke-width="1.5" stroke-dasharray="5,3"/>
+                <text x="875" y="470" text-anchor="middle" dominant-baseline="central" font-size="14" font-weight="bold" fill="#333">7</text>
+                <text x="490" y="520" text-anchor="middle" font-size="13" fill="#666">实线描边 = 分支节点（有子结点）　虚线描边 = 叶子节点（无子结点）</text>
+              </svg>
+          - 删除实例（3 阶，用最小树演示==借位==与==合并使树高 −1==）：
+            - 起始（树高 1）：根 [4]，两叶子子女 [1,2]、[5,6]
+            - 删除 5：[5,6] ⇒ [6]（1 关键字，合法）
+            - 删除 6：叶子 [6] 空（0<最小 1）；左兄弟 [1,2] 有 2 关键字（>最小，可借）→ ==借位（旋转）==：父关键字 4 下移填进 [6] ⇒ [6]=[4]；兄弟 [1,2] 最大关键字 2 上移为父新关键字 ⇒ 父 [2]、兄弟 [1]；此时 根[2]，子女 [1]、[4]
+            - 删除 1：叶子 [1] 空；右兄弟 [4] 仅 1 关键字（=最小，不能借）→ ==合并==：父关键字 2 下移，[1](空)+[2]+[4] ⇒ 叶子 [2,4]（2 关键字）；根 [2] 失唯一关键字、仅剩 1 子女 [2,4] ⇒ ==该子女提升为新根==，树高 1→0
+            - 最终：单一根 [2,4]（一个叶子结点）
+
+              <svg width="100%" height="540" viewBox="0 0 980 540" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <marker id="arrowDel" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#495057"/></marker>
+              </defs>
+              <rect width="100%" height="100%" fill="#ffffff"/>
+              <text x="247" y="32" text-anchor="middle" font-size="14" font-weight="bold" fill="#333">起始（树高1）：根 [4]，子女 [1,2]、[5,6]</text>
+              <text x="737" y="32" text-anchor="middle" font-size="14" font-weight="bold" fill="#333">删除 5：[5,6] → [6]</text>
+              <text x="247" y="282" text-anchor="middle" font-size="14" font-weight="bold" fill="#333">删除 6：借位（旋转）→ 根 [2]</text>
+              <text x="737" y="282" text-anchor="middle" font-size="14" font-weight="bold" fill="#333">删除 1：合并 → 根 [2,4]（树高 1→0）</text>
+              <line x1="247" y1="114" x2="130" y2="170" stroke="#495057" stroke-width="1.2"/>
+              <line x1="247" y1="114" x2="364" y2="170" stroke="#495057" stroke-width="1.2"/>
+              <rect x="212" y="80" width="70" height="34" rx="4" fill="#fff3e0" stroke="#e65100" stroke-width="1.5"/>
+              <text x="247" y="97" text-anchor="middle" dominant-baseline="central" font-size="14" font-weight="bold" fill="#333">4</text>
+              <rect x="95" y="170" width="70" height="34" rx="4" fill="#c8e6c9" stroke="#2e7d32" stroke-width="1.5" stroke-dasharray="5,3"/>
+              <text x="130" y="187" text-anchor="middle" dominant-baseline="central" font-size="14" font-weight="bold" fill="#333">1</text>
+              <text x="164" y="187" text-anchor="middle" dominant-baseline="central" font-size="14" font-weight="bold" fill="#333">2</text>
+              <rect x="329" y="170" width="70" height="34" rx="4" fill="#c8e6c9" stroke="#2e7d32" stroke-width="1.5" stroke-dasharray="5,3"/>
+              <text x="364" y="187" text-anchor="middle" dominant-baseline="central" font-size="14" font-weight="bold" fill="#333">5</text>
+              <text x="398" y="187" text-anchor="middle" dominant-baseline="central" font-size="14" font-weight="bold" fill="#333">6</text>
+              <line x1="737" y1="114" x2="640" y2="170" stroke="#495057" stroke-width="1.2"/>
+              <line x1="737" y1="114" x2="834" y2="170" stroke="#495057" stroke-width="1.2"/>
+              <rect x="702" y="80" width="70" height="34" rx="4" fill="#fff3e0" stroke="#e65100" stroke-width="1.5"/>
+              <text x="737" y="97" text-anchor="middle" dominant-baseline="central" font-size="14" font-weight="bold" fill="#333">4</text>
+              <rect x="605" y="170" width="70" height="34" rx="4" fill="#c8e6c9" stroke="#2e7d32" stroke-width="1.5" stroke-dasharray="5,3"/>
+              <text x="640" y="187" text-anchor="middle" dominant-baseline="central" font-size="14" font-weight="bold" fill="#333">1</text>
+              <text x="674" y="187" text-anchor="middle" dominant-baseline="central" font-size="14" font-weight="bold" fill="#333">2</text>
+              <rect x="799" y="170" width="70" height="34" rx="4" fill="#c8e6c9" stroke="#2e7d32" stroke-width="1.5" stroke-dasharray="5,3"/>
+              <text x="834" y="187" text-anchor="middle" dominant-baseline="central" font-size="14" font-weight="bold" fill="#333">6</text>
+              <line x1="247" y1="364" x2="130" y2="420" stroke="#495057" stroke-width="1.2"/>
+              <line x1="247" y1="364" x2="364" y2="420" stroke="#495057" stroke-width="1.2"/>
+              <rect x="212" y="330" width="70" height="34" rx="4" fill="#fff3e0" stroke="#e65100" stroke-width="1.5"/>
+              <text x="247" y="347" text-anchor="middle" dominant-baseline="central" font-size="14" font-weight="bold" fill="#333">2</text>
+              <rect x="95" y="420" width="70" height="34" rx="4" fill="#c8e6c9" stroke="#2e7d32" stroke-width="1.5" stroke-dasharray="5,3"/>
+              <text x="130" y="437" text-anchor="middle" dominant-baseline="central" font-size="14" font-weight="bold" fill="#333">1</text>
+              <rect x="329" y="420" width="70" height="34" rx="4" fill="#c8e6c9" stroke="#2e7d32" stroke-width="1.5" stroke-dasharray="5,3"/>
+              <text x="364" y="437" text-anchor="middle" dominant-baseline="central" font-size="14" font-weight="bold" fill="#333">4</text>
+              <rect x="702" y="330" width="70" height="34" rx="4" fill="#c8e6c9" stroke="#2e7d32" stroke-width="1.5" stroke-dasharray="5,3"/>
+              <text x="737" y="347" text-anchor="middle" dominant-baseline="central" font-size="14" font-weight="bold" fill="#333">2</text>
+              <text x="771" y="347" text-anchor="middle" dominant-baseline="central" font-size="14" font-weight="bold" fill="#333">4</text>
+              <text x="490" y="520" text-anchor="middle" font-size="13" fill="#666">实线描边 = 分支节点（有子结点）　虚线描边 = 叶子节点（无子结点）</text>
+              </svg>
+            - ==实例对照==：同一组关键字 $\{1,2,3,4,5,6,7,8,9,10\}$ 分别建 ==3 阶 B 树==与 ==3 阶 B+ 树==
+          - 3 阶的约束：结点==最多 3 棵子树、2 个关键字==；非根结点==至少 2 棵子树、1 个关键字==
+
+            <svg width="100%" height="620" viewBox="0 0 980 620" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <marker id="arrowBp" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#495057"/></marker>
+              </defs>
+              <rect x="15" y="18" width="450" height="255" rx="8" fill="#f8f9fa" stroke="#ced4da" stroke-width="1"/>
+              <text x="240" y="42" text-anchor="middle" font-size="16" font-weight="bold" fill="#e65100">3 阶 B 树（关键字分布在各层）</text>
+              <rect x="180" y="58" width="120" height="34" rx="4" fill="#fff3e0" stroke="#e65100" stroke-width="1.5"/>
+              <text x="215" y="80" text-anchor="middle" font-size="14" font-weight="bold" fill="#333">4</text>
+              <text x="265" y="80" text-anchor="middle" font-size="14" font-weight="bold" fill="#333">8</text>
+              <line x1="240" y1="68" x2="240" y2="92" stroke="#e65100" stroke-width="1"/>
+              <line x1="165" y1="92" x2="360" y2="92" stroke="#495057" stroke-width="1"/>
+              <line x1="195" y1="92" x2="195" y2="112" stroke="#495057" stroke-width="1.2" marker-end="url(#arrowBp)"/>
+              <line x1="240" y1="92" x2="240" y2="112" stroke="#495057" stroke-width="1.2" marker-end="url(#arrowBp)"/>
+              <line x1="330" y1="92" x2="330" y2="112" stroke="#495057" stroke-width="1.2" marker-end="url(#arrowBp)"/>
+              <rect x="155" y="112" width="80" height="34" rx="4" fill="#e3f2fd" stroke="#1565c0" stroke-width="1.5"/>
+              <text x="180" y="134" text-anchor="middle" font-size="14" font-weight="bold" fill="#333">1</text>
+              <text x="215" y="134" text-anchor="middle" font-size="14" font-weight="bold" fill="#333">2</text>
+              <line x1="200" y1="122" x2="200" y2="134" stroke="#1565c0" stroke-width="1"/>
+              <rect x="280" y="112" width="80" height="34" rx="4" fill="#e3f2fd" stroke="#1565c0" stroke-width="1.5"/>
+              <text x="305" y="134" text-anchor="middle" font-size="14" font-weight="bold" fill="#333">6</text>
+              <text x="340" y="134" text-anchor="middle" font-size="14" font-weight="bold" fill="#333">7</text>
+              <line x1="325" y1="122" x2="325" y2="134" stroke="#1565c0" stroke-width="1"/>
+              <line x1="140" y1="180" x2="440" y2="180" stroke="#495057" stroke-width="1"/>
+              <line x1="180" y1="146" x2="180" y2="180" stroke="#495057" stroke-width="1.2" marker-end="url(#arrowBp)"/>
+              <line x1="215" y1="146" x2="215" y2="180" stroke="#495057" stroke-width="1.2" marker-end="url(#arrowBp)"/>
+              <line x1="305" y1="146" x2="305" y2="180" stroke="#495057" stroke-width="1.2" marker-end="url(#arrowBp)"/>
+              <line x1="340" y1="146" x2="340" y2="180" stroke="#495057" stroke-width="1.2" marker-end="url(#arrowBp)"/>
+              <rect x="150" y="180" width="110" height="34" rx="4" fill="#c8e6c9" stroke="#2e7d32" stroke-width="1.5"/>
+              <text x="170" y="202" text-anchor="middle" font-size="13" font-weight="bold" fill="#333">3</text>
+              <text x="205" y="202" text-anchor="middle" font-size="13" font-weight="bold" fill="#333">5</text>
+              <rect x="290" y="180" width="110" height="34" rx="4" fill="#c8e6c9" stroke="#2e7d32" stroke-width="1.5"/>
+              <text x="310" y="202" text-anchor="middle" font-size="13" font-weight="bold" fill="#333">9</text>
+              <text x="345" y="202" text-anchor="middle" font-size="13" font-weight="bold" fill="#333">10</text>
+              <text x="30" y="235" font-size="13" font-weight="bold" fill="#555">要点：查 8 在根结点命中即停（1 次 I/O）；查 3 需走根→叶（3 次 I/O）</text>
+              <text x="30" y="255" font-size="13" font-weight="bold" fill="#555">每个关键字只出现一次；叶层方框为关键字，下方横线为指针</text>
+              <rect x="500" y="18" width="465" height="255" rx="8" fill="#f8f9fa" stroke="#ced4da" stroke-width="1"/>
+              <text x="732" y="42" text-anchor="middle" font-size="16" font-weight="bold" fill="#6a1b9a">3 阶 B+ 树（关键字全在叶结点）</text>
+              <rect x="650" y="58" width="160" height="34" rx="4" fill="#f3e5f5" stroke="#6a1b9a" stroke-width="1.5"/>
+              <text x="690" y="80" text-anchor="middle" font-size="14" font-weight="bold" fill="#6a1b9a">4</text>
+              <text x="760" y="80" text-anchor="middle" font-size="14" font-weight="bold" fill="#6a1b9a">8</text>
+              <text x="782" y="80" font-size="10" fill="#6a1b9a">索引</text>
+              <line x1="730" y1="68" x2="730" y2="92" stroke="#6a1b9a" stroke-width="1"/>
+              <line x1="645" y1="92" x2="880" y2="92" stroke="#495057" stroke-width="1"/>
+              <line x1="690" y1="92" x2="690" y2="112" stroke="#495057" stroke-width="1.2" marker-end="url(#arrowBp)"/>
+              <line x1="775" y1="92" x2="775" y2="112" stroke="#495057" stroke-width="1.2" marker-end="url(#arrowBp)"/>
+              <line x1="860" y1="92" x2="860" y2="112" stroke="#495057" stroke-width="1.2" marker-end="url(#arrowBp)"/>
+              <rect x="640" y="112" width="100" height="34" rx="4" fill="#fff3e0" stroke="#e65100" stroke-width="1.5"/>
+              <text x="665" y="134" text-anchor="middle" font-size="14" font-weight="bold" fill="#333">2</text>
+              <text x="715" y="134" text-anchor="middle" font-size="14" font-weight="bold" fill="#333">4</text>
+              <rect x="760" y="112" width="100" height="34" rx="4" fill="#fff3e0" stroke="#e65100" stroke-width="1.5"/>
+              <text x="785" y="134" text-anchor="middle" font-size="14" font-weight="bold" fill="#333">6</text>
+              <text x="835" y="134" text-anchor="middle" font-size="14" font-weight="bold" fill="#333">8</text>
+              <rect x="880" y="112" width="60" height="34" rx="4" fill="#fff3e0" stroke="#e65100" stroke-width="1.5"/>
+              <text x="910" y="134" text-anchor="middle" font-size="14" font-weight="bold" fill="#333">10</text>
+              <line x1="620" y1="180" x2="955" y2="180" stroke="#495057" stroke-width="1"/>
+              <line x1="665" y1="146" x2="665" y2="180" stroke="#495057" stroke-width="1.2" marker-end="url(#arrowBp)"/>
+              <line x1="715" y1="146" x2="715" y2="180" stroke="#495057" stroke-width="1.2" marker-end="url(#arrowBp)"/>
+              <line x1="785" y1="146" x2="785" y2="180" stroke="#495057" stroke-width="1.2" marker-end="url(#arrowBp)"/>
+              <line x1="835" y1="146" x2="835" y2="180" stroke="#495057" stroke-width="1.2" marker-end="url(#arrowBp)"/>
+              <line x1="910" y1="146" x2="910" y2="180" stroke="#495057" stroke-width="1.2" marker-end="url(#arrowBp)"/>
+              <rect x="600" y="180" width="60" height="34" rx="4" fill="#c8e6c9" stroke="#2e7d32" stroke-width="1.5"/>
+              <text x="615" y="202" text-anchor="middle" font-size="13" font-weight="bold" fill="#333">1</text>
+              <text x="645" y="202" text-anchor="middle" font-size="13" font-weight="bold" fill="#333">2</text>
+              <rect x="672" y="180" width="60" height="34" rx="4" fill="#c8e6c9" stroke="#2e7d32" stroke-width="1.5"/>
+              <text x="687" y="202" text-anchor="middle" font-size="13" font-weight="bold" fill="#333">3</text>
+              <text x="717" y="202" text-anchor="middle" font-size="13" font-weight="bold" fill="#333">4</text>
+              <rect x="744" y="180" width="60" height="34" rx="4" fill="#c8e6c9" stroke="#2e7d32" stroke-width="1.5"/>
+              <text x="759" y="202" text-anchor="middle" font-size="13" font-weight="bold" fill="#333">5</text>
+              <text x="789" y="202" text-anchor="middle" font-size="13" font-weight="bold" fill="#333">6</text>
+              <rect x="816" y="180" width="60" height="34" rx="4" fill="#c8e6c9" stroke="#2e7d32" stroke-width="1.5"/>
+              <text x="831" y="202" text-anchor="middle" font-size="13" font-weight="bold" fill="#333">7</text>
+              <text x="861" y="202" text-anchor="middle" font-size="13" font-weight="bold" fill="#333">8</text>
+              <rect x="888" y="180" width="60" height="34" rx="4" fill="#c8e6c9" stroke="#2e7d32" stroke-width="1.5"/>
+              <text x="903" y="202" text-anchor="middle" font-size="13" font-weight="bold" fill="#333">9</text>
+              <text x="933" y="202" text-anchor="middle" font-size="13" font-weight="bold" fill="#333">10</text>
+              <text x="515" y="230" font-size="13" font-weight="bold" fill="#555">叶结点间用链表相连（绿色虚线），支持顺序查找与范围查询</text>
+              <text x="515" y="252" font-size="13" font-weight="bold" fill="#555">查 8 也必须走到叶结点，路径长度固定（3 次 I/O）</text>
+              <line x1="662" y1="197" x2="670" y2="197" stroke="#2e7d32" stroke-width="2" stroke-dasharray="3,2"/>
+              <line x1="734" y1="197" x2="742" y2="197" stroke="#2e7d32" stroke-width="2" stroke-dasharray="3,2"/>
+              <line x1="806" y1="197" x2="814" y2="197" stroke="#2e7d32" stroke-width="2" stroke-dasharray="3,2"/>
+              <line x1="878" y1="197" x2="886" y2="197" stroke="#2e7d32" stroke-width="2" stroke-dasharray="3,2"/>
+              <rect x="15" y="290" width="950" height="300" rx="8" fill="#ffffff" stroke="#adb5bd" stroke-width="1"/>
+              <text x="490" y="318" text-anchor="middle" font-size="16" font-weight="bold" fill="#333">两棵树的结构对照（同一组关键字 1~10）</text>
+              <text x="35" y="348" font-size="14" font-weight="bold" fill="#333">B 树：</text>
+              <text x="105" y="348" font-size="14" fill="#555">根 [4, 8]；第二层 [1,2]、[6,7]；第三层（叶）[3,5]、[9,10]　——共 3 层</text>
+              <text x="105" y="372" font-size="14" fill="#555">关键字 4、8 在根结点，其余 8 个分布在下层，每个关键字只出现 1 次</text>
+              <text x="105" y="396" font-size="14" fill="#555">非叶结点的关键字同时也是实际记录，命中即返回，故查找路径长度不定</text>
+              <text x="35" y="428" font-size="14" font-weight="bold" fill="#333">B+ 树：</text>
+              <text x="105" y="428" font-size="14" fill="#555">根 [4, 8]（索引）；第二层 [2,4]、[6,8]、[10]（索引）；第三层（叶）[1,2] [3,4] [5,6] [7,8] [9,10]</text>
+              <text x="105" y="452" font-size="14" fill="#555">叶结点包含全部 10 个关键字，非叶层的 4、8、2、6、10 重复出现，仅作索引不存记录</text>
+              <text x="105" y="476" font-size="14" fill="#555">查找必须到叶结点，所有关键字查找路径等长（均为 3 层），I/O 次数稳定</text>
+              <text x="35" y="510" font-size="14" font-weight="bold" fill="#333">关键差异一眼看懂：</text>
+              <rect x="105" y="520" width="18" height="18" fill="#fff3e0" stroke="#e65100" stroke-width="1.5"/><text x="132" y="535" font-size="14" fill="#555">= 索引层（B+ 树不存记录）</text>
+              <rect x="330" y="520" width="18" height="18" fill="#c8e6c9" stroke="#2e7d32" stroke-width="1.5"/><text x="357" y="535" font-size="14" fill="#555">= 叶结点（B+ 树存全部关键字 + 记录）</text>
+              <rect x="660" y="520" width="18" height="18" fill="#f3e5f5" stroke="#6a1b9a" stroke-width="1.5"/><text x="687" y="535" font-size="14" fill="#555">= B+ 树非叶索引层</text>
+              <text x="35" y="565" font-size="14" font-weight="bold" fill="#c62828">结论：B 树结点存记录（查得快但路径不定），B+ 树记录全在叶层（路径等长、支持顺序与范围查询）</text>
+            </svg>
+          - 对照小结
+            | 观察点 | ==3 阶 B 树== | ==3 阶 B+ 树== |
+            |---|---|---|
+            | 查找 8 | ==根结点命中即停==，1 次 I/O | ==必须到叶结点==，3 次 I/O |
+            | 查找路径 | 各关键字==路径长度不定== | ==所有关键字等长==（均 3 层） |
+            | 关键字总数 | 10 个（==各出现一次==） | 叶层 10 个 + 非叶层==重复 5 个== |
+            | 非叶结点 | ==存记录== | ==仅索引，不存记录== |
+            | 范围查询 [3,7] | 需==中序遍历==整树 | 沿叶链表==扫一段==即可 |
+            | 相同阶下 | 结点可容纳==更多分支==（关键字占一格子） | 非叶层==关键字更小==、同样结点能放==更多索引项== ⇒ ==树更矮== |
       - ==散列表==（Hash 表，==关键字与存储地址直接映射==，理想情况 $O(1)$）
         - 基本概念
           - ==散列函数==：$\text{Addr}=H(key)$，把关键字映射为存储地址
@@ -5224,11 +5475,15 @@
             - ==注意==：开放定址法删除元素只能做==删除标记==（逻辑删除），否则会==截断后续同义词的查找路径==
           - ==拉链法==（链接法/链地址法）：把==所有同义词==存在==同一个单链表==中，散列表存各链表头指针
             - ==无聚集现象==；==删除方便==（直接改指针）；结点空间==动态分配==；但指针有额外空间开销
-        - 查找效率（等概率）
-          - ==拉链法==：成功 $\text{ASL}\approx 1+\frac{\alpha}{2}$
-          - ==开放定址（线性探测）==：成功 $\text{ASL}\approx \frac{1}{2}\left(1+\frac{1}{1-\alpha}\right)$
+        - 查找效率（==成功与失败分别计算==，$\alpha$ 为装填因子）
+          - ==查找成功==（理论近似值）
+            - ==拉链法==：$\text{ASL}_{\text{成功}}\approx 1+\dfrac{\alpha}{2}$
+            - ==开放定址（线性探测）==：$\text{ASL}_{\text{成功}}\approx \dfrac{1}{2}\left(1+\dfrac{1}{1-\alpha}\right)$
+          - ==查找失败==（探测至==空位置/空指针==为止）
+            - ==拉链法==：$\text{ASL}_{\text{失败}}\approx \alpha$（在空链表上比较 0 次，需按各链表长度加权；==若约定比较一次空指针则为 $\alpha+e^{-\alpha}$==）
+            - ==开放定址（线性探测）==：$\text{ASL}_{\text{失败}}\approx \dfrac{1}{2}\left(1+\dfrac{1}{(1-\alpha)^2}\right)$
           - ==结论==：ASL 只与==装填因子 $\alpha$== 有关，与表长 $m$ 无直接关系；==$\alpha$ 越小 ASL 越小==，故散列表==不宜装得太满==
-          - 失败 ASL：通常按"探测到空位置"所需比较次数计算（拉链法失败常为 $\alpha$）
+          - ==考试常用做法==：不套公式，而是==对每个关键字逐一数比较次数==求平均（成功：装入每个元素所需探测次数 / $n$；失败：从==各地址==出发探测到空位的次数 / $m$）
         - 优缺点：==理想 $O(1)$== 查找、插入、删除；但==关键字无序==（不支持顺序查找与范围查询）、有==冲突开销==、需==预先估计表长==
       - 查找算法对比
         | 查找方法 | 存储要求 | 有序要求 | 查找复杂度 | 插入删除 | 适用 |
