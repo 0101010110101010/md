@@ -704,7 +704,7 @@
           $$
         - 直角三角形示意图：
 
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 840 200" width="100%" height="200">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 840 200">
             <defs>
               <marker id="arrow" markerWidth="6" markerHeight="6" refX="6" refY="3" orient="auto">
                 <path d="M0,0 L6,3 L0,6 Z" fill="#333"/>
@@ -1230,7 +1230,7 @@
     - 全微分
       - **四大概念关系**（二元函数）：
 
-        <svg width="500" height="340" xmlns="http://www.w3.org/2000/svg">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 340">
           <!-- 偏导数连续 -->
           <rect x="160" y="10" width="160" height="50" rx="8" fill="#e8f5e9" stroke="#2e7d32" stroke-width="2"/>
           <text x="240" y="40" text-anchor="middle" font-size="15" fill="#2e7d32" font-weight="bold">偏导数连续</text>
@@ -1311,7 +1311,7 @@
 
       **情况 1**：$z = f(u, v),\ u = u(t),\ v = v(t)$
 
-      <svg width="300" height="180" xmlns="http://www.w3.org/2000/svg">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 180">
         <!-- z -->
         <rect x="120" y="10" width="50" height="36" rx="6" fill="#e3f2fd" stroke="#1565c0" stroke-width="1.5"/>
         <text x="145" y="33" text-anchor="middle" font-size="16" fill="#1565c0" font-weight="bold">z</text>
@@ -1342,7 +1342,7 @@
 
       **情况 2**：$z = f(u, v),\ u = u(x, y),\ v = v(x, y)$
 
-      <svg width="380" height="200" xmlns="http://www.w3.org/2000/svg">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 380 200">
         <!-- z -->
         <rect x="155" y="5" width="50" height="36" rx="6" fill="#e3f2fd" stroke="#1565c0" stroke-width="1.5"/>
         <text x="180" y="28" text-anchor="middle" font-size="16" fill="#1565c0" font-weight="bold">z</text>
@@ -4086,7 +4086,7 @@
               颜色：==红=失衡结点A==、==橙=旋转中父子关系变化结点==、==蓝=父子关系不变结点==、==绿=新插入结点==、粗描边=旋转后的新根
               变化结点：==B==（升为根）、==Z==（移到 A 左）、==A==（成为 B 右孩子）；不变结点：`X`、`D`；新插入：==Y==
 
-              <svg viewBox="0 0 780 340" xmlns="http://www.w3.org/2000/svg" width="100%" height="340">
+              <svg viewBox="0 0 780 340" xmlns="http://www.w3.org/2000/svg">
                 <defs><marker id="arr" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto"><polygon points="0 0, 10 3.5, 0 7" fill="#495057"/></marker></defs>
                 <text x="180" y="24" text-anchor="middle" font-size="17" font-weight="bold" fill="#333">旋转前（BF(A)=+2）</text>
                 <text x="560" y="24" text-anchor="middle" font-size="17" font-weight="bold" fill="#333">右旋后（B 升为根）</text>
@@ -4115,7 +4115,7 @@
               颜色：==红=失衡结点A==、==橙=旋转中父子关系变化结点==、==蓝=父子关系不变结点==、==绿=新插入结点==、粗描边=旋转后的新根
               变化结点：==B==（升为根）、==Z==（移到 A 右）、==A==（成为 B 左孩子）；不变结点：`X`、`D`；新插入：==Y==
 
-              <svg viewBox="0 0 780 340" xmlns="http://www.w3.org/2000/svg" width="100%" height="340">
+              <svg viewBox="0 0 780 340" xmlns="http://www.w3.org/2000/svg">
                 <defs><marker id="arr2" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto"><polygon points="0 0, 10 3.5, 0 7" fill="#495057"/></marker></defs>
                 <text x="180" y="24" text-anchor="middle" font-size="17" font-weight="bold" fill="#333">旋转前（BF(A)=-2）</text>
                 <text x="560" y="24" text-anchor="middle" font-size="17" font-weight="bold" fill="#333">左旋后（B 升为根）</text>
@@ -4144,7 +4144,7 @@
               颜色：==红=失衡结点A==、==橙=旋转中父子关系变化结点==、==蓝=父子关系不变结点==、==绿=新插入结点==、粗描边=旋转后的新根
               变化结点：==C==（最终升为根）、==B==、==X==、==A==；不变结点：`W`、`D`；新插入：==Y==（插入点也可为 X，旋转方式相同）
 
-              <svg viewBox="0 0 780 350" xmlns="http://www.w3.org/2000/svg" width="100%" height="350">
+              <svg viewBox="0 0 780 350" xmlns="http://www.w3.org/2000/svg">
                 <defs><marker id="arr3" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto"><polygon points="0 0, 10 3.5, 0 7" fill="#495057"/></marker></defs>
                 <text x="150" y="24" text-anchor="middle" font-size="15" font-weight="bold" fill="#333">失衡前（BF(A)=+2）</text>
                 <text x="390" y="24" text-anchor="middle" font-size="15" font-weight="bold" fill="#333">第一步：对 B 左旋</text>
@@ -4188,7 +4188,7 @@
               颜色：==红=失衡结点A==、==橙=旋转中父子关系变化结点==、==蓝=父子关系不变结点==、==绿=新插入结点==、粗描边=旋转后的新根
               变化结点：==C==（最终升为根）、==A==、==X==、==B==；不变结点：`W`、`D`；新插入：==Y==（插入点也可为 X，旋转方式相同）
 
-              <svg viewBox="0 0 780 350" xmlns="http://www.w3.org/2000/svg" width="100%" height="350">
+              <svg viewBox="0 0 780 350" xmlns="http://www.w3.org/2000/svg">
                 <defs><marker id="arr4" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto"><polygon points="0 0, 10 3.5, 0 7" fill="#495057"/></marker></defs>
                 <text x="150" y="24" text-anchor="middle" font-size="15" font-weight="bold" fill="#333">失衡前（BF(A)=-2）</text>
                 <text x="390" y="24" text-anchor="middle" font-size="15" font-weight="bold" fill="#333">第一步：对 B 右旋</text>
@@ -4317,7 +4317,7 @@
           - 示意图：以有向图 $V_0\!\to\!V_1,\ V_0\!\to\!V_2,\ V_1\!\to\!V_0,\ V_1\!\to\!V_2,\ V_2\!\to\!V_0$ 共 5 条弧为例（按 head 分列：同列 headvex 相同；
             按 tail 分行：绿线=出边链 firstout/tlink，紫线=入边链 firstin/hlink，红 ✕=NULL；tailvex 域与 firstout 同色、headvex 域与 firstin 同色）
 
-            <svg width="100%" height="605" viewBox="-70 -40 1050 645" xmlns="http://www.w3.org/2000/svg">
+            <svg viewBox="-70 -40 1050 645" xmlns="http://www.w3.org/2000/svg">
               <defs>
                 <marker id="arrowG" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#2e7d32"/></marker>
                 <marker id="arrowP" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#6a1b9a"/></marker>
@@ -4513,7 +4513,7 @@
             jlink 从 jvex 侧引出=红虚线，串联同 jvex 的边；
             红 ✕=NULL；firstedge 指向顶点的第一条关联边）
 
-            <svg width="100%" height="620" viewBox="0 0 980 620" xmlns="http://www.w3.org/2000/svg">
+            <svg viewBox="0 0 980 620" xmlns="http://www.w3.org/2000/svg">
               <defs>
                 <marker id="arrowI" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#1565c0"/></marker>
                 <marker id="arrowJ" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#c62828"/></marker>
@@ -5243,7 +5243,7 @@
             - 插入 $7$：最右子 $[5,6]$ 加 $7$ 变 $[5,6,7]$ 上溢 ⇒ 中位数 $6$ 上移；父 $[2,4]$ 收 $6$ 变 $[2,4,6]$ 也上溢 ⇒ ==父结点继续分裂==：中位数 $4$ 上移为==新根==，原父分裂为 $[2]$、$[6]$；最终 根$[4]$ 子女 $[2]$、$[6]$，其中 $[2]$ 子女 $[1]$、$[3]$，$[6]$ 子女 $[5]$、$[7]$
             - 要点：==插入只在叶结点发生==；上溢从叶向父逐层==分裂==，直到==根分裂==才使==树高 +1==（本例根分裂 2 次，树高 +2）
 
-              <svg width="100%" height="540" viewBox="0 0 980 540" xmlns="http://www.w3.org/2000/svg">
+              <svg viewBox="0 0 980 540" xmlns="http://www.w3.org/2000/svg">
                 <rect width="100%" height="100%" fill="#ffffff"/>
                 <text x="247" y="32" text-anchor="middle" font-size="14" font-weight="bold" fill="#333">插入 1,2：根 [1,2]</text>
                 <text x="737" y="32" text-anchor="middle" font-size="14" font-weight="bold" fill="#333">插入 3：首次分裂，根 [2]</text>
@@ -5301,7 +5301,7 @@
             - 删除 1：叶子 [1] 空；右兄弟 [4] 仅 1 关键字（=最小，不能借）→ ==合并==：父关键字 2 下移，[1](空)+[2]+[4] ⇒ 叶子 [2,4]（2 关键字）；根 [2] 失唯一关键字、仅剩 1 子女 [2,4] ⇒ ==该子女提升为新根==，树高 1→0
             - 最终：单一根 [2,4]（一个叶子结点）
 
-              <svg width="100%" height="540" viewBox="0 0 980 540" xmlns="http://www.w3.org/2000/svg">
+              <svg viewBox="0 0 980 540" xmlns="http://www.w3.org/2000/svg">
               <defs>
                 <marker id="arrowDel" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#495057"/></marker>
               </defs>
@@ -5345,7 +5345,7 @@
             - ==实例对照==：同一组关键字 $\{1,2,3,4,5,6,7,8,9,10\}$ 分别建 ==3 阶 B 树==与 ==3 阶 B+ 树==
           - 3 阶的约束：结点==最多 3 棵子树、2 个关键字==；非根结点==至少 2 棵子树、1 个关键字==
 
-            <svg width="100%" height="620" viewBox="0 0 980 620" xmlns="http://www.w3.org/2000/svg">
+            <svg viewBox="0 0 980 620" xmlns="http://www.w3.org/2000/svg">
               <defs>
                 <marker id="arrowBp" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#495057"/></marker>
               </defs>
@@ -5572,7 +5572,8 @@
           }   // 空间 O(1)，==稳定==（相等不交换）
           ```
           - 最好（==已有序==）：一趟即结束，$O(n)$；最坏（逆序）：$O(n^2)$
-        - ==快速排序==（==分治==）：选一个==枢轴 pivot==，一趟划分把表分成==左小右大==两部分，再递归处理
+        - ==⚠️ 非常重要== ==快速排序==（==分治==）：选一个==枢轴 pivot==，一趟划分把表分成==左小右大==两部分，再递归处理
+          - ==一趟排序==：对序列做==一次完整的划分/遍历==，是算法向"有序"推进的==一个基本步==。快排中==一趟 = 一趟划分（Partition）==——把==整张表的所有元素==都==只处理一次==（逐一与枢轴比较并归位到左/右侧），最后把枢轴放到==最终位置==，表被分为"左 ≤ 枢轴 ≤ 右"两块（枢轴此后不再移动）；对比：冒泡的一趟 = 相邻比较交换一遍，使一个最值"浮"到端点；插入的一趟 = 把第 $i$ 个元素插入已排序前缀。
           ```cpp
           // 一趟划分：返回枢轴最终位置
           int Partition(int a[], int low, int high) {
@@ -5671,9 +5672,9 @@
         - ==取前 $k$ 个最大/小==：==堆排序==（不必排完全序，$O(n\log k)$）
       - 外部排序（了解）
         - ==归并排序==是外部排序的基础：先生成若干==有序归并段==，再==多路归并==
-        - ==败者树==：用==树形结构==对 $k$ 路归并的==关键字比较次数==优化，从 $k-1$ 次降到 $\lceil\log_2 k\rceil$ 次
         - ==置换-选择排序==：生成==长度不等==的初始归并段（可突破内存容量限制）
         - ==最佳归并树==（==哈夫曼树思想==）：归并段长度不等时，==长度短的先归并==可使总 I/O 次数最少
+        - ==败者树==：用==树形结构==对 $k$ 路归并的==关键字比较次数==优化，从 $k-1$ 次降到 $\lceil\log_2 k\rceil$ 次
         - 核心指标：==减少磁盘 I/O 次数==（增大归并路数 $k$、减少归并趟数）
     - 算法 45
       - 算法基础
@@ -5685,6 +5686,263 @@
       - 排序算法
       - 数据结构与算法的应用
   - 计算机组成原理 45
+    - ==计算机系统概论==：硬件五大部件（==运算器、控制器、存储器、输入、输出==）；==冯·诺依曼==特点（==五大部件组成，指令数据同存、按址访问、指令数据二进制表示，指令由操作码和序地址码组成，存储程序，以运算器为中心==）
+
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 980 540" font-family="-apple-system,Segoe UI,Microsoft YaHei,sans-serif">
+        <rect width="100%" height="100%" fill="#ffffff"/>
+        <defs>
+          <marker id="aData" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L8,3 L0,6 Z" fill="#1565c0"/></marker>
+          <marker id="aDataRev" markerWidth="10" markerHeight="10" refX="2" refY="3" orient="auto" markerUnits="strokeWidth"><path d="M8,0 L0,3 L8,6 Z" fill="#1565c0"/></marker>
+          <marker id="aCtrl" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L8,3 L0,6 Z" fill="#c62828"/></marker>
+          <marker id="aCtrlRev" markerWidth="10" markerHeight="10" refX="2" refY="3" orient="auto" markerUnits="strokeWidth"><path d="M8,0 L0,3 L8,6 Z" fill="#c62828"/></marker>
+        </defs>
+        <text x="490" y="30" text-anchor="middle" font-size="22" font-weight="bold" fill="#222">冯·诺依曼结构（存储程序计算机）</text>
+        <text x="490" y="50" text-anchor="middle" font-size="13" fill="#666">运算器居中 · 输入在左 · 输出在右 · 存储器在上 · 控制器在下</text>
+        <line x1="400" y1="110" x2="400" y2="420" stroke="#1565c0" stroke-width="3" marker-start="url(#aData)" marker-end="url(#aData)"/>
+        <line x1="490" y1="110" x2="490" y2="232" stroke="#1565c0" stroke-width="3" marker-start="url(#aDataRev)" marker-end="url(#aData)"/>
+        <line x1="400" y1="270" x2="410" y2="270" stroke="#1565c0" stroke-width="3"/>
+        <line x1="205" y1="267" x2="410" y2="270" stroke="#1565c0" stroke-width="3" marker-start="url(#aData)" marker-end="url(#aData)"/>
+        <line x1="570" y1="270" x2="775" y2="267" stroke="#1565c0" stroke-width="3" marker-start="url(#aData)" marker-end="url(#aData)"/>
+        <line x1="490" y1="420" x2="490" y2="308" stroke="#c62828" stroke-width="2.5" stroke-dasharray="8,5" marker-start="url(#aCtrlRev)" marker-end="url(#aCtrl)"/>
+        <line x1="600" y1="452" x2="600" y2="112" stroke="#c62828" stroke-width="2.5" stroke-dasharray="8,5" marker-start="url(#aCtrlRev)" marker-end="url(#aCtrl)"/>
+        <line x1="400" y1="452" x2="135" y2="300" stroke="#c62828" stroke-width="2.5" stroke-dasharray="8,5" marker-start="url(#aCtrlRev)" marker-end="url(#aCtrl)"/>
+        <line x1="580" y1="452" x2="850" y2="300" stroke="#c62828" stroke-width="2.5" stroke-dasharray="8,5" marker-start="url(#aCtrlRev)" marker-end="url(#aCtrl)"/>
+        <rect x="380" y="45" width="220" height="65" rx="8" fill="#fff3e0" stroke="#e65100" stroke-width="2"/>
+        <text x="490" y="80" text-anchor="middle" font-size="18" fill="#bf360c">存储器</text>
+        <text x="490" y="100" text-anchor="middle" font-size="13" fill="#bf360c">（指令+数据）</text>
+        <rect x="55" y="235" width="150" height="64" rx="8" fill="#e3f2fd" stroke="#1565c0" stroke-width="2"/>
+        <text x="130" y="273" text-anchor="middle" font-size="18" fill="#0d47a1">输入设备</text>
+        <rect x="410" y="232" width="160" height="76" rx="8" fill="#e8f5e9" stroke="#2e7d32" stroke-width="2"/>
+        <text x="490" y="270" text-anchor="middle" font-size="18" fill="#1b5e20">运算器</text>
+        <rect x="775" y="235" width="150" height="64" rx="8" fill="#e3f2fd" stroke="#1565c0" stroke-width="2"/>
+        <text x="850" y="273" text-anchor="middle" font-size="18" fill="#0d47a1">输出设备</text>
+        <rect x="400" y="420" width="180" height="64" rx="8" fill="#e8f5e9" stroke="#2e7d32" stroke-width="2"/>
+        <text x="490" y="458" text-anchor="middle" font-size="18" fill="#1b5e20">控制器</text>
+        <text x="640" y="175" text-anchor="middle" font-size="13" fill="#1565c0" stroke="#ffffff" stroke-width="3.5" paint-order="stroke">数据总线（蓝·双向）：存储器—运算器—控制器</text>
+        <text x="700" y="285" text-anchor="middle" font-size="13" fill="#c62828" stroke="#ffffff" stroke-width="3.5" paint-order="stroke">控制总线（红·虚线·由控制器发出）</text>
+        <line x1="70" y1="510" x2="110" y2="510" stroke="#1565c0" stroke-width="3"/>
+        <text x="118" y="515" font-size="14" fill="#444">实线蓝 = 数据线</text>
+        <line x1="260" y1="510" x2="300" y2="510" stroke="#c62828" stroke-width="2.5" stroke-dasharray="8,5"/>
+        <text x="308" y="515" font-size="14" fill="#444">虚线红 = 控制线</text>
+      </svg>
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 980 540" font-family="-apple-system,Segoe UI,Microsoft YaHei,sans-serif">
+        <rect width="100%" height="100%" fill="#ffffff"/>
+        <defs>
+          <marker id="aData" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L8,3 L0,6 Z" fill="#1565c0"/></marker>
+          <marker id="aDataRev" markerWidth="10" markerHeight="10" refX="2" refY="3" orient="auto" markerUnits="strokeWidth"><path d="M8,0 L0,3 L8,6 Z" fill="#1565c0"/></marker>
+          <marker id="aCtrl" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L8,3 L0,6 Z" fill="#c62828"/></marker>
+          <marker id="aCtrlRev" markerWidth="10" markerHeight="10" refX="2" refY="3" orient="auto" markerUnits="strokeWidth"><path d="M8,0 L0,3 L8,6 Z" fill="#c62828"/></marker>
+        </defs>
+        <text x="490" y="30" text-anchor="middle" font-size="22" font-weight="bold" fill="#222">现代计算机结构（以存储器为核心）</text>
+        <text x="490" y="50" text-anchor="middle" font-size="13" fill="#666">存储器居中，运算器 / 控制器 / 输入 / 输出均围绕存储器交换数据</text>
+        <line x1="490" y1="152" x2="490" y2="245" stroke="#1565c0" stroke-width="3" marker-start="url(#aDataRev)" marker-end="url(#aData)"/>
+        <line x1="490" y1="315" x2="490" y2="410" stroke="#1565c0" stroke-width="3" marker-end="url(#aData)"/>
+        <line x1="225" y1="280" x2="405" y2="280" stroke="#1565c0" stroke-width="3" marker-end="url(#aData)"/>
+        <line x1="575" y1="280" x2="755" y2="280" stroke="#1565c0" stroke-width="3" marker-end="url(#aData)"/>
+        <line x1="395" y1="152" x2="395" y2="445" stroke="#c62828" stroke-width="2.5" stroke-dasharray="8,5" marker-start="url(#aCtrlRev)" marker-end="url(#aCtrl)"/>
+        <line x1="395" y1="152" x2="415" y2="152" stroke="#c62828" stroke-width="2.5" stroke-dasharray="8,5"/>
+        <line x1="395" y1="445" x2="405" y2="445" stroke="#c62828" stroke-width="2.5" stroke-dasharray="8,5"/>
+        <line x1="515" y1="410" x2="515" y2="315" stroke="#c62828" stroke-width="2.5" stroke-dasharray="8,5" marker-start="url(#aCtrlRev)" marker-end="url(#aCtrl)"/>
+        <line x1="405" y1="425" x2="160" y2="300" stroke="#c62828" stroke-width="2.5" stroke-dasharray="8,5" marker-start="url(#aCtrlRev)" marker-end="url(#aCtrl)"/>
+        <line x1="575" y1="425" x2="820" y2="300" stroke="#c62828" stroke-width="2.5" stroke-dasharray="8,5" marker-start="url(#aCtrlRev)" marker-end="url(#aCtrl)"/>
+        <rect x="405" y="245" width="170" height="70" rx="8" fill="#fff3e0" stroke="#e65100" stroke-width="2.5"/>
+        <text x="490" y="278" text-anchor="middle" font-size="18" fill="#bf360c">存储器</text>
+        <text x="490" y="300" text-anchor="middle" font-size="13" fill="#bf360c">（核心·主存）</text>
+        <rect x="415" y="82" width="150" height="70" rx="8" fill="#e8f5e9" stroke="#2e7d32" stroke-width="2"/>
+        <text x="490" y="123" text-anchor="middle" font-size="18" fill="#1b5e20">运算器</text>
+        <rect x="405" y="410" width="170" height="70" rx="8" fill="#e8f5e9" stroke="#2e7d32" stroke-width="2"/>
+        <text x="490" y="451" text-anchor="middle" font-size="18" fill="#1b5e20">控制器</text>
+        <rect x="75" y="248" width="150" height="64" rx="8" fill="#e3f2fd" stroke="#1565c0" stroke-width="2"/>
+        <text x="150" y="286" text-anchor="middle" font-size="18" fill="#0d47a1">输入设备</text>
+        <rect x="755" y="248" width="150" height="64" rx="8" fill="#e3f2fd" stroke="#1565c0" stroke-width="2"/>
+        <text x="830" y="286" text-anchor="middle" font-size="18" fill="#0d47a1">输出设备</text>
+        <text x="490" y="345" text-anchor="middle" font-size="13" fill="#1565c0" stroke="#ffffff" stroke-width="3.5" paint-order="stroke">数据总线（蓝·双箭头）：各部件 ↔ 存储器</text>
+        <text x="490" y="372" text-anchor="middle" font-size="13" fill="#c62828" stroke="#ffffff" stroke-width="3.5" paint-order="stroke">控制总线（红·虚线·由控制器发出，双箭头）</text>
+        <line x1="70" y1="510" x2="110" y2="510" stroke="#1565c0" stroke-width="3"/>
+        <text x="118" y="515" font-size="14" fill="#444">实线蓝 = 数据线</text>
+        <line x1="260" y1="510" x2="300" y2="510" stroke="#c62828" stroke-width="2.5" stroke-dasharray="8,5"/>
+        <text x="308" y="515" font-size="14" fill="#444">虚线红 = 控制线</text>
+      </svg>
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 980 540" font-family="-apple-system,Segoe UI,Microsoft YaHei,sans-serif">
+        <rect width="100%" height="100%" fill="#ffffff"/>
+        <defs>
+          <marker id="mData" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L8,3 L0,6 Z" fill="#1565c0"/></marker>
+          <marker id="mDataRev" markerWidth="10" markerHeight="10" refX="2" refY="3" orient="auto" markerUnits="strokeWidth"><path d="M8,0 L0,3 L8,6 Z" fill="#1565c0"/></marker>
+          <marker id="mCtrl" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L8,3 L0,6 Z" fill="#c62828"/></marker>
+          <marker id="mCtrlRev" markerWidth="10" markerHeight="10" refX="2" refY="3" orient="auto" markerUnits="strokeWidth"><path d="M8,0 L0,3 L8,6 Z" fill="#c62828"/></marker>
+        </defs>
+        <text x="490" y="30" text-anchor="middle" font-size="22" font-weight="bold" fill="#222">主存储器（主存）内部结构</text>
+        <text x="490" y="50" text-anchor="middle" font-size="13" fill="#666">CPU 经 MAR/地址总线选址、MDR/数据总线读写，控制总线发读/写命令</text>
+        <line x1="215" y1="125" x2="430" y2="117" stroke="#1565c0" stroke-width="3" marker-end="url(#mData)"/>
+        <line x1="515" y1="145" x2="515" y2="176" stroke="#1565c0" stroke-width="3" marker-end="url(#mData)"/>
+        <line x1="735" y1="345" x2="645" y2="278" stroke="#1565c0" stroke-width="3" marker-start="url(#mDataRev)" marker-end="url(#mData)"/>
+        <line x1="215" y1="415" x2="735" y2="362" stroke="#1565c0" stroke-width="3" marker-start="url(#mDataRev)" marker-end="url(#mData)"/>
+        <line x1="820" y1="455" x2="820" y2="395" stroke="#c62828" stroke-width="2.5" stroke-dasharray="8,5" marker-start="url(#mCtrlRev)" marker-end="url(#mCtrl)"/>
+        <rect x="55" y="95" width="160" height="60" rx="8" fill="#e3f2fd" stroke="#1565c0" stroke-width="2"/>
+        <text x="135" y="123" text-anchor="middle" font-size="18" fill="#0d47a1">MAR</text>
+        <text x="135" y="144" text-anchor="middle" font-size="13" fill="#0d47a1">地址寄存器</text>
+        <rect x="55" y="385" width="160" height="60" rx="8" fill="#e3f2fd" stroke="#1565c0" stroke-width="2"/>
+        <text x="135" y="413" text-anchor="middle" font-size="18" fill="#0d47a1">MDR</text>
+        <text x="135" y="434" text-anchor="middle" font-size="13" fill="#0d47a1">数据寄存器</text>
+        <rect x="430" y="90" width="170" height="55" rx="8" fill="#fff3e0" stroke="#e65100" stroke-width="2"/>
+        <text x="515" y="123" text-anchor="middle" font-size="17" fill="#bf360c">地址译码器</text>
+        <rect x="395" y="176" width="250" height="208" rx="8" fill="#f1f8e9" stroke="#2e7d32" stroke-width="2.5"/>
+        <text x="520" y="210" text-anchor="middle" font-size="18" fill="#1b5e20">存储体（存储矩阵）</text>
+        <line x1="420" y1="252" x2="620" y2="252" stroke="#a5d6a7" stroke-width="1.5"/>
+        <line x1="420" y1="286" x2="620" y2="286" stroke="#a5d6a7" stroke-width="1.5"/>
+        <line x1="420" y1="320" x2="620" y2="320" stroke="#a5d6a7" stroke-width="1.5"/>
+        <line x1="420" y1="354" x2="620" y2="354" stroke="#a5d6a7" stroke-width="1.5"/>
+        <line x1="520" y1="225" x2="520" y2="354" stroke="#a5d6a7" stroke-width="1.5"/>
+        <text x="520" y="372" text-anchor="middle" font-size="13" fill="#33691e">每行一个存储单元（字）· 由地址译码选中</text>
+        <rect x="735" y="330" width="170" height="65" rx="8" fill="#e8f5e9" stroke="#2e7d32" stroke-width="2"/>
+        <text x="820" y="360" text-anchor="middle" font-size="17" fill="#1b5e20">读写电路</text>
+        <text x="320" y="108" text-anchor="middle" font-size="13" fill="#1565c0" stroke="#ffffff" stroke-width="3.5" paint-order="stroke">地址总线（单向·选单元）</text>
+        <text x="475" y="168" text-anchor="middle" font-size="13" fill="#1565c0" stroke="#ffffff" stroke-width="3.5" paint-order="stroke">地址选中</text>
+        <text x="475" y="470" text-anchor="middle" font-size="13" fill="#1565c0" stroke="#ffffff" stroke-width="3.5" paint-order="stroke">数据总线（双向·CPU ↔ 主存）</text>
+        <text x="830" y="478" text-anchor="middle" font-size="13" fill="#c62828" stroke="#ffffff" stroke-width="3.5" paint-order="stroke">读/写 控制总线（来自控制器）</text>
+        <line x1="70" y1="510" x2="110" y2="510" stroke="#1565c0" stroke-width="3"/>
+        <text x="118" y="515" font-size="14" fill="#444">实线蓝 = 数据/地址线</text>
+        <line x1="260" y1="510" x2="300" y2="510" stroke="#c62828" stroke-width="2.5" stroke-dasharray="8,5"/>
+        <text x="308" y="515" font-size="14" fill="#444">虚线红 = 控制线</text>
+      </svg>
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 980 740" font-family="-apple-system,Segoe UI,Microsoft YaHei,sans-serif">
+        <rect width="100%" height="100%" fill="#ffffff"/>
+        <defs>
+          <marker id="uData" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L8,3 L0,6 Z" fill="#1565c0"/></marker>
+          <marker id="uDataRev" markerWidth="10" markerHeight="10" refX="2" refY="3" orient="auto" markerUnits="strokeWidth"><path d="M8,0 L0,3 L8,6 Z" fill="#1565c0"/></marker>
+          <marker id="uCtrl" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L8,3 L0,6 Z" fill="#c62828"/></marker>
+          <marker id="uCtrlRev" markerWidth="10" markerHeight="10" refX="2" refY="3" orient="auto" markerUnits="strokeWidth"><path d="M8,0 L0,3 L8,6 Z" fill="#c62828"/></marker>
+        </defs>
+        <text x="490" y="30" text-anchor="middle" font-size="22" font-weight="bold" fill="#222">运算器（ALU）内部结构</text>
+        <text x="490" y="50" text-anchor="middle" font-size="13" fill="#666">ALU 为运算核心，ACC/MQ/X/通用寄存器组经数据线与 ALU 交换，控制器发控制信号</text>
+        <!-- 寄存器框 -->
+        <rect x="400" y="140" width="150" height="70" rx="8" fill="#e3f2fd" stroke="#1565c0" stroke-width="2"/>
+        <text x="475" y="168" text-anchor="middle" font-size="16" fill="#0d47a1">ACC</text>
+        <text x="475" y="186" text-anchor="middle" font-size="11" fill="#0d47a1">累加寄存器</text>
+        <text x="475" y="202" text-anchor="middle" font-size="10" fill="#37474f">加/减：结果　乘：部分积　除：被除数·余数</text>
+        <rect x="575" y="140" width="150" height="70" rx="8" fill="#e3f2fd" stroke="#1565c0" stroke-width="2"/>
+        <text x="650" y="168" text-anchor="middle" font-size="16" fill="#0d47a1">MQ</text>
+        <text x="650" y="186" text-anchor="middle" font-size="11" fill="#0d47a1">乘商寄存器</text>
+        <text x="650" y="202" text-anchor="middle" font-size="10" fill="#37474f">乘：乘数·收部分积　除：商</text>
+        <polygon points="382,265 568,265 590,287 590,335 360,335 360,287" fill="#e8f5e9" stroke="#2e7d32" stroke-width="2.5"/>
+        <text x="475" y="293" text-anchor="middle" font-size="18" fill="#1b5e20">ALU 算术逻辑单元</text>
+        <text x="475" y="311" text-anchor="middle" font-size="12" fill="#1b5e20">加：A+B　减：A+[−B]补</text>
+        <text x="475" y="327" text-anchor="middle" font-size="12" fill="#1b5e20">乘：累加+移位　除：试减+移位</text>
+        <rect x="405" y="395" width="140" height="60" rx="8" fill="#e3f2fd" stroke="#1565c0" stroke-width="2"/>
+        <text x="475" y="423" text-anchor="middle" font-size="16" fill="#0d47a1">X</text>
+        <text x="475" y="440" text-anchor="middle" font-size="11" fill="#0d47a1">乘：被乘数　除：除数</text>
+        <rect x="720" y="300" width="180" height="60" rx="8" fill="#e8f5e9" stroke="#2e7d32" stroke-width="2"/>
+        <text x="810" y="328" text-anchor="middle" font-size="16" fill="#1b5e20">通用寄存器组</text>
+        <text x="810" y="346" text-anchor="middle" font-size="12" fill="#1b5e20">R0…Rn</text>
+        <!-- 数据连线（双箭头） -->
+        <line x1="475" y1="210" x2="475" y2="265" stroke="#1565c0" stroke-width="2.5" marker-start="url(#uDataRev)" marker-end="url(#uData)"/>
+        <line x1="475" y1="335" x2="475" y2="395" stroke="#1565c0" stroke-width="2.5" marker-start="url(#uDataRev)" marker-end="url(#uData)"/>
+        <line x1="550" y1="175" x2="575" y2="175" stroke="#1565c0" stroke-width="2.5" marker-start="url(#uDataRev)" marker-end="url(#uData)"/>
+        <line x1="590" y1="300" x2="720" y2="330" stroke="#1565c0" stroke-width="2.5" marker-start="url(#uDataRev)" marker-end="url(#uData)"/>
+        <!-- 交互说明 -->
+        <text x="462" y="240" text-anchor="end" font-size="12.5" fill="#1565c0" stroke="#ffffff" stroke-width="3" paint-order="stroke">ACC↔ALU</text>
+        <text x="508" y="368" text-anchor="start" font-size="12.5" fill="#1565c0" stroke="#ffffff" stroke-width="3" paint-order="stroke">ALU↔X</text>
+        <text x="562" y="128" text-anchor="middle" font-size="12.5" fill="#1565c0" stroke="#ffffff" stroke-width="3" paint-order="stroke">MQ↔ACC</text>
+        <text x="655" y="288" text-anchor="middle" font-size="12.5" fill="#1565c0" stroke="#ffffff" stroke-width="3" paint-order="stroke">通用组↔ALU</text>
+        <!-- 控制线 -->
+        <line x1="810" y1="360" x2="810" y2="455" stroke="#c62828" stroke-width="2.5" stroke-dasharray="8,5" marker-start="url(#uCtrlRev)" marker-end="url(#uCtrl)"/>
+        <text x="640" y="470" text-anchor="middle" font-size="13" fill="#c62828" stroke="#ffffff" stroke-width="3.5" paint-order="stroke">控制总线（来自控制器·双向）</text>
+        <text x="490" y="525" text-anchor="middle" font-size="16" font-weight="bold" fill="#222">各寄存器在加减乘除中存放的数</text>
+        <rect x="120" y="540" width="760" height="170" rx="6" fill="#fafafa" stroke="#90a4ae" stroke-width="1.5"/>
+        <line x1="280" y1="540" x2="280" y2="710" stroke="#90a4ae" stroke-width="1.2"/>
+        <line x1="430" y1="540" x2="430" y2="710" stroke="#90a4ae" stroke-width="1.2"/>
+        <line x1="580" y1="540" x2="580" y2="710" stroke="#90a4ae" stroke-width="1.2"/>
+        <line x1="730" y1="540" x2="730" y2="710" stroke="#90a4ae" stroke-width="1.2"/>
+        <line x1="120" y1="583" x2="880" y2="583" stroke="#90a4ae" stroke-width="1.2"/>
+        <line x1="120" y1="625" x2="880" y2="625" stroke="#90a4ae" stroke-width="1.2"/>
+        <line x1="120" y1="667" x2="880" y2="667" stroke="#90a4ae" stroke-width="1.2"/>
+        <text x="200" y="569" text-anchor="middle" font-size="15" font-weight="bold" fill="#37474f">寄存器</text>
+        <text x="355" y="569" text-anchor="middle" font-size="15" font-weight="bold" fill="#1b5e20">加</text>
+        <text x="505" y="569" text-anchor="middle" font-size="15" font-weight="bold" fill="#1b5e20">减</text>
+        <text x="655" y="569" text-anchor="middle" font-size="15" font-weight="bold" fill="#1b5e20">乘</text>
+        <text x="805" y="569" text-anchor="middle" font-size="15" font-weight="bold" fill="#1b5e20">除</text>
+        <text x="200" y="611" text-anchor="middle" font-size="15" font-weight="bold" fill="#0d47a1">ACC</text>
+        <text x="355" y="611" text-anchor="middle" font-size="12" fill="#333">被加数 → 结果（和）</text>
+        <text x="505" y="611" text-anchor="middle" font-size="12" fill="#333">被减数 → 结果（差）</text>
+        <text x="655" y="611" text-anchor="middle" font-size="12" fill="#333">部分积（末态=高位积）</text>
+        <text x="805" y="611" text-anchor="middle" font-size="12" fill="#333">被除数 → 余数</text>
+        <text x="200" y="653" text-anchor="middle" font-size="15" font-weight="bold" fill="#0d47a1">MQ</text>
+        <text x="355" y="653" text-anchor="middle" font-size="12" fill="#333">—</text>
+        <text x="505" y="653" text-anchor="middle" font-size="12" fill="#333">—</text>
+        <text x="655" y="653" text-anchor="middle" font-size="12" fill="#333">乘数 → 收部分积</text>
+        <text x="805" y="653" text-anchor="middle" font-size="12" fill="#333">商</text>
+        <text x="200" y="695" text-anchor="middle" font-size="15" font-weight="bold" fill="#0d47a1">X</text>
+        <text x="355" y="695" text-anchor="middle" font-size="12" fill="#333">加数</text>
+        <text x="505" y="695" text-anchor="middle" font-size="12" fill="#333">减数（求补）</text>
+        <text x="655" y="695" text-anchor="middle" font-size="12" fill="#333">被乘数</text>
+        <text x="805" y="695" text-anchor="middle" font-size="12" fill="#333">除数</text>
+        <line x1="70" y1="718" x2="110" y2="718" stroke="#1565c0" stroke-width="3"/>
+        <text x="118" y="723" font-size="14" fill="#444">实线蓝 = 数据线</text>
+        <line x1="260" y1="718" x2="300" y2="718" stroke="#c62828" stroke-width="2.5" stroke-dasharray="8,5"/>
+        <text x="308" y="723" font-size="14" fill="#444">虚线红 = 控制线</text>
+      </svg>
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 980 380" font-family="-apple-system,Segoe UI,Microsoft YaHei,sans-serif">
+        <rect width="100%" height="100%" fill="#ffffff"/>
+        <defs>
+          <marker id="kData" markerWidth="10" markerHeight="10" refX="5" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 Z" fill="#1565c0"/></marker>
+          <marker id="kDataRev" markerWidth="10" markerHeight="10" refX="3" refY="3" orient="auto"><path d="M8,0 L0,3 L8,6 Z" fill="#1565c0"/></marker>
+          <marker id="kCtrl" markerWidth="10" markerHeight="10" refX="5" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 Z" fill="#c62828"/></marker>
+          <marker id="kCtrlRev" markerWidth="10" markerHeight="10" refX="3" refY="3" orient="auto"><path d="M8,0 L0,3 L8,6 Z" fill="#c62828"/></marker>
+        </defs>
+        <!-- 标题 -->
+        <text x="490" y="42" text-anchor="middle" font-size="17" font-weight="bold" fill="#263238">控制器（CU）核心：PC · IR · CU</text>
+        <!-- 部件 -->
+        <rect x="180" y="120" width="180" height="70" rx="8" fill="#e3f2fd" stroke="#1565c0" stroke-width="2.5"/>
+        <text x="270" y="150" text-anchor="middle" font-size="18" fill="#0d47a1">PC</text>
+        <text x="270" y="170" text-anchor="middle" font-size="12" fill="#37474f">程序计数器（存下一条指令地址）</text>
+        <rect x="620" y="120" width="180" height="70" rx="8" fill="#e3f2fd" stroke="#1565c0" stroke-width="2.5"/>
+        <text x="710" y="150" text-anchor="middle" font-size="18" fill="#0d47a1">IR</text>
+        <text x="710" y="170" text-anchor="middle" font-size="12" fill="#37474f">指令寄存器（存当前指令）</text>
+        <rect x="400" y="250" width="180" height="70" rx="8" fill="#e8f5e9" stroke="#2e7d32" stroke-width="2.5"/>
+        <text x="490" y="280" text-anchor="middle" font-size="18" fill="#1b5e20">CU</text>
+        <text x="490" y="300" text-anchor="middle" font-size="12" fill="#37474f">控制单元（发控制信号）</text>
+        <!-- PC→IR 取指（蓝双箭头） -->
+        <line x1="360" y1="155" x2="620" y2="155" stroke="#1565c0" stroke-width="2.5" marker-start="url(#kDataRev)" marker-end="url(#kData)"/>
+        <text x="490" y="145" text-anchor="middle" font-size="12.5" fill="#1565c0" stroke="#ffffff" stroke-width="3" paint-order="stroke">取指：PC 所指指令 → IR</text>
+        <!-- CU→PC / CU→IR 控制线（红虚线双箭头） -->
+        <line x1="450" y1="250" x2="270" y2="190" stroke="#c62828" stroke-width="2.5" stroke-dasharray="8,5" marker-start="url(#kCtrlRev)" marker-end="url(#kCtrl)"/>
+        <line x1="530" y1="250" x2="710" y2="190" stroke="#c62828" stroke-width="2.5" stroke-dasharray="8,5" marker-start="url(#kCtrlRev)" marker-end="url(#kCtrl)"/>
+        <text x="335" y="225" text-anchor="middle" font-size="12" fill="#c62828" stroke="#ffffff" stroke-width="3" paint-order="stroke">PC+1 / 取指</text>
+        <text x="645" y="225" text-anchor="middle" font-size="12" fill="#c62828" stroke="#ffffff" stroke-width="3" paint-order="stroke">译码</text>
+        <!-- 图例 -->
+        <line x1="210" y1="345" x2="250" y2="345" stroke="#1565c0" stroke-width="2.5"/>
+        <text x="258" y="350" font-size="13" fill="#444">实线蓝 = 数据线</text>
+        <line x1="430" y1="345" x2="470" y2="345" stroke="#c62828" stroke-width="2.5" stroke-dasharray="8,5"/>
+        <text x="478" y="350" font-size="13" fill="#444">虚线红 = 控制线（CU 发出）</text>
+      </svg>
+    - ==算术运算（加 / 减 / 乘 / 除）==
+      - ==加法==：ALU 直接对两操作数作==补码相加==，结果回写 ==ACC==；用==最高位进位 / 双符号位==判断溢出
+      - ==减法==：化为==补码加法==——减数求补（==取反 + 1==，$[{-}B]_{\text{补}} = [\text{取反}(B)]_{\text{补}} + 1$），$A - B = A + [{-}B]_{\text{补}}$，结果回写 ==ACC==
+      - ==乘法==：==累加 + 移位==；==MQ== 存乘数（并逐步收部分积），==ACC== 存部分积，==X== 存被乘数（原码乘：符号位异或、数值位逐位累加右移；补码乘用 ==Booth 算法==）
+      - ==除法==：==试减 + 累加 + 移位==；==X== 存除数，==ACC== 存被除数 / 余数，==MQ== 存商（原码除：符号位异或、==恢复 / 不恢复余数法==，每步移位后试减，够减商 1、不够商 0）
+    - ==数据的表示与运算==
+      - ==数制==：二/八/十/十六转换；==BCD==、==余3码==
+      - ==定点数==：==原码、反码、补码、移码==；补码加减、==溢出判断==（双符号位/进位）
+      - ==浮点数==：==IEEE 754==（$S$ 阶符/$E$ 阶码/$M$ 尾数），规格化、==阶码对齐==、舍入
+      - ==校验码==：==奇偶校验、海明码（检2纠1）、CRC==循环冗余
+    - ==存储系统==
+      - 层次结构：==Cache—主存—辅存==；==SRAM/DRAM==、刷新
+      - ==Cache==：==直接/全相联/组相联映射==、==替换算法==（FIFO/LRU/随机）、==写回/写直达==
+      - ==主存==：芯片容量与扩展（位/字扩展）；==多体并行==
+      - ==虚拟存储==：==页式==、==快表 TLB==、==局部性原理==
+    - ==指令系统==
+      - ==指令格式==：操作码 + 地址码；==定长/变长==操作码
+      - ==寻址方式==：==立即、直接、间接、寄存器、基址、变址、相对、堆栈==
+      - ==CISC 与 RISC== 区别
+    - ==中央处理器 CPU==
+      - ==数据通路==：==CPU 内部结构、专用/通用寄存器==、单/多总线
+      - ==控制器==：==硬布线、微程序==控制；==微指令==格式（水平/垂直）
+      - ==指令流水线==：==取指—译码—执行==；==结构/数据/控制相关（冒险）==；吞吐率、==时空图==
+    - ==总线==：==片内/系统/通信总线==；==同步/异步定时==；==集中/分布仲裁==
+    - ==输入输出 I/O==
+      - ==I/O 方式==：==程序查询、程序中断、DMA==；通道/外围处理机
+      - ==中断==：==单/多重中断、中断向量、屏蔽==；==隐指令、现场保护==
+  - 计算机体系结构
   - 操作系统 35
   - 计算机网络 25
 - 方法
