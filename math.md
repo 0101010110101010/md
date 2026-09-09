@@ -968,6 +968,7 @@
           & y = Ce^{x^2} \\
           \end{aligned}
           $$
+          $$
           \boxed{
           \begin{aligned}
           & y' = P(x)y \\
@@ -1052,6 +1053,20 @@
           e^{\alpha x}(C_1 \cos \beta x + C_2 \sin \beta x), & \Delta < 0 \quad (r = \alpha \pm \beta i)
           \end{cases}
           $$
+        - 三阶常系数线性齐次微分方程
+          $$
+          y''' + ay'' + by' + cy = 0 \ \Rightarrow\ r^3 + ar^2 + br + c = 0
+          $$
+          特征根的组合对应通解（重根每次多乘一个 $x$）：
+          $$
+          y = \begin{cases}
+          C_1 e^{r_1 x} + C_2 e^{r_2 x} + C_3 e^{r_3 x}, & \text{三个不同实根} \\[6pt]
+          C_1 e^{r_1 x} + e^{\alpha x}(C_2 \cos \beta x + C_3 \sin \beta x), & \text{一实根 + 一对共轭复根} \\[6pt]
+          (C_1 + C_2 x) e^{r x} + C_3 e^{r_3 x}, & \text{二重实根 } r + \text{单根 } r_3 \\[6pt]
+          (C_1 + C_2 x + C_3 x^2) e^{r x}, & \text{三重实根}
+          \end{cases}
+          $$
+          **记忆规律**（$n$ 阶推广）：$k$ 重特征根 $r$ 贡献 $(C_1 + C_2 x + \cdots + C_k x^{k-1})\,e^{rx}$，不同根互不干扰、线性叠加
         - 性齐次微分方程
           $$
           y = y_1 \quad y=y_2 都是某个微分方程的解
@@ -1077,25 +1092,63 @@
           e^{\lambda x}                      & A e^{\lambda x} \\
           P_n(x)                             & Q_n(x) \\
           P_n(x) e^{\lambda x}               & Q_n(x) e^{\lambda x} x^{\lambda等于通解几个值}\\
-          A \cos \beta x + B \sin \beta x    & M \cos \beta x + N \sin \beta x \\
-          e^{\alpha x}(A \cos \beta x + B \sin \beta x) & e^{\alpha x}(M \cos \beta x + N \sin \beta x)
+          A \cos \beta x + B \sin \beta x    & x^k\big(M \cos \beta x + N \sin \beta x\big) \\
+          e^{\alpha x}(A \cos \beta x + B \sin \beta x) & x^k\, e^{\alpha x}(M \cos \beta x + N \sin \beta x)
           \end{array}
           $$
-          注意：若 $y_p$ 的试设形式与齐次解 $y_h$ 的项**重合**，则乘以 $x$（或 $x^k$）以提高次数。
-        - 微分算子法（D 算子法）
-          - **思想**：令算子 $D = \dfrac{\mathrm{d}}{\mathrm{d}x}$，方程化为
-            $$(D^2 + pD + q)\,y = F(D)\,y = f(x)$$
-            特解写成 $y_p = \dfrac{1}{F(D)}f(x)$，把 $F(D)$ 当普通多项式"除"过去
-          - **基本公式**：
-            - $e^{kx}$ 型：$\dfrac{1}{F(D)}e^{kx} = \dfrac{e^{kx}}{F(k)} \ \ (F(k) \neq 0)$
-            - $e^{kx}$ 型共振（$F(k)=0$）：$\dfrac{1}{F(D)}e^{kx} = x\,\dfrac{e^{kx}}{F'(k)} \ \ (F'(k)\neq 0)$
-            - $\sin ax$ / $\cos ax$ 型：把 $D^2$ 直接换成 $-a^2$，即 $\dfrac{1}{F(D^2)}\sin ax = \dfrac{\sin ax}{F(-a^2)}$
-            - 多项式型 $P_n(x)$：将 $\dfrac{1}{F(D)}$ 按 $D$ 幂次长除展开（有限项），逐项作用在 $P_n(x)$ 上
-          - **位移定理**（$e^{kx}$ 乘多项式型）：$\dfrac{1}{F(D)}\,e^{kx}v(x) = e^{kx}\,\dfrac{1}{F(D+k)}\,v(x)$
-          - **适用特点**：
-            - $f(x)$ 为 $e^{kx}$、多项式、$\sin/\cos$ 及其组合时机械好用，免去设待定系数
-            - 与待定系数法结果一致，选择方法看个人习惯；共振（$F(k)=0$）时都要额外乘 $x$
-  - 空间向量与解析几何
+          注意：若 $y_p$ 的试设形式与齐次解 $y_h$ 的项**重合**（只设置幂公式，比如ax+b， 或者单独一个b），则乘以 $x$（或 $x^k$）以提高次数。
+    - 中值定理
+      - 等式证明，构造函数，把东西移动到一边,有零点（介值定理，零点定理，罗尔定理）
+      - 不等式找导数
+        - 一个点是0， 其余递增递减
+        - 两端为0，在x轴上方，利用凹凸性
+        - 以动至静，改为变上限
+        - 积分中值定理
+      - 连续函数介值定理（闭区间上连续函数的性质，前提只需"连续"）
+        - **有界性与最值定理**：$f$ 在 $[a,b]$ 连续 ⇒ $f$ 有界且必取到最大值 $M$ 和最小值 $m$
+        - **介值定理**：$f$ 在 $[a,b]$ 连续，则对介于 $m$ 与 $M$ 之间（即 $f(a)$ 与 $f(b)$ 之间）的任何数 $C$，$\exists\,\xi \in [a,b]$ 使 $f(\xi) = C$
+          - 通俗：连续函数从 $f(a)$ 变到 $f(b)$ 必须"路过"中间每一个值，图像不会跳
+        - **零点定理（零值定理）**：$f(a) \cdot f(b) < 0$ ⇒ $\exists\,\xi \in (a,b)$ 使 $f(\xi) = 0$
+          - 介值定理取 $C = 0$ 的特例，用于证明方程有根
+          - 结合单调性可进一步证明根的**唯一性**
+        - 推论：连续函数把区间映成区间（值域是区间）
+      - 微分中值定理（前提需要"可导"）
+        - **罗尔定理（Rolle）**
+          - 条件：$f(x)$ 在 $[a,b]$ 连续、$(a,b)$ 可导、$f(a) = f(b)$
+          - 结论：$\exists\,\xi \in (a,b)$，使 $f'(\xi) = 0$
+          - 几何：两端点等高的光滑曲线内必有水平切线
+          - 步骤：
+            - （注意条件很可能是两端相等的结论，结论是导函数为0的点）
+            - 移项构造函数
+            - 求原函数
+              - 解微分方程，c为什么则原函数就是什么
+            - 原函数两端相等
+            - 利用罗尔定理流程证明成立
+        - **拉格朗日中值定理（Lagrange）**
+          - 条件：$f(x)$ 在 $[a,b]$ 连续、$(a,b)$ 可导
+          - 结论：$\exists\,\xi \in (a,b)$，使 $\dfrac{f(b)-f(a)}{b-a} = f'(\xi)$
+          - 几何：弦的斜率 = 某点切线斜率；罗尔是它 $f(a)=f(b)$ 的特例
+          - 推论：$f'(x) \equiv 0 \Rightarrow f(x) \equiv C$；$f'(x)>0$ 增、$<0$ 减
+        - **柯西中值定理（Cauchy）**
+          - 条件：$f,g$ 在 $[a,b]$ 连续、$(a,b)$ 可导、$g'(x) \neq 0$
+          - 结论：$\exists\,\xi \in (a,b)$，使 $\dfrac{f(b)-f(a)}{g(b)-g(a)} = \dfrac{f'(\xi)}{g'(\xi)}$
+          - 取 $g(x)=x$ 即退化为拉格朗日；是洛必达法则的理论基础
+        - **证明题常见套路**：
+          - 欲证 $f'(\xi) = 0$：构造 $F(x)$ 满足罗尔条件（两端点值相等）
+          - 欲证 $f'(\xi) = k$（$k$ 为常数）：作辅助函数 $F(x) = f(x) - kx$ 后用罗尔
+          - 待证式子分母是差值乘积：先猜柯西（两函数比），再猜拉格朗日
+          - 常用辅助函数：$F(x) = f(x)e^{\pm g(x)}$、$F(x) = f(x) - f(a) - \frac{f(b)-f(a)}{b-a}(x-a)$
+      - 积分中值定理（前提只需"连续"）
+        - **积分中值定理（第一）**：$f$ 在 $[a,b]$ 连续，则 $\exists\,\xi \in [a,b]$，使
+          $$\int_a^b f(x)\,\mathrm{d}x = f(\xi)\,(b-a)$$
+          - 几何：曲边梯形面积 = 某个矩形面积（以 $f(\xi)$ 为高）
+          - 等价写法：$\overline{f} = \dfrac{1}{b-a}\int_a^b f(x)\,\mathrm{d}x = f(\xi)$，即平均值 = 某点函数值
+        - **推广的积分中值定理**：$f$ 连续、$g$ 在 $[a,b]$ 不变号且可积，则 $\exists\,\xi \in [a,b]$，使
+          $$\int_a^b f(x)g(x)\,\mathrm{d}x = f(\xi)\int_a^b g(x)\,\mathrm{d}x$$
+          - 取 $g(x) \equiv 1$ 即退化为第一积分中值定理
+          - 作用：把"带权积分的值"替换成"某点函数值 × 积分"，常用于证明题和求极限
+        - **与微分中值的区别**：微分中值给出的是**导数** $f'(\xi)$，积分中值给出的是**函数值** $f(\xi)$
+  - 空间向量与解析几何（仅数学一）
     - 向量点乘（内积）
       $$
       \vec{a} \cdot \vec{b} = a_x b_x + a_y b_y + a_z b_z
@@ -1225,8 +1278,39 @@
 
         其中 $m, n, p$ 为直线的**方向数**，$\vec{s} = (m, n, p)$ 为**方向向量**。若某一分量为 $0$（如 $m=0$），则对应分子也为 $0$，理解为 $x = x_0$。
   - 多元函数微分学
-    - 连续
+    - 多元函数极限
+      - 典型形式：$\displaystyle\lim_{(x,y)\to(0,0)} \frac{x^a y^b}{x^m + y^n}$（分子是乘积 $x^a y^b$）
+      - **判据一：若 $m$ 或 $n$ 为奇数，则极限不存在**
+        - 原理：$x^m + y^n = 0$（如 $n$ 奇数时 $y = -\sqrt[n]{x^m}$）存在穿过原点的实曲线，沿这条曲线分母为零、函数无定义或无界，故极限不存在
+        - 本质：能构造两条路径给出不同的极限（或其中一条趋于 $\infty$）
+      - **判据二：$m,n$ 均为偶数（分母恒正）时，看 $\dfrac{a}{m} + \dfrac{b}{n}$ 与 $1$ 的关系**
+        - $\dfrac{a}{m} + \dfrac{b}{n} > 1$：**极限存在，且等于 $0$**
+          - 证明思路（Young 不等式）：$\dfrac{|x|^a|y|^b}{(x^m+y^n)^{a/m+b/n}}$ 有界，再乘 $(x^m+y^n)^{\,a/m+b/n-1} \to 0$，夹逼得极限 $0$
+        - $\dfrac{a}{m} + \dfrac{b}{n} = 1$：**极限不存在**（沿曲线 $x^m = y^n$ 的比值 $\dfrac{x^a y^b}{(x^m+y^n)}$ 取中间值，且沿 $y=kx^{m/n}$ 依赖 $k$，如 $\dfrac{xy}{x^2+y^2}$）
+        - $\dfrac{a}{m} + \dfrac{b}{n} < 1$：**极限不存在**（沿坐标轴趋于 $\infty$，如 $\dfrac{x}{x^2+y^2}$）
+      - 判断"极限不存在"的方法——找两条极限不同的路径：
+        - 沿 $x$ 轴（$y=0$，需 $b > 0$）：$\dfrac{x^a \cdot 0}{x^m + 0} = 0$
+        - 沿 $y$ 轴（$x=0$，需 $a > 0$）：$\dfrac{0}{y^n} = 0$
+          - 若 $a = 0$ 或 $b = 0$（分子不含某变量），坐标轴路径退化为 $\dfrac{x^a}{x^m}$ 或 $\dfrac{y^b}{y^n}$，再按 $a$ 与 $m$、$b$ 与 $n$ 的大小比较（$< $ 无界、$=$ 得 $1$、$>$ 得 $0$）
+        - 沿 $y = kx$：若结果依赖 $k$，则极限不存在（如 $\dfrac{xy}{x^2+y^2}$ 沿 $y=kx$ 得 $\dfrac{k}{1+k^2}$）
+        - 沿曲线路径 $y = x^{m/n}$：让分母 $x^m$ 与 $y^n$ 同阶，再比较分子阶数
+      - 例：$\dfrac{xy}{x^2 + y}$（$n = 1$ 为奇数）
+        - 沿 $y = kx$：$\dfrac{kx^2}{x^2 + kx} = \dfrac{kx}{x + k} \to 0$
+        - 沿 $y = -x^2 + x^3$：分母 $x^2 - x^2 + x^3 = x^3$，$\dfrac{x(-x^2+x^3)}{x^3} = -1 + x \to -1$
+        - 两条路径极限不同（$0$ 与 $-1$）⇒ 极限不存在
+    - 连续（多元函数）
+      - **定义**：$f(x,y)$ 在 $(x_0, y_0)$ 连续 ⟺ 满足三条
+        1. $f(x_0, y_0)$ 存在（该点有定义）
+        2. $\displaystyle\lim_{(x,y)\to(x_0,y_0)} f(x,y)$ 存在
+        3. 极限值等于函数值：$\displaystyle\lim_{(x,y)\to(x_0,y_0)} f(x,y) = f(x_0, y_0)$
+      - **等价写法**（增量形式）：$\lim_{\Delta x \to 0,\ \Delta y \to 0} \big[f(x_0+\Delta x, y_0+\Delta y) - f(x_0, y_0)\big] = 0$
+      - **与一元连续的区别**：
+        - 一元连续只看左右两个方向；多元要求**沿任意路径**趋于 $(x_0,y_0)$ 极限都相同
+        - 多元函数极限存在要求强得多——上面多元函数极限判据就是为它服务的
+      - **性质**：连续函数的和、差、积、商（分母不为 0）、复合仍连续（与一元相同）
+      - **有界闭区域上的性质**：连续 ⇒ 有界、取到最值、一致连续（与闭区间一元情况类比）
     - 偏导数
+      - 存在用极限定义来判断
     - 全微分
       - **四大概念关系**（二元函数）：
 
@@ -1294,7 +1378,7 @@
           $$du = \frac{\partial u}{\partial x_1}dx_1 + \frac{\partial u}{\partial x_2}dx_2 + \cdots + \frac{\partial u}{\partial x_n}dx_n$$
 
           > 偏导数连续 $\Rightarrow$ 函数可微 $\Rightarrow$ 偏导数存在，反方向不成立。
-    - 方向导数
+    - 方向导数（数二不考不要求：方向导数、梯度、散度、旋度）
       - 函数 $z = f(x, y)$ 在点 $P_0(x_0, y_0)$ 沿单位向量 $\vec{l} = (\cos\alpha, \cos\beta)$ 的方向导数：
 
         $$\frac{\partial f}{\partial l}\bigg|_{P_0} = f_x(x_0, y_0)\cos\alpha + f_y(x_0, y_0)\cos\beta$$
@@ -1307,83 +1391,81 @@
 
         > 梯度 $\nabla f$ 的方向是函数值**增长最快**的方向，梯度模长即为最大方向导数 $\lVert\nabla f\rVert$。
     - 多元复合函数求导
-      **链式法则图**（变量依赖关系）：
+      - 用xy解出uv,求出原方程
+        直接求导数$f'1$
+      - **链式法则图**（变量依赖关系）：
+        **情况 1**：$z = f(u, v),\ u = u(t),\ v = v(t)$
 
-      **情况 1**：$z = f(u, v),\ u = u(t),\ v = v(t)$
+        <svg width="300" height="180" xmlns="http://www.w3.org/2000/svg">
+          <!-- z -->
+          <rect x="120" y="10" width="50" height="36" rx="6" fill="#e3f2fd" stroke="#1565c0" stroke-width="1.5"/>
+          <text x="145" y="33" text-anchor="middle" font-size="16" fill="#1565c0" font-weight="bold">z</text>
+          <!-- u -->
+          <rect x="40" y="90" width="50" height="36" rx="6" fill="#fff3e0" stroke="#e65100" stroke-width="1.5"/>
+          <text x="65" y="113" text-anchor="middle" font-size="16" fill="#e65100" font-weight="bold">u</text>
+          <!-- v -->
+          <rect x="200" y="90" width="50" height="36" rx="6" fill="#fff3e0" stroke="#e65100" stroke-width="1.5"/>
+          <text x="225" y="113" text-anchor="middle" font-size="16" fill="#e65100" font-weight="bold">v</text>
+          <!-- t -->
+          <rect x="120" y="155" width="50" height="25" rx="6" fill="#e8f5e9" stroke="#2e7d32" stroke-width="1.5"/>
+          <text x="145" y="172" text-anchor="middle" font-size="15" fill="#2e7d32" font-weight="bold">t</text>
+          <!-- lines z-u, z-v, u-t, v-t -->
+          <line x1="130" y1="46" x2="60" y2="88" stroke="#555" stroke-width="1.2"/>
+          <line x1="160" y1="46" x2="225" y2="88" stroke="#555" stroke-width="1.2"/>
+          <line x1="65" y1="126" x2="135" y2="153" stroke="#555" stroke-width="1.2"/>
+          <line x1="225" y1="126" x2="155" y2="153" stroke="#555" stroke-width="1.2"/>
+          <!-- derivative labels -->
+          <text x="72" y="68" font-size="11" fill="#c62828">∂z/∂u</text>
+          <text x="180" y="68" font-size="11" fill="#c62828">∂z/∂v</text>
+          <text x="72" y="148" font-size="11" fill="#c62828">du/dt</text>
+          <text x="232" y="148" font-size="11" fill="#c62828">dv/dt</text>
+          <!-- formula -->
+          <text x="150" y="195" text-anchor="middle" font-size="13" fill="#333">每条路径相乘，各路相加</text>
+        </svg>
 
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 180">
-        <!-- z -->
-        <rect x="120" y="10" width="50" height="36" rx="6" fill="#e3f2fd" stroke="#1565c0" stroke-width="1.5"/>
-        <text x="145" y="33" text-anchor="middle" font-size="16" fill="#1565c0" font-weight="bold">z</text>
-        <!-- u -->
-        <rect x="40" y="90" width="50" height="36" rx="6" fill="#fff3e0" stroke="#e65100" stroke-width="1.5"/>
-        <text x="65" y="113" text-anchor="middle" font-size="16" fill="#e65100" font-weight="bold">u</text>
-        <!-- v -->
-        <rect x="200" y="90" width="50" height="36" rx="6" fill="#fff3e0" stroke="#e65100" stroke-width="1.5"/>
-        <text x="225" y="113" text-anchor="middle" font-size="16" fill="#e65100" font-weight="bold">v</text>
-        <!-- t -->
-        <rect x="120" y="155" width="50" height="25" rx="6" fill="#e8f5e9" stroke="#2e7d32" stroke-width="1.5"/>
-        <text x="145" y="172" text-anchor="middle" font-size="15" fill="#2e7d32" font-weight="bold">t</text>
-        <!-- lines z-u, z-v, u-t, v-t -->
-        <line x1="130" y1="46" x2="60" y2="88" stroke="#555" stroke-width="1.2"/>
-        <line x1="160" y1="46" x2="225" y2="88" stroke="#555" stroke-width="1.2"/>
-        <line x1="65" y1="126" x2="135" y2="153" stroke="#555" stroke-width="1.2"/>
-        <line x1="225" y1="126" x2="155" y2="153" stroke="#555" stroke-width="1.2"/>
-        <!-- derivative labels -->
-        <text x="72" y="68" font-size="11" fill="#c62828">∂z/∂u</text>
-        <text x="180" y="68" font-size="11" fill="#c62828">∂z/∂v</text>
-        <text x="72" y="148" font-size="11" fill="#c62828">du/dt</text>
-        <text x="232" y="148" font-size="11" fill="#c62828">dv/dt</text>
-        <!-- formula -->
-        <text x="150" y="195" text-anchor="middle" font-size="13" fill="#333">每条路径相乘，各路相加</text>
-      </svg>
+        $$ \frac{dz}{dt} = \frac{\partial z}{\partial u}\frac{du}{dt} + \frac{\partial z}{\partial v}\frac{dv}{dt} $$
+        **情况 2**：$z = f(u, v),\ u = u(x, y),\ v = v(x, y)$
 
-      $$\frac{dz}{dt} = \frac{\partial z}{\partial u}\frac{du}{dt} + \frac{\partial z}{\partial v}\frac{dv}{dt}$$
+        <svg width="380" height="200" xmlns="http://www.w3.org/2000/svg">
+          <!-- z -->
+          <rect x="155" y="5" width="50" height="36" rx="6" fill="#e3f2fd" stroke="#1565c0" stroke-width="1.5"/>
+          <text x="180" y="28" text-anchor="middle" font-size="16" fill="#1565c0" font-weight="bold">z</text>
+          <!-- u -->
+          <rect x="50" y="80" width="50" height="36" rx="6" fill="#fff3e0" stroke="#e65100" stroke-width="1.5"/>
+          <text x="75" y="103" text-anchor="middle" font-size="16" fill="#e65100" font-weight="bold">u</text>
+          <!-- v -->
+          <rect x="260" y="80" width="50" height="36" rx="6" fill="#fff3e0" stroke="#e65100" stroke-width="1.5"/>
+          <text x="285" y="103" text-anchor="middle" font-size="16" fill="#e65100" font-weight="bold">v</text>
+          <!-- x (shared) -->
+          <rect x="100" y="155" width="40" height="28" rx="6" fill="#e8f5e9" stroke="#2e7d32" stroke-width="1.5"/>
+          <text x="120" y="174" text-anchor="middle" font-size="15" fill="#2e7d32" font-weight="bold">x</text>
+          <!-- y (shared) -->
+          <rect x="220" y="155" width="40" height="28" rx="6" fill="#e8f5e9" stroke="#2e7d32" stroke-width="1.5"/>
+          <text x="240" y="174" text-anchor="middle" font-size="15" fill="#2e7d32" font-weight="bold">y</text>
+          <!-- lines z→u, z→v -->
+          <line x1="165" y1="41" x2="72" y2="78" stroke="#555" stroke-width="1.2"/>
+          <line x1="195" y1="41" x2="285" y2="78" stroke="#555" stroke-width="1.2"/>
+          <!-- lines u→x, u→y -->
+          <line x1="65" y1="116" x2="113" y2="153" stroke="#555" stroke-width="1.2"/>
+          <line x1="82" y1="116" x2="233" y2="153" stroke="#555" stroke-width="1.2"/>
+          <!-- lines v→x, v→y -->
+          <line x1="278" y1="116" x2="128" y2="153" stroke="#555" stroke-width="1.2"/>
+          <line x1="295" y1="116" x2="247" y2="153" stroke="#555" stroke-width="1.2"/>
+          <!-- labels -->
+          <text x="92" y="63" font-size="11" fill="#c62828">∂z/∂u</text>
+          <text x="204" y="63" font-size="11" fill="#c62828">∂z/∂v</text>
+          <text x="78" y="133" font-size="10" fill="#c62828">∂u/∂x</text>
+          <text x="145" y="133" font-size="10" fill="#c62828">∂u/∂y</text>
+          <text x="212" y="133" font-size="10" fill="#c62828">∂v/∂x</text>
+          <text x="284" y="133" font-size="10" fill="#c62828">∂v/∂y</text>
+          <!-- formula annotations -->
+          <text x="10" y="27" font-size="12" fill="#333">z → x 共 2 条路径</text>
+          <text x="10" y="44" font-size="12" fill="#c62828">z→u→x, z→v→x</text>
+        </svg>
 
-      **情况 2**：$z = f(u, v),\ u = u(x, y),\ v = v(x, y)$
-
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 380 200">
-        <!-- z -->
-        <rect x="155" y="5" width="50" height="36" rx="6" fill="#e3f2fd" stroke="#1565c0" stroke-width="1.5"/>
-        <text x="180" y="28" text-anchor="middle" font-size="16" fill="#1565c0" font-weight="bold">z</text>
-        <!-- u -->
-        <rect x="50" y="80" width="50" height="36" rx="6" fill="#fff3e0" stroke="#e65100" stroke-width="1.5"/>
-        <text x="75" y="103" text-anchor="middle" font-size="16" fill="#e65100" font-weight="bold">u</text>
-        <!-- v -->
-        <rect x="260" y="80" width="50" height="36" rx="6" fill="#fff3e0" stroke="#e65100" stroke-width="1.5"/>
-        <text x="285" y="103" text-anchor="middle" font-size="16" fill="#e65100" font-weight="bold">v</text>
-        <!-- x (shared) -->
-        <rect x="100" y="155" width="40" height="28" rx="6" fill="#e8f5e9" stroke="#2e7d32" stroke-width="1.5"/>
-        <text x="120" y="174" text-anchor="middle" font-size="15" fill="#2e7d32" font-weight="bold">x</text>
-        <!-- y (shared) -->
-        <rect x="220" y="155" width="40" height="28" rx="6" fill="#e8f5e9" stroke="#2e7d32" stroke-width="1.5"/>
-        <text x="240" y="174" text-anchor="middle" font-size="15" fill="#2e7d32" font-weight="bold">y</text>
-        <!-- lines z→u, z→v -->
-        <line x1="165" y1="41" x2="72" y2="78" stroke="#555" stroke-width="1.2"/>
-        <line x1="195" y1="41" x2="285" y2="78" stroke="#555" stroke-width="1.2"/>
-        <!-- lines u→x, u→y -->
-        <line x1="65" y1="116" x2="113" y2="153" stroke="#555" stroke-width="1.2"/>
-        <line x1="82" y1="116" x2="233" y2="153" stroke="#555" stroke-width="1.2"/>
-        <!-- lines v→x, v→y -->
-        <line x1="278" y1="116" x2="128" y2="153" stroke="#555" stroke-width="1.2"/>
-        <line x1="295" y1="116" x2="247" y2="153" stroke="#555" stroke-width="1.2"/>
-        <!-- labels -->
-        <text x="92" y="63" font-size="11" fill="#c62828">∂z/∂u</text>
-        <text x="204" y="63" font-size="11" fill="#c62828">∂z/∂v</text>
-        <text x="78" y="133" font-size="10" fill="#c62828">∂u/∂x</text>
-        <text x="145" y="133" font-size="10" fill="#c62828">∂u/∂y</text>
-        <text x="212" y="133" font-size="10" fill="#c62828">∂v/∂x</text>
-        <text x="284" y="133" font-size="10" fill="#c62828">∂v/∂y</text>
-        <!-- formula annotations -->
-        <text x="10" y="27" font-size="12" fill="#333">z → x 共 2 条路径</text>
-        <text x="10" y="44" font-size="12" fill="#c62828">z→u→x, z→v→x</text>
-      </svg>
-
-      $$\frac{\partial z}{\partial x} = \frac{\partial z}{\partial u}\frac{\partial u}{\partial x} + \frac{\partial z}{\partial v}\frac{\partial v}{\partial x}$$
-
-      $$\frac{\partial z}{\partial y} = \frac{\partial z}{\partial u}\frac{\partial u}{\partial y} + \frac{\partial z}{\partial v}\frac{\partial v}{\partial y}$$
-
-      > **口诀**：分叉相加，链上相乘。从因变量到自变量，每条路径上的偏导相乘，各路径结果求和。
+        $$\frac{\partial z}{\partial x} = \frac{\partial z}{\partial u}\frac{\partial u}{\partial x} + \frac{\partial z}{\partial v}\frac{\partial v}{\partial x}$$
+        $$\frac{\partial z}{\partial y} = \frac{\partial z}{\partial u}\frac{\partial u}{\partial y} + \frac{\partial z}{\partial v}\frac{\partial v}{\partial y}$$
+        > **口诀**：分叉相加，链上相乘。从因变量到自变量，每条路径上的偏导相乘，各路径结果求和。
     - $$
       \begin{align*}
       & w = f(x+y+z, xyz) ,\frac{\partial w}{\partial x}, \frac{\partial^2w}{\partial x \partial z} \\
@@ -1410,7 +1492,7 @@
         $$\frac{\partial u}{\partial x} = -\frac{1}{J}\frac{\partial(F, G)}{\partial(x, v)},\quad
           \frac{\partial v}{\partial x} = -\frac{1}{J}\frac{\partial(F, G)}{\partial(u, x)}$$
 
-      - > **梯度与法向量**：对于隐式曲面 $F(x, y, z) = 0$，梯度 $\nabla F = (F'_x, F'_y, F'_z)$ 即为曲面在该点的**法向量**。将显式 $z = f(x, y)$ 改写为 $F = f(x, y) - z = 0$，则 $\nabla F = (f_x, f_y, -1)$ 亦是法向量。而对 $z = f(x, y)$ 直接求 $\nabla f = (f_x, f_y)$，它是 $xy$ 平面内的**最速上升方向**，不是法向量。
+      - > **梯度与法向量**（梯度、散度、旋度为数一内容，数二不考；法向量概念可顺带了解）：对于隐式曲面 $F(x, y, z) = 0$，梯度 $\nabla F = (F'_x, F'_y, F'_z)$ 即为曲面在该点的**法向量**。将显式 $z = f(x, y)$ 改写为 $F = f(x, y) - z = 0$，则 $\nabla F = (f_x, f_y, -1)$ 亦是法向量。而对 $z = f(x, y)$ 直接求 $\nabla f = (f_x, f_y)$，它是 $xy$ 平面内的**最速上升方向**，不是法向量。
     - 函数多元极值
       - 无条件
         **必要条件**：解 $\begin{cases} f_x(x,y) = 0 \\ f_y(x,y) = 0 \end{cases}$ 得驻点。
@@ -1545,7 +1627,7 @@
         $$
 
         > **注意**：轮换对称性要求积分区域 $D$ 关于 $y=x$ 对称，即 $(x,y)\in D \iff (y,x)\in D$。
-    - 三重积分
+    - 三重积分（数二不考）
       - **直角坐标系**
       - **柱坐标系**（三重积分常用变换）
 
@@ -1939,7 +2021,7 @@
       $$
 
       $L$ 是曲面 $\Sigma$ 的边界曲线，方向满足右手法则。
-  - 无穷级数
+  - 无穷级数（仅数一数三）
     - 常数项级数
       $\displaystyle\sum_{n=1}^{\infty} a_n$，部分和 $S_n = \sum_{k=1}^{n} a_k$，若 $\lim_{n\to\infty} S_n = S$ 存在，则级数**收敛**于 $S$。
       - **收敛必要条件**：$\lim_{n\to\infty} a_n = 0$（反之不成立，如调和级数 $\sum\frac{1}{n}$ 发散）。
@@ -1997,7 +2079,7 @@
         $n!$ 的增长速度碾压任何 $x^n$——不管 $x$ 多大，$n$ 足够大时 $\frac{x^n}{n!} \to 0$，余项必趋于 $0$。
 
         对比：$\ln(1+x)$ 分母只有 $n$ 没有阶乘，$R=1$；$\frac{1}{1-x}$ 连 $n$ 都没有，$R=1$。**分母有阶乘 $\Rightarrow$ 全实数轴收敛；没阶乘 $\Rightarrow$ 只在收敛半径内能用。**
-    - 傅立叶级数
+    - 傅立叶级数（仅数学一）
       周期 $2\pi$ 的函数 $f(x)$ 可展开为：
 
       $$f(x) = \frac{a_0}{2} + \sum_{n=1}^{\infty} \bigl(a_n \cos nx + b_n \sin nx\bigr)$$
@@ -2072,7 +2154,7 @@
         - **非主元列 → 自由变量**：剩下的变量取任意常数 $t_1, t_2, \ldots$
         - **反解**：把自由变量移到右边，系数取相反数即为基础解系向量；常数项抄下来即为特解
       - **单自由变量示例**：增广矩阵 $(A \mid b) = \left(\begin{array}{ccc|c} 1 & 0 & 2 & 3 \\ 0 & 1 & -1 & 4 \\ 0 & 0 & 0 & 0 \end{array}\right)$，主变量 $x_1,x_2$，自由变量 $x_3=t$，解得 $\begin{pmatrix} x_1 \\ x_2 \\ x_3 \end{pmatrix} = \begin{pmatrix} 3 \\ 4 \\ 0 \end{pmatrix} + t\begin{pmatrix} -2 \\ 1 \\ 1 \end{pmatrix}$（特解 + 基础解系）
-      - **主元不挨着的示例**：增广矩阵 $(A \mid b) = \left(\begin{array}{cccc|c} 1 & 3 & 0 & 2 & 5 \\ 0 & 0 & 1 & -1 & 4 \\ 0 & 0 & 0 & 0 & 0 \end{array}\right)$，主元在第 1 和 3 列，主变量 $x_1,x_3$，自由变量 $x_2=t_1,\ x_4=t_2$，反解：$x_1 = 5 - 3t_1 - 2t_2,\ x_3 = 4 + t_2$，$\begin{pmatrix} x_1 \\ x_2 \\ x_3 \\ x_4 \end{pmatrix} = \begin{pmatrix} 5 \\ 0 \\ 4 \\ 0 \end{pmatrix} + t_1\begin{pmatrix} -3 \\ 1 \\ 0 \\ 0 \end{pmatrix} + t_2\begin{pmatrix} -2 \\ 0 \\ -1 \\ 1 \end{pmatrix}$
+      - **主元不挨着的示例**：增广矩阵 $(A \mid b) = \left(\begin{array}{cccc|c} 1 & 3 & 0 & 2 & 5 \\ 0 & 0 & 1 & -1 & 4 \\ 0 & 0 & 0 & 0 & 0 \end{array}\right)$，主元在第 1 和 3 列，主变量 $x_1,x_3$，自由变量 $x_2=t_1,\ x_4=t_2$，反解：$x_1 = 5 - 3t_1 - 2t_2,\ x_3 = 4 + t_2$，$\begin{pmatrix} x_1 \\ x_2 \\ x_3 \\ x_4 \end{pmatrix} = \begin{pmatrix} 5 \\ 0 \\ 4 \\ 0 \end{pmatrix} + t_1\begin{pmatrix} -3 \\ 1 \\ 0 \\ 0 \end{pmatrix} + t_2\begin{pmatrix} -2 \\ 0 \\ 1 \\ 1 \end{pmatrix}$
         - **规律不变**：自由变量列对应的系数反号填到主变量行，自由变量行仍填"自己位置=1、其他=0"
         - 特解定位置，自由变量取负号，空位补01
     - 公式
@@ -2138,10 +2220,22 @@
         $$E_i(k)^{-1} = E_i(\tfrac{1}{k}),\qquad E_{ij}(k)^{-1} = E_{ij}(-k),\qquad E_{ij}^{-1} = E_{ij}$$
 
       > 任意可逆矩阵 $A$ 可分解为有限个初等矩阵的乘积：$A = E_1 E_2 \cdots E_k$。
-    - **求逆矩阵的方法**
-
+    - ==**秩的不等式**==：$r(A) + r(B) -n \leq r(AB) \leq \min(r(A), r(B))$
+    - **舒尔（Schur）定理**（矩阵论拓展，数二不考，仅供理解"对角化"的位置）
+      - **Schur 分解（酉相似三角化）**：任意复方阵 $A$ 都可酉相似于一个**上三角矩阵**
+        $$U^{H}AU = T = \begin{pmatrix}\lambda_1 & * & \cdots & * \\ & \lambda_2 & \ddots & \vdots \\ & & \ddots & * \\ O & & & \lambda_n\end{pmatrix}$$
+        其中 $U$ 为酉矩阵（$U^HU = I$），$T$ 的对角元恰是 $A$ 的全部特征值
+      - **实数版**：$A$ 为实矩阵且特征值全为实数时，可取**正交矩阵** $Q$ 使 $Q^TAQ = T$（实上三角）
+      - **意义**：并非所有矩阵都能相似对角化，但**都能酉相似三角化**；$T$ 恰为对角阵 $\iff A$ 是**正规矩阵**（$A^HA = AA^H$，实对称、正交、酉矩阵都是）
+      - **推论**：由 $T$ 上三角直接得 $\sum\lambda_i = \operatorname{tr}(A)$、$\prod\lambda_i = |A|$（上三角的迹与行列式只由对角元决定）
+      - **Schur 不等式**：$\displaystyle\sum_{i=1}^{n}|\lambda_i|^2 \leq \sum_{i,j}|a_{ij}|^2 = \lVert A\rVert_F^2 = \operatorname{tr}(A^HA)$，等号 $\iff A$ 为正规矩阵
+      - 注：分块矩阵行列式里的"**Schur 补**"（$\det\begin{pmatrix}A&B\\C&D\end{pmatrix} = |A|\cdot|D - CA^{-1}B|$）是同名不同物，别混淆
+    - ==$r(A^TA) = r(A)$==
+    - ==**和矩阵的秩**==：$r(A + B) \leq r(A) + r(B)$
+      - **左右拼接 $r(A \mid B)$**（行数相同并排拼）：$r(A + B) \leq r(A \mid B) \leq r(A) + r(B)$
+      - **上下拼接** $\displaystyle r\begin{pmatrix}A\\ B\end{pmatrix}$（列数相同上下叠）：同样 $r(A + B) \leq r\begin{pmatrix}A\\ B\end{pmatrix} \leq r(A)+r(B)$
+    - ==**求逆矩阵的方法**==
       $A$ 可逆 $\iff |A| \neq 0$，逆矩阵记为 $A^{-1}$，满足 $AA^{-1} = A^{-1}A = I$。
-
       **方法一：伴随矩阵法**
 
       $$
@@ -2166,8 +2260,8 @@
       将 $A$ 和 $I$ 并排拼接，仅用**行变换**把左边消成 $I$，右边即得 $A^{-1}$。若左边化不出 $I$（出现全零行），则 $A$ 不可逆。
 
       **方法三：分块矩阵求逆**
-      - 对角分块：$\displaystyle \begin{pmatrix} A & O \\ O & B \end{pmatrix}^{-1} = \begin{pmatrix} A^{-1} & O \\ O & B^{-1} \end{pmatrix}$
-      - 三角分块：$\displaystyle \begin{pmatrix} A & C \\ O & B \end{pmatrix}^{-1} = \begin{pmatrix} A^{-1} & -A^{-1}CB^{-1} \\ O & B^{-1} \end{pmatrix}$
+        对角分块：$\displaystyle \begin{pmatrix} A & O \\ O & B \end{pmatrix}^{-1} = \begin{pmatrix} A^{-1} & O \\ O & B^{-1} \end{pmatrix}$
+        三角分块：$\displaystyle \begin{pmatrix} A & C \\ O & B \end{pmatrix}^{-1} = \begin{pmatrix} A^{-1} & -A^{-1}CB^{-1} \\ O & B^{-1} \end{pmatrix}$
   - 行列式
     $n$ 阶方阵 $A$ 的行列式记为 $|A|$ 或 $\det(A)$。
     - **余子式 $M_{ij}$**：划去 $A$ 的第 $i$ 行和第 $j$ 列，剩下元素按原顺序构成的 $n-1$ 阶行列式。
@@ -2212,16 +2306,14 @@
             & & & c & a
           \end{vmatrix}_{n\times n}$，按第 $1$ 行展开得 $D_n = a D_{n-1} - bc D_{n-2}$。
         - 若为常系数线性递推，解特征方程 $\lambda^2 = a\lambda - bc$，得 $D_n = C_1\lambda_1^n + C_2\lambda_2^n$（$\lambda_1 \neq \lambda_2$），代入 $D_1, D_2$ 定系数。
-  - 向量空间
-
-    向量空间（线性空间）$V$：对加法和数乘封闭的非空集合。
-
-    - **八条公理**：加法交换律、结合律、零元、负元；数乘结合律、分配律（两条）、单位元 $1 \cdot \alpha = \alpha$。
-    - **子空间**：非空子集 $W \subseteq V$ 对加法和数乘封闭即为子空间。
-    - **线性相关与无关**：$\sum k_i \alpha_i = 0$ 仅有零解 $\iff$ 线性无关；有非零解 $\iff$ 线性相关。
-    - **基与维数**：极大线性无关组称为基，基向量的个数为维数 $\dim V$。任意 $n+1$ 个 $n$ 维向量必线性相关。
-    - **坐标**：取基 $\alpha_1,\ldots,\alpha_n$，任意向量 $\beta = x_1\alpha_1 + \cdots + x_n\alpha_n$，$(x_1,\ldots,x_n)^T$ 即 $\beta$ 的坐标。
-    - **基变换与坐标变换**：从基 $A$ 到基 $B$ 的过渡矩阵 $P$ 满足 $B = AP$，坐标变换 $y = P^{-1} x$。
+  - 向量空间（数二只考线性相关性与秩；公理、子空间、基变换坐标变换仅数学一）
+    - 向量空间（线性空间）$V$：对加法和数乘封闭的非空集合。→ 抽象定义仅数学一，数二不需要
+    - **八条公理**（仅数学一）：加法交换律、结合律、零元、负元；数乘结合律、分配律（两条）、单位元 $1 \cdot \alpha = \alpha$。
+    - **子空间**（仅数学一）：非空子集 $W \subseteq V$ 对加法和数乘封闭即为子空间。
+    - **线性相关与无关**（数二考 ✓）：$\sum k_i \alpha_i = 0$ 仅有零解 $\iff$ 线性无关；有非零解 $\iff$ 线性相关。
+    - **基与维数**（仅数学一）：极大线性无关组称为基，基向量的个数为维数 $\dim V$。任意 $n+1$ 个 $n$ 维向量必线性相关。
+    - **坐标**（仅数学一）：取基 $\alpha_1,\ldots,\alpha_n$，任意向量 $\beta = x_1\alpha_1 + \cdots + x_n\alpha_n$，$(x_1,\ldots,x_n)^T$ 即 $\beta$ 的坐标。
+    - **基变换与坐标变换**（仅数学一）：从基 $A$ 到基 $B$ 的过渡矩阵 $P$ 满足 $B = AP$，坐标变换 $y = P^{-1} x$。
     - **秩的重要关系**：
       $$\operatorname{rank}(A) = \operatorname{rank}(A^T) = \operatorname{rank}(A^TA) = \operatorname{rank}(AA^T)$$
     - **解空间维度**：齐次方程组 $Ax=0$ 解空间维数 $= n - \operatorname{rank}(A)$（未知数个数 − 秩）。
@@ -5945,6 +6037,12 @@
   - 计算机体系结构
   - 操作系统 35
   - 计算机网络 25
+- 学习
+  - 第一遍过知识点
+  - 第二遍过全局结构
+  - 第三遍过习题
+  - 第四遍过考点
+  - 第五遍过考点下的习题
 - 方法
   - 返工
     - 计划
