@@ -6323,18 +6323,258 @@
           - ==分散刷新==：==每个存取周期拆成“读写 + 刷新一行”两段==；==优点：无死区、无停顿==，==缺点：存取周期被拉长、系统速度下降，且刷新过于频繁==
           - ==异步刷新==：==把刷新周期（2ms）均分给各行==（如 2ms ÷ 128 ≈ 15.6μs），==每隔一个间隔刷新一行==、一个周期内刷完所有行；==兼顾前两者（既无明显死区又不过频），最常用==
       - ==只读存储器 ROM==：==非易失（断电不丢失）==、正常只读；发展类型：==MROM（掩膜）→ PROM（一次编程）→ EPROM（紫外擦除）→ EEPROM（电擦除）→ Flash（闪存）==
-      - ==主存储器与 CPU 的连接==：经 ==地址线、数据线、读写控制线== 相连，用 ==片选信号 CS== 选中芯片；扩展方式：
-        - ==位扩展==：扩充==字长（数据位数）==，多片共用地址线与片选、数据线并接
-        - ==字扩展==：扩充==容量（单元数）==，用高位地址==译码产生片选==
-        - ==字位同时扩展==：两者结合，既扩容量又扩字长
+      - ==主存储器与 CPU 的连接==
+        - ==控制线说明（CS / CE / WE / OE / WR）==：存储芯片的==控制信号==（除地址线、数据线外），多为==低电平有效==（符号带横线，如 C̄S̄）：
+          - ==CS（Chip Select，片选）==：==选中该芯片==，仅被选中的芯片才能读写，一般由==高位地址译码产生==
+          - ==CE（Chip Enable，芯片使能）==：与 CS 同义，==使能芯片工作==（部分芯片用 CE 命名）
+          - ==WE（Write Enable，写使能）==：==控制写操作==（低有效），允许把数据写入芯片
+          - ==WR（Write，写信号）==：==写控制信号==（低有效，写作 W̄R），作用同 WE
+          - ==OE（Output Enable，输出使能）==：==读操作时允许芯片输出数据==到数据总线（低有效），避免==总线冲突==
+          - ==配对关系==：==CS / CE 决定“选哪片”==；==WE / WR 与 OE 决定“读还是写”==——写时 WE / WR 有效、OE 无效；读时 OE 有效、WE / WR 无效
+        - 单块存储芯片与cpu的连接 
+          - 数据总线
+          - 地址总线
+          - 控制总线
+            - 片选线
+            - 读控制线
+            - 写控制线
+        - 多块存储芯片与cpu的连接 
+          - 位扩展法
+            - 增加主存的存储字长
+            - ==示例图==（位扩展法：两片 16K×4 芯片 → 16K×8 存储器）：
+
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 430" font-family="-apple-system,Segoe UI,Microsoft YaHei,sans-serif">
+                <rect width="100%" height="100%" fill="#ffffff"/>
+                <defs>
+                  <marker id="ah" markerWidth="9" markerHeight="9" refX="7" refY="3" orient="auto">
+                    <path d="M0,0 L7,3 L0,6 Z" fill="#5f6368"/>
+                  </marker>
+                </defs>
+                <text x="360" y="24" text-anchor="middle" font-size="15" font-weight="bold" fill="#263238">位扩展法示意：两片 16K×4 芯片 → 16K×8 存储器</text>
+
+                <!-- CPU -->
+                <rect x="20" y="150" width="130" height="130" rx="8" fill="#e8f0fe" stroke="#1a73e8" stroke-width="2"/>
+                <text x="85" y="212" text-anchor="middle" font-size="15" font-weight="bold" fill="#1a73e8">CPU</text>
+                <text x="85" y="234" text-anchor="middle" font-size="11" fill="#5f6368">16K×8</text>
+
+                <!-- 芯片 1 -->
+                <rect x="430" y="45" width="270" height="120" rx="8" fill="#e6f4ea" stroke="#34a853" stroke-width="2"/>
+                <text x="565" y="95" text-anchor="middle" font-size="14" font-weight="bold" fill="#188038">芯片1  16K×4</text>
+                <text x="565" y="122" text-anchor="middle" font-size="12" fill="#5f6368">数据位 D0 ~ D3</text>
+
+                <!-- 芯片 2 -->
+                <rect x="430" y="265" width="270" height="120" rx="8" fill="#e6f4ea" stroke="#34a853" stroke-width="2"/>
+                <text x="565" y="315" text-anchor="middle" font-size="14" font-weight="bold" fill="#188038">芯片2  16K×4</text>
+                <text x="565" y="342" text-anchor="middle" font-size="12" fill="#5f6368">数据位 D4 ~ D7</text>
+
+                <!-- 数据线（绿，按位拆给两片） -->
+                <line x1="150" y1="200" x2="250" y2="200" stroke="#34a853" stroke-width="2"/>
+                <line x1="250" y1="72" x2="250" y2="352" stroke="#34a853" stroke-width="2"/>
+                <line x1="250" y1="72" x2="430" y2="72" stroke="#34a853" stroke-width="2" marker-end="url(#ah)"/>
+                <line x1="250" y1="352" x2="430" y2="352" stroke="#34a853" stroke-width="2" marker-end="url(#ah)"/>
+                <text x="158" y="193" font-size="11" fill="#188038">D0~D7</text>
+                <text x="300" y="66" font-size="11" fill="#188038">D0~D3</text>
+                <text x="300" y="368" font-size="11" fill="#188038">D4~D7</text>
+
+                <!-- 地址线（蓝，两片共用） -->
+                <line x1="150" y1="170" x2="243" y2="170" stroke="#1a73e8" stroke-width="2"/>
+                <path d="M243,170 A7,7 0 0 1 257,170" fill="none" stroke="#1a73e8" stroke-width="2"/>
+                <line x1="257" y1="170" x2="320" y2="170" stroke="#1a73e8" stroke-width="2"/>
+                <line x1="320" y1="105" x2="320" y2="325" stroke="#1a73e8" stroke-width="2"/>
+                <line x1="320" y1="105" x2="430" y2="105" stroke="#1a73e8" stroke-width="2" marker-end="url(#ah)"/>
+                <line x1="320" y1="325" x2="430" y2="325" stroke="#1a73e8" stroke-width="2" marker-end="url(#ah)"/>
+                <text x="182" y="163" font-size="11" fill="#1a73e8">A0~A13</text>
+
+                <!-- 控制线（红，两片同时有效） -->
+                <line x1="150" y1="250" x2="243" y2="250" stroke="#ea4335" stroke-width="2"/>
+                <path d="M243,250 A7,7 0 0 1 257,250" fill="none" stroke="#ea4335" stroke-width="2"/>
+                <line x1="257" y1="250" x2="313" y2="250" stroke="#ea4335" stroke-width="2"/>
+                <path d="M313,250 A7,7 0 0 1 327,250" fill="none" stroke="#ea4335" stroke-width="2"/>
+                <line x1="327" y1="250" x2="380" y2="250" stroke="#ea4335" stroke-width="2"/>
+                <line x1="380" y1="130" x2="380" y2="300" stroke="#ea4335" stroke-width="2"/>
+                <line x1="380" y1="130" x2="430" y2="130" stroke="#ea4335" stroke-width="2" marker-end="url(#ah)"/>
+                <line x1="380" y1="300" x2="430" y2="300" stroke="#ea4335" stroke-width="2" marker-end="url(#ah)"/>
+                <text x="158" y="243" font-size="11" fill="#ea4335">CS / WE</text>
+
+                <!-- 图例 -->
+                <line x1="30" y1="402" x2="56" y2="402" stroke="#1a73e8" stroke-width="2"/>
+                <text x="62" y="406" font-size="11" fill="#5f6368">地址线（两片共用）</text>
+                <line x1="196" y1="402" x2="222" y2="402" stroke="#34a853" stroke-width="2"/>
+                <text x="228" y="406" font-size="11" fill="#5f6368">数据线（按位拆给两片）</text>
+                <line x1="392" y1="402" x2="418" y2="402" stroke="#ea4335" stroke-width="2"/>
+                <text x="424" y="406" font-size="11" fill="#5f6368">控制线（两片同时有效）</text>
+              </svg>
+          - 字扩展法
+            - ==示例图==（字扩展法：3-8 译码器产生片选，两片 16K×8 → 32K×8 存储器）：
+
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 650" font-family="-apple-system,Segoe UI,Microsoft YaHei,sans-serif">
+                <rect width="100%" height="100%" fill="#ffffff"/>
+                <defs>
+                  <marker id="ah2" markerWidth="9" markerHeight="9" refX="7" refY="3" orient="auto">
+                    <path d="M0,0 L7,3 L0,6 Z" fill="#5f6368"/>
+                  </marker>
+                </defs>
+                <text x="450" y="28" text-anchor="middle" font-size="15" font-weight="bold" fill="#263238">字扩展法示意：3-8 译码器产生片选，两片 16K×8 芯片 → 32K×8 存储器</text>
+
+                <!-- CPU -->
+                <rect x="20" y="120" width="120" height="130" rx="8" fill="#e8f0fe" stroke="#1a73e8" stroke-width="2"/>
+                <text x="80" y="180" text-anchor="middle" font-size="15" font-weight="bold" fill="#1a73e8">CPU</text>
+                <text x="80" y="202" text-anchor="middle" font-size="11" fill="#5f6368">32K×8</text>
+
+                <!-- 3-8 译码器 -->
+                <rect x="340" y="280" width="150" height="140" rx="8" fill="#fff3e0" stroke="#f57c00" stroke-width="2"/>
+                <text x="415" y="343" text-anchor="middle" font-size="15" font-weight="bold" fill="#e65100">3-8</text>
+                <text x="415" y="366" text-anchor="middle" font-size="15" font-weight="bold" fill="#e65100">译码器</text>
+
+                <!-- 芯片1 -->
+                <rect x="660" y="70" width="200" height="110" rx="8" fill="#e6f4ea" stroke="#34a853" stroke-width="2"/>
+                <text x="760" y="120" text-anchor="middle" font-size="14" font-weight="bold" fill="#188038">芯片1  16K×8</text>
+                <text x="760" y="144" text-anchor="middle" font-size="12" fill="#5f6368">由 Y0 选中（低半区）</text>
+
+                <!-- 芯片2 -->
+                <rect x="660" y="420" width="200" height="110" rx="8" fill="#e6f4ea" stroke="#34a853" stroke-width="2"/>
+                <text x="760" y="470" text-anchor="middle" font-size="14" font-weight="bold" fill="#188038">芯片2  16K×8</text>
+                <text x="760" y="494" text-anchor="middle" font-size="12" fill="#5f6368">由 Y1 选中（高半区）</text>
+
+                <!-- 地址线（蓝，两片共用） -->
+                <line x1="140" y1="160" x2="620" y2="160" stroke="#1a73e8" stroke-width="2"/>
+                <line x1="620" y1="115" x2="620" y2="490" stroke="#1a73e8" stroke-width="2"/>
+                <line x1="620" y1="115" x2="660" y2="115" stroke="#1a73e8" stroke-width="2" marker-end="url(#ah2)"/>
+                <line x1="620" y1="490" x2="660" y2="490" stroke="#1a73e8" stroke-width="2" marker-end="url(#ah2)"/>
+                <text x="150" y="153" font-size="11" fill="#1a73e8">A0~A13（两片共用）</text>
+
+                <!-- 数据线（绿，两片共用） -->
+                <line x1="140" y1="195" x2="613" y2="195" stroke="#34a853" stroke-width="2"/>
+                <path d="M613,195 A7,7 0 0 1 627,195" fill="none" stroke="#34a853" stroke-width="2"/>
+                <line x1="627" y1="195" x2="640" y2="195" stroke="#34a853" stroke-width="2"/>
+                <line x1="640" y1="145" x2="640" y2="460" stroke="#34a853" stroke-width="2"/>
+                <line x1="640" y1="145" x2="660" y2="145" stroke="#34a853" stroke-width="2" marker-end="url(#ah2)"/>
+                <line x1="640" y1="460" x2="660" y2="460" stroke="#34a853" stroke-width="2" marker-end="url(#ah2)"/>
+                <text x="150" y="188" font-size="11" fill="#188038">D0~D7（两片共用）</text>
+
+                <!-- 高位地址送入译码器 -->
+                <line x1="140" y1="230" x2="300" y2="230" stroke="#1a73e8" stroke-width="2"/>
+                <line x1="300" y1="230" x2="300" y2="350" stroke="#1a73e8" stroke-width="2"/>
+                <line x1="300" y1="350" x2="340" y2="350" stroke="#1a73e8" stroke-width="2" marker-end="url(#ah2)"/>
+                <text x="222" y="223" font-size="11" fill="#1a73e8">A14~A16</text>
+
+                <!-- Y0 → 芯片1 片选（跨过地址/数据总线用跳线弧） -->
+                <line x1="415" y1="280" x2="415" y2="202" stroke="#ea4335" stroke-width="2"/>
+                <path d="M415,202 A7,7 0 0 0 415,188" fill="none" stroke="#ea4335" stroke-width="2"/>
+                <line x1="415" y1="188" x2="415" y2="167" stroke="#ea4335" stroke-width="2"/>
+                <path d="M415,167 A7,7 0 0 0 415,153" fill="none" stroke="#ea4335" stroke-width="2"/>
+                <line x1="415" y1="153" x2="415" y2="85" stroke="#ea4335" stroke-width="2"/>
+                <line x1="415" y1="85" x2="660" y2="85" stroke="#ea4335" stroke-width="2" marker-end="url(#ah2)"/>
+                <text x="422" y="250" font-size="11" fill="#ea4335">Y0</text>
+
+                <!-- Y1 → 芯片2 片选 -->
+                <line x1="415" y1="420" x2="415" y2="515" stroke="#ea4335" stroke-width="2"/>
+                <line x1="415" y1="515" x2="660" y2="515" stroke="#ea4335" stroke-width="2" marker-end="url(#ah2)"/>
+                <text x="422" y="480" font-size="11" fill="#ea4335">Y1</text>
+
+                <!-- 其余译码输出 Y2~Y7 -->
+                <line x1="490" y1="320" x2="520" y2="320" stroke="#ea4335" stroke-width="2"/>
+                <line x1="490" y1="340" x2="520" y2="340" stroke="#ea4335" stroke-width="2"/>
+                <line x1="490" y1="360" x2="520" y2="360" stroke="#ea4335" stroke-width="2"/>
+                <line x1="490" y1="380" x2="520" y2="380" stroke="#ea4335" stroke-width="2"/>
+                <line x1="490" y1="400" x2="520" y2="400" stroke="#ea4335" stroke-width="2"/>
+                <text x="524" y="345" font-size="11" fill="#9e9e9e">Y2~Y7（未用，可再扩展至 8 片）</text>
+
+                <!-- 说明 -->
+                <text x="450" y="565" text-anchor="middle" font-size="12" fill="#37474f">字扩展：地址线 A0~A13、数据线 D0~D7 两片并联共用（同时有效）；片选由 3-8 译码器产生</text>
+                <text x="450" y="587" text-anchor="middle" font-size="12" fill="#37474f">3 位高位地址 A14~A16 → 译码出 Y0~Y7，任一时刻只选中一片：Y0→芯片1、Y1→芯片2 → 容量翻倍</text>
+
+                <!-- 图例 -->
+                <line x1="150" y1="620" x2="176" y2="620" stroke="#1a73e8" stroke-width="2"/>
+                <text x="182" y="624" font-size="11" fill="#5f6368">地址线（两片共用）</text>
+                <line x1="330" y1="620" x2="356" y2="620" stroke="#34a853" stroke-width="2"/>
+                <text x="362" y="624" font-size="11" fill="#5f6368">数据线（两片共用）</text>
+                <line x1="510" y1="620" x2="536" y2="620" stroke="#ea4335" stroke-width="2"/>
+                <text x="542" y="624" font-size="11" fill="#5f6368">片选（译码输出，每片独立）</text>
+              </svg>
+            - 线选法(cs 每个存储体对应一条选线，类似于独热码)
+            - 片选法(38译码器)
+          - 字位扩展法
+        - 译码器知识补充
       - ==双端口 RAM 与多模块存储器==：
-        - ==双端口 RAM==：有==两个独立读写端口==、==允许两个部件并行访问== 同一存储器，提高带宽
-        - ==多模块（多体）存储器==：==高位交叉（利于扩容）== 与 ==低位交叉（多体流水、利于提速）== 两种编址
+        - ==存取周期（Memory Access Cycle）==：==连续两次独立访存所需的最小时间间隔==，= ==存取时间 T_A + 恢复时间==（读出后重写 / 刷新），故 ==存取周期 > 存取时间==：
+
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 400" font-family="-apple-system,Segoe UI,Microsoft YaHei,sans-serif">
+            <rect width="100%" height="100%" fill="#ffffff"/>
+            <defs>
+              <marker id="ax" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+                <path d="M0,0 L8,3 L0,6 Z" fill="#607d8b"/>
+              </marker>
+            </defs>
+            <text x="450" y="30" text-anchor="middle" font-size="15" font-weight="bold" fill="#263238">存取周期 = 存取时间 + 恢复时间（连续两次访存的最小间隔）</text>
+
+            <!-- 时间轴 -->
+            <line x1="90" y1="330" x2="860" y2="330" stroke="#607d8b" stroke-width="2" marker-end="url(#ax)"/>
+            <text x="866" y="334" font-size="12" fill="#607d8b">t</text>
+
+            <!-- 存取时间 条 -->
+            <rect x="130" y="240" width="290" height="52" fill="#e8f0fe" stroke="#1a73e8" stroke-width="2"/>
+            <text x="275" y="271" text-anchor="middle" font-size="13" fill="#1a73e8">存取时间 T_A（读出数据）</text>
+
+            <!-- 恢复时间 条 -->
+            <rect x="420" y="240" width="180" height="52" fill="#fff3e0" stroke="#f57c00" stroke-width="2"/>
+            <text x="510" y="264" text-anchor="middle" font-size="12" fill="#e65100">恢复时间</text>
+            <text x="510" y="281" text-anchor="middle" font-size="11" fill="#e65100">（重写 / 刷新）</text>
+
+            <!-- 下一次存取 -->
+            <rect x="600" y="240" width="240" height="52" fill="#f5f5f5" stroke="#9e9e9e" stroke-width="2" stroke-dasharray="6,4"/>
+            <text x="720" y="271" text-anchor="middle" font-size="12" fill="#757575">下一次存取（最早 t₂ 开始）</text>
+
+            <!-- 存取周期 大括号 -->
+            <path d="M130,196 L130,182 L600,182 L600,196" fill="none" stroke="#2e7d32" stroke-width="2"/>
+            <text x="365" y="172" text-anchor="middle" font-size="13" font-weight="bold" fill="#2e7d32">存取周期 T_M</text>
+
+            <!-- 时刻刻度线 -->
+            <line x1="130" y1="240" x2="130" y2="340" stroke="#90a4ae" stroke-width="1.5" stroke-dasharray="4,3"/>
+            <line x1="420" y1="240" x2="420" y2="340" stroke="#90a4ae" stroke-width="1.5" stroke-dasharray="4,3"/>
+            <line x1="600" y1="240" x2="600" y2="340" stroke="#90a4ae" stroke-width="1.5" stroke-dasharray="4,3"/>
+            <text x="130" y="356" text-anchor="middle" font-size="12" fill="#607d8b">t₀</text>
+            <text x="420" y="356" text-anchor="middle" font-size="12" fill="#607d8b">t₁</text>
+            <text x="600" y="356" text-anchor="middle" font-size="12" fill="#607d8b">t₂</text>
+
+            <!-- 说明 -->
+            <text x="450" y="386" text-anchor="middle" font-size="12" fill="#37474f">存取周期 T_M = T_A + 恢复时间 ≥ 存取时间 T_A；DRAM 因破坏性读出、需重写，恢复时间更长</text>
+          </svg>
+        - ==双端口 RAM==：有==两个独立读写端口(数据、地址、控制总线)==、==允许两个部件并行访问== 同一存储器，提高带宽
+          - 支持同时读
+          - 不支持同时写
+          - 同时读写时候，可写不可读
+        - ==多模块（多体）存储器==：用多个存储体提高访存速度 / 带宽，分两类：
+          - ==单体多字存储器==：==只有一个存储体、共用一套读写电路==，==一次存取并行读出多个连续字==（存储字长 = m 个 CPU 字）
+            - ==一套读写电路==（共用地址译码 + 读写电路）
+            - ==特点==：靠「一次取多字」提高==单次访存数据量==；==要求地址连续==、==不能并发处理不连续地址==
+          - ==多体并行存储器==：==由 m 个独立存储体组成、每体各有一套读写电路==，可并行 / 流水工作
+            - ==多套读写电路==（每体各有 MAR / MDR 与读写电路）
+            - ==高位交叉（利于扩容）==：==高位地址表示不同存储体==，连续地址落在同一体内 → 主要用于==容量扩展==
+            - ==低位交叉（利于提速）==：==低位地址表示不同存储体==，连续地址分散到不同体 → ==多体流水、带宽 ≈ m / T_M==，用于==提高访存速度==
+          - ==单体多字 vs 多体并行（对照表）==：
+
+            | 方式 | 存储体 | 读写电路 | 提速原理 | 关键限制 |
+            |:---:|:---:|:---:|:---:|:---:|
+            | ==单体多字== | ==1 个== | ==一套== | 一次并行取多个**连续**字（增大单次访存数据量） | 地址须**连续** |
+            | ==多体并行（低位交叉）== | ==m 个独立体== | ==m 套== | 各体**并行 / 流水**访问（提高并发，带宽 ≈ m/T_M） | 需**交叉编址** |
       - ==Cache 的基本概念和原理==：因 ==CPU 与主存速度差距大==，利用 ==局部性原理（时间局部性 + 空间局部性）== 在二者间设 ==高速小容量缓存==；以 ==块（行）== 为单位交换，==命中率 H 越高、平均访问时间越短==
+        - ==命中率 H==：==CPU 访存时在 Cache 中命中的比例==；==未命中率 = 1 − H==（H 越高越好）
+        - ==平均访问时间 T_a（Cache—主存层次）==：设 ==T_c = Cache 访问时间==、==T_m = 主存访问时间==
+          - ==先访 Cache、未命中再访主存==（常用）：==T_a = H·T_c + (1−H)·(T_c + T_m) = T_c + (1−H)·T_m==
+          - ==Cache 与主存同时访问==（命中取 Cache、未命中取主存，T_m > T_c）：==T_a = H·T_c + (1−H)·T_m==
+          - ==规律==：==H ↑ ⇒ T_a ↓==，且 ==T_a 介于 T_c 与 T_m 之间==（H=1 时 T_a = T_c，H=0 时 T_a = T_m）
+        - ==访问效率 e = T_c / T_a==：==e 越接近 1、Cache 效果越好==（即 T_a 越接近 T_c 越好）
       - ==Cache 与主存的映射方式==：
-        - ==直接映射==：主存块 → ==唯一 Cache 行==，==硬件简单、冲突多==
-        - ==全相联映射==：任意块 → ==任意行==，==灵活、块冲突少，但比较器多、成本高==
-        - ==组相联映射==：==组间直接、组内全相联==，==兼顾灵活与成本==（常用）
+        - 有效位（是否放入cache）
+        - 标记（内存页面编号）
+        - ==直接映射==：(内存页号%cache行数, 内存页号末尾对应的 cache行标号可以省略 )主存块 → ==唯一 Cache 行==，==硬件简单、冲突多==
+          - 内存页号标记_cache行号_cache行内地址
+        - ==全相联映射==：（前一部分表示页号,后一部分表示业内地址 )任意块 → ==任意行==，==灵活、块冲突少，但比较器多、成本高==
+          - 内存页号标记_cache行内地址
+        - ==组相联映射==：(内存页号%分组数)==组间直接、组内全相联==，==兼顾灵活与成本==（常用）
+          - 内存页号标记_组号_cache行内地址
+
       - ==Cache 替换算法==：==仅当映射到同一行的块冲突时使用==（==直接映射无需替换==）：
         - ==FIFO（先进先出）==：替换==最早调入==的块，未考虑使用频率
         - ==LRU（最近最少使用）==：替换==最久未访问==的块，符合局部性、命中率高（常用）
