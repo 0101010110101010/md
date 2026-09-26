@@ -7384,8 +7384,234 @@
           | IDE / ATA | 设备总线 | 并行 | IDE（集成驱动电子设备）即 ATA（AT 附件），硬盘/光驱并行接口标准（PATA），后由串行 SATA 取代 |
           | I²C / SPI | 设备总线 | 串行 | 芯片间低速串行总线（嵌入式常用） |
     - ==输入输出 I/O==
-      - ==I/O 方式==：==程序查询、程序中断、DMA==；通道/外围处理机
-      - ==中断==：==单/多重中断、中断向量、屏蔽==；==隐指令、现场保护==
+      - ==I/O 接口（I/O 控制器）==：==介于 CPU/总线与外围设备之间、协调双方速度/格式差异的电路==，==CPU 不直接操作设备、而是通过接口中的"端口"间接控制设备==
+        - ==I/O 端口==：==接口中可被 CPU 直接读写的寄存器==，==分三类==：
+          - ==数据端口==：==缓冲输入/输出数据==
+          - ==状态端口==：==反映设备当前状态（==如"就绪/忙/错误"==）==
+          - ==控制端口==：==CPU 向设备发出的命令/控制字==
+        - ==两种编址方式==：
+          - ==统一编址（存储器映射 I/O）==：==把 I/O 端口当作内存单元编址==，==用普通访存指令访问端口==；==优点==：==不需专门 I/O 指令、编程灵活==；==缺点==：==占用内存地址空间==
+          - ==独立编址（I/O 映射 I/O）==：==I/O 端口单独编址、与内存地址空间无关==，==用专门 IN/OUT 指令访问==；==优点==：==不占内存空间、指令含义清晰==；==缺点==：==需专门 I/O 指令、地址线少==（==x86 即独立编址==）
+      - ==I/O 方式（按 CPU 介入程度由低到高）==：==程序查询 → 程序中断 → DMA → 通道 → 外围处理机==
+        - ==① 程序查询方式==：==CPU 主动循环"读状态端口、判就绪、再传数据"==，==传送全程 CPU 被独占、一直在查询等待==；==实现简单、但 CPU 利用率最低（==踏步等待==）==
+          - ==流程图（SVG）==：
+
+            <svg xmlns="http://www.w3.org/2000/svg" width="520" height="420" viewBox="0 0 520 420" font-family="-apple-system, Segoe UI, sans-serif" font-size="13">
+              <defs>
+                <marker id="arr2" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+                  <path d="M0,0 L8,3 L0,6 Z" fill="#444"/>
+                </marker>
+              </defs>
+              <rect x="0" y="0" width="520" height="420" fill="#fafbfc"/>
+              <!-- 启动设备 -->
+              <rect x="180" y="20" width="160" height="42" rx="8" fill="#e3f2fd" stroke="#1e88e5" stroke-width="1.5"/>
+              <text x="260" y="45" text-anchor="middle" fill="#0d47a1" font-weight="bold">CPU 启动设备</text>
+              <line x1="260" y1="62" x2="260" y2="92" stroke="#444" stroke-width="2" marker-end="url(#arr2)"/>
+              <!-- 读状态端口 -->
+              <rect x="170" y="92" width="180" height="42" rx="8" fill="#e8f5e9" stroke="#43a047" stroke-width="1.5"/>
+              <text x="260" y="117" text-anchor="middle" fill="#1b5e20" font-weight="bold">读状态端口</text>
+              <line x1="260" y1="134" x2="260" y2="164" stroke="#444" stroke-width="2" marker-end="url(#arr2)"/>
+              <!-- 判就绪 菱形 -->
+              <polygon points="260,164 380,206 260,248 140,206" fill="#fff3e0" stroke="#fb8c00" stroke-width="1.5"/>
+              <text x="260" y="202" text-anchor="middle" fill="#e65100" font-weight="bold">设备就绪?</text>
+              <text x="260" y="220" text-anchor="middle" fill="#e65100" font-size="11">（查状态位）</text>
+              <!-- 未就绪 回读状态 -->
+              <line x1="140" y1="206" x2="96" y2="206" stroke="#444" stroke-width="2" marker-end="url(#arr2)"/>
+              <text x="80" y="190" text-anchor="middle" fill="#444" font-size="11">否</text>
+              <line x1="96" y1="206" x2="96" y2="113" stroke="#444" stroke-width="2" marker-end="url(#arr2)"/>
+              <line x1="96" y1="113" x2="170" y2="113" stroke="#444" stroke-width="2" marker-end="url(#arr2)"/>
+              <text x="60" y="160" text-anchor="middle" fill="#888" font-size="10" transform="rotate(-90 60 160)">循环查询（CPU 踏步等待）</text>
+              <!-- 就绪 传数据 -->
+              <line x1="260" y1="248" x2="260" y2="276" stroke="#444" stroke-width="2" marker-end="url(#arr2)"/>
+              <text x="372" y="222" text-anchor="middle" fill="#444" font-size="11">是</text>
+              <rect x="180" y="276" width="160" height="42" rx="8" fill="#e8f5e9" stroke="#43a047" stroke-width="1.5"/>
+              <text x="260" y="301" text-anchor="middle" fill="#1b5e20" font-weight="bold">传送一个数据</text>
+              <line x1="260" y1="318" x2="260" y2="348" stroke="#444" stroke-width="2" marker-end="url(#arr2)"/>
+              <!-- 判完成 菱形 -->
+              <polygon points="260,348 380,390 260,432 140,390" fill="#fff3e0" stroke="#fb8c00" stroke-width="1.5"/>
+              <text x="260" y="386" text-anchor="middle" fill="#e65100" font-weight="bold">全部完成?</text>
+              <line x1="380" y1="390" x2="430" y2="390" stroke="#444" stroke-width="2" marker-end="url(#arr2)"/>
+              <text x="440" y="394" text-anchor="middle" fill="#444" font-size="11">是</text>
+              <text x="452" y="390" text-anchor="middle" fill="#1b5e20" font-weight="bold" font-size="12">结束</text>
+              <!-- 未完成 回到读状态 -->
+              <line x1="260" y1="432" x2="260" y2="460" stroke="#bbb" stroke-width="1.5" stroke-dasharray="4"/>
+              <line x1="140" y1="390" x2="100" y2="390" stroke="#444" stroke-width="2" marker-end="url(#arr2)"/>
+              <text x="84" y="374" text-anchor="middle" fill="#444" font-size="11">否</text>
+              <line x1="100" y1="390" x2="100" y2="113" stroke="#444" stroke-width="2" marker-end="url(#arr2)"/>
+              <line x1="100" y1="113" x2="170" y2="113" stroke="#444" stroke-width="2" marker-end="url(#arr2)"/>
+            </svg>
+        - ==② 程序中断方式==：==CPU 启动设备后转去干别的事==，==设备就绪时向 CPU 发中断请求==，==CPU 响应后暂停当前程序、转去执行中断服务程序完成一次数据传送==；==CPU 与 I/O 并行、利用率提高==，==但每传一批/一个数据都要中断一次、仍有较多中断开销==
+        - ==③ DMA 方式（直接存储器存取）==：==在主存与设备之间直接成块传送数据、不需 CPU 逐字干预==，==由 DMA 控制器接管总线、以"周期窃取"方式占用总线==；==仅传送开始/结束需 CPU 介入==，==适合高速大批量数据（==如磁盘==）==
+        - ==④ 通道方式==：==专门设置"通道处理器"执行通道程序、统一管理多台设备的数据传送==，==CPU 只需发"启动通道"命令、之后基本不干预==；==比 DMA 更独立、可管理多设备并发==
+      - ==中断系统==：
+        - ==中断概念==：==CPU 在程序运行中遇突发事件、暂停现行程序转去处理、处理完再返回原程序继续==；==其实质是"程序切换 + 现场保护恢复"==
+        - ==中断源==：==引起中断的事件/设备==（==如 I/O 完成、定时器、故障、自愿中断（访管/系统调用）==）
+        - ==中断分类==：
+          - ==内部中断（异常）/ 外部中断==：==内部=CPU 执行指令引发（==除零、缺页、访管==）；外部=来自 CPU 之外（==I/O、时钟==）==
+          - ==可屏蔽中断 / 不可屏蔽中断（NMI）==：==可屏蔽可被关中断屏蔽；NMI 紧急、不可屏蔽（==如掉电、硬件故障==）==
+          - ==向量中断 / 非向量中断==：==向量中断=硬件直接给出服务程序入口（==中断向量表==）；非向量=软件查询入口==
+        - ==中断向量==：==中断服务程序的入口地址（或入口地址指针）==；==所有中断向量按号排列成"中断向量表"==，==CPU 据中断类型号查表得入口==
+        - ==中断响应条件==：==① 有中断请求；② CPU 允许中断（==中断允许触发器 EINT=1，即开中断==）；③ 一条指令执行完、且无更紧急的不可屏蔽中断==
+        - ==单重中断 / 多重中断==：==单重=响应后关中断、本次处理中不响应新中断==；==多重（嵌套）=响应后可再开中断、高优先级可打断低优先级==
+          - ==嵌套过程流程图（SVG）==：
+
+            <svg xmlns="http://www.w3.org/2000/svg" width="600" height="400" viewBox="0 0 600 400" font-family="-apple-system, Segoe UI, sans-serif" font-size="13">
+              <defs>
+                <marker id="arrx" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+                  <path d="M0,0 L8,3 L0,6 Z" fill="#444"/>
+                </marker>
+              </defs>
+              <rect x="0" y="0" width="600" height="400" fill="#fafbfc"/>
+              <text x="300" y="24" text-anchor="middle" font-size="15" font-weight="bold" fill="#222">多重中断（嵌套）时间轴示意</text>
+
+              <!-- 主程序 -->
+              <rect x="60" y="50" width="90" height="28" rx="6" fill="#bbdefb" stroke="#1e88e5" stroke-width="1.2"/>
+              <text x="105" y="69" text-anchor="middle" font-size="12" fill="#0d47a1">主程序运行</text>
+              <rect x="450" y="50" width="110" height="28" rx="6" fill="#bbdefb" stroke="#1e88e5" stroke-width="1.2"/>
+              <text x="505" y="69" text-anchor="middle" font-size="12" fill="#0d47a1">恢复运行</text>
+              <text x="16" y="69" font-size="12" font-weight="bold" fill="#0d47a1">主程序</text>
+
+              <!-- 低 ISR -->
+              <rect x="150" y="170" width="340" height="28" rx="6" fill="#c8e6c9" stroke="#43a047" stroke-width="1.2"/>
+              <text x="320" y="189" text-anchor="middle" font-size="12" fill="#1b5e20">低优先级 ISR（被高优先级打断）</text>
+              <text x="16" y="189" font-size="12" font-weight="bold" fill="#1b5e20">低 ISR</text>
+
+              <!-- 高 ISR -->
+              <rect x="220" y="300" width="200" height="28" rx="6" fill="#ffccbc" stroke="#fb8c00" stroke-width="1.2"/>
+              <text x="320" y="319" text-anchor="middle" font-size="12" fill="#e65100">高优先级嵌套执行</text>
+              <text x="16" y="319" font-size="12" font-weight="bold" fill="#e65100">高 ISR</text>
+
+              <!-- 四段箭头 -->
+              <line x1="140" y1="78" x2="140" y2="168" stroke="#444" stroke-width="1.5" marker-end="url(#arrx)"/>
+              <line x1="210" y1="198" x2="210" y2="298" stroke="#444" stroke-width="1.5" marker-end="url(#arrx)"/>
+              <line x1="380" y1="328" x2="380" y2="198" stroke="#444" stroke-width="1.5" marker-end="url(#arrx)"/>
+              <line x1="500" y1="198" x2="500" y2="78" stroke="#444" stroke-width="1.5" marker-end="url(#arrx)"/>
+
+              <!-- 编号标签 -->
+              <text x="150" y="128" font-size="12" font-weight="bold" fill="#444">① 低中断请求进入低 ISR</text>
+              <text x="220" y="258" font-size="12" font-weight="bold" fill="#444">② 更高优先级请求嵌套进入</text>
+              <text x="390" y="270" font-size="12" font-weight="bold" fill="#444">③ 高 ISR 返回继续低 ISR</text>
+              <text x="390" y="138" font-size="12" font-weight="bold" fill="#444">④ 低 ISR 返回恢复主程序</text>
+
+            </svg>
+          - ==单重中断 vs 多重中断 · 隐指令 vs 服务程序步骤（对照表）==：
+
+            | 执行环节 | 中断隐指令（硬件自动） | 中断服务程序（软件） | 单重中断 | 多重中断 |
+            | --- | --- | --- | --- | --- |
+            | ==关中断== | 响应瞬间硬件自动置 EINT=0 | （已由隐指令完成） | 全程保持关中断 | 保护现场后再"开中断"，允许被更高优先级打断 |
+            | 保存断点 | 硬件把 PC（返回地址）自动压栈/存特定单元 | （已由隐指令完成） | 保存主程序断点 | 保存主程序断点；嵌套时还要再保存"低 ISR 断点" |
+            | 引出 ISR | 按中断向量号把服务程序入口装入 PC | （已由隐指令完成） | 转入对应 ISR | 同左 |
+            | 保护现场 / 置屏蔽字 | （隐指令不做） | 保存通用寄存器；写中断屏蔽字 | 屏蔽字屏蔽全部中断 | 屏蔽字屏蔽同级/低级，只允许更高级打入 |
+            | ==开中断== | （隐指令不做） | 执行开中断指令(EINT=1) | 不执行，保持关 | 必须执行，否则无法嵌套 |
+            | 中断服务（数据处理） | （隐指令不做） | 执行真正的数据传送 / 处理 | 执行 | 执行 |
+            | ==关中断（恢复现场前）== | （隐指令不做） | 恢复现场/屏蔽字前再次关中断，防止恢复过程被新中断打断 | 不执行（全程已关） | 执行（恢复前再次关中断） |
+            | 恢复现场 / 屏蔽字 | （隐指令不做） | 恢复寄存器、恢复屏蔽字 | 恢复 | 恢复（含被嵌套的低 ISR 现场） |
+            | ==开中断（返回前）== | （隐指令不做） | 执行开中断指令(EINT=1) | 不执行，全程已关 | 执行（返回前开中断） |
+            | 中断返回 | （隐指令不做） | 弹出断点、IRET 返回原程序 | 直接返回主程序 | 先返回低 ISR、再返回主程序（逐层出栈） |
+        - ==中断处理过程（典型步骤）==：
+          - ==关中断==（==屏蔽其它中断，保护现场不被破坏==）
+          - ==保存断点==（==把返回地址压栈/存特定单元==）
+          - ==引出中断服务程序（找到 ISR 入口地址）==：==CPU 据中断源确定服务程序入口==，==有两种实现方式==：
+            - ==软件查询法（非向量中断）==：==CPU 进入一个公共的"中断查询程序"，用软件依次读各设备的中断请求状态位、按固定优先级顺序判断"是谁中断了"==，==找到后跳转到对应 ISR==；==硬件简单（无需向量地址生成电路）、但查表由程序逐个比较、速度慢、响应延迟随设备数增加==，==优先级由查询顺序固定决定==
+            - ==中断向量法（向量中断）==：==由硬件直接给出"中断向量"——即该中断源对应的服务程序入口地址（或指向入口的指针）==，==硬件把中断类型号送上总线、CPU 据号查"中断向量表"得入口并装入 PC==；==速度快（硬件一步定位）、各级可独立编程优先级==，==现代计算机普遍采用此方式==
+          - ==保护现场 / 置屏蔽字==（==保存通用寄存器、设置本次中断的屏蔽==）
+          - ==中断服务（开中断）==（==执行真正的数据传送/处理，多重中断时开中断以允许嵌套==）
+          - ==恢复现场 / 恢复屏蔽字==
+          - ==开中断 / 中断返回==（==弹出断点、返回原程序==）
+        - ==中断屏蔽==：==用"中断屏蔽字"屏蔽低优先级中断==，==实现中断优先级与嵌套==；==高优先级可置屏蔽位屏蔽同级/低级==
+        - ==中断优先级原则（同时有多个中断请求时谁先响应）==：
+          - ==① 不可屏蔽中断(NMI) 最高==：==掉电、硬件故障等紧急事件必须立即响应，不能被关中断屏蔽==
+          - ==② 内部异常/故障 次之==：==如指令错、除零、缺页、访管（系统调用）==，==多为运行中必须处理的正确性/保护性事件==
+          - ==③ 可屏蔽 I/O 中断 依设备优先级==：==紧迫/高速设备 > 普通/低速设备（==如磁盘/时钟 > 键盘/打印机==）==；==通常"输入 > 输出"（输入怕丢失数据）==
+          - ==判优实现==：==由硬件排队器（链式/菊花链）或按中断类型号顺序在向量表中查询完成==，==优先级判定发生在"中断响应"阶段、由硬件自动裁决==
+      - ==DMA 方式详解==：
+        - ==DMA 控制器（DMAC）组成==：==主存地址寄存器、字计数器、数据缓冲、控制/状态寄存器、中断机构==
+          - ==DMAC 结构图（SVG）==：
+
+            <svg xmlns="http://www.w3.org/2000/svg" width="640" height="410" viewBox="0 0 640 410" font-family="-apple-system, Segoe UI, sans-serif" font-size="12">
+              <defs>
+                <marker id="dma" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+                  <path d="M0,0 L8,3 L0,6 Z" fill="#444"/>
+                </marker>
+              </defs>
+              <rect x="0" y="0" width="640" height="380" fill="#fafbfc"/>
+              <text x="320" y="24" text-anchor="middle" font-size="15" font-weight="bold" fill="#222">DMA 控制器（DMAC）结构</text>
+
+              <!-- 主存 -->
+              <rect x="40" y="150" width="120" height="70" rx="8" fill="#e3f2fd" stroke="#1e88e5" stroke-width="1.3"/>
+              <text x="100" y="176" text-anchor="middle" font-size="13" font-weight="bold" fill="#0d47a1">主存</text>
+              <text x="100" y="196" text-anchor="middle" font-size="11" fill="#1565c0">MEM</text>
+
+              <!-- 系统总线 -->
+              <rect x="200" y="150" width="60" height="20" rx="4" fill="#fff3e0" stroke="#fb8c00" stroke-width="1.2"/>
+              <text x="230" y="164" text-anchor="middle" font-size="10" fill="#e65100">系统总线</text>
+              <rect x="200" y="195" width="60" height="20" rx="4" fill="#fff3e0" stroke="#fb8c00" stroke-width="1.2"/>
+              <text x="230" y="209" text-anchor="middle" font-size="10" fill="#e65100">总线</text>
+
+              <!-- DMAC 外框 -->
+              <rect x="290" y="60" width="310" height="270" rx="10" fill="#f6f8fa" stroke="#90a4ae" stroke-width="1.3"/>
+              <text x="320" y="82" font-size="13" font-weight="bold" fill="#37474f">DMAC</text>
+
+              <!-- 内部寄存器 -->
+              <rect x="320" y="100" width="130" height="34" rx="6" fill="#e8f5e9" stroke="#43a047" stroke-width="1.2"/>
+              <text x="385" y="121" text-anchor="middle" font-size="11" fill="#1b5e20">主存地址寄存器 MAR</text>
+              <rect x="320" y="150" width="130" height="34" rx="6" fill="#e8f5e9" stroke="#43a047" stroke-width="1.2"/>
+              <text x="385" y="171" text-anchor="middle" font-size="11" fill="#1b5e20">字计数器 WC</text>
+              <rect x="320" y="200" width="130" height="34" rx="6" fill="#e8f5e9" stroke="#43a047" stroke-width="1.2"/>
+              <text x="385" y="221" text-anchor="middle" font-size="11" fill="#1b5e20">数据缓冲寄存器</text>
+              <rect x="320" y="250" width="130" height="34" rx="6" fill="#e8f5e9" stroke="#43a047" stroke-width="1.2"/>
+              <text x="385" y="271" text-anchor="middle" font-size="11" fill="#1b5e20">控制/状态寄存器</text>
+              <rect x="470" y="150" width="110" height="34" rx="6" fill="#ffe0b2" stroke="#fb8c00" stroke-width="1.2"/>
+              <text x="525" y="171" text-anchor="middle" font-size="11" fill="#e65100">中断机构</text>
+
+              <!-- DMA 请求/响应 -->
+              <rect x="470" y="250" width="110" height="34" rx="6" fill="#fce4ec" stroke="#d81b60" stroke-width="1.2"/>
+              <text x="525" y="271" text-anchor="middle" font-size="11" fill="#880e4f">HRQ / HLDA</text>
+
+              <!-- I/O 设备 -->
+              <rect x="470" y="309" width="110" height="20" rx="4" fill="#fff3e0" stroke="#fb8c00" stroke-width="1.2"/>
+              <text x="525" y="323" text-anchor="middle" font-size="10" fill="#e65100">I/O 设备接口</text>
+
+              <!-- 连线 -->
+              <line x1="160" y1="185" x2="200" y2="185" stroke="#444" stroke-width="1.5" marker-end="url(#dma)"/>
+              <line x1="260" y1="185" x2="320" y2="185" stroke="#444" stroke-width="1.5" marker-end="url(#dma)"/>
+              <line x1="525" y1="284" x2="525" y2="309" stroke="#444" stroke-width="1.5" marker-end="url(#dma)"/>
+              <line x1="525" y1="184" x2="525" y2="250" stroke="#444" stroke-width="1.5" stroke-dasharray="4" marker-end="url(#dma)"/>
+              <text x="540" y="225" font-size="9" fill="#888">总线请求</text>
+
+              <!-- 底部说明 -->
+              <rect x="20" y="340" width="600" height="62" rx="8" fill="#fff8e1" stroke="#fbc02d" stroke-width="1.2"/>
+              <text x="36" y="360" font-size="11" fill="#5d4037">MAR 每传一字自动+1；WC 每传一字−1，减到 0 发中断。</text>
+              <text x="36" y="380" font-size="11" fill="#5d4037">HRQ=DMAC 向 CPU 的总线请求，HLDA=CPU 的总线响应（让出总线）。</text>
+              <text x="36" y="400" font-size="11" fill="#5d4037">数据通路：主存 ↔ 系统总线 ↔ 数据缓冲 ↔ 设备接口（不经 CPU，DMAC 直控）。</text>
+            </svg>
+        - ==DMA 传送三阶段==：
+          - ==预处理==：==CPU 给 DMAC 设主存首址、字计数、传送方向等参数、启动 DMAC==（==CPU 介入==）
+          - ==数据传送==：==DMAC 接管总线、主存↔设备直接成块传==，==以"周期窃取"占用总线（==盗用一个/几个总线周期==）==；==CPU 让出总线但不停程序（==或短暂等待==）==
+          - ==后处理==：==计数为 0 时 DMAC 发中断请求==，==CPU 介入做结束处理（==校验、善后==）==
+        - ==DMA vs 中断（必记）==：==中断=设备就绪后 CPU 介入、每次传一个/批数据、靠程序传送；DMA=DMAC 直接接管总线、成块传送、仅始末需 CPU、不靠中断程序搬数据==；==DMA 适合高速大批量、中断适合中低速/单笔==
+          - ==DMA 与中断 对比表==：
+
+            | ==对比维度== | ==中断方式== | ==DMA 方式== |
+            | --- | --- | --- |
+            | ==数据通路== | ==设备 ↔ 接口缓冲 ↔ CPU（靠 CPU 执行程序搬数据）== | ==设备 ↔ 主存（DMAC 直连，不经 CPU）== |
+            | ==CPU 参与度== | ==每次传送都需 CPU 执行中断服务程序、逐字/逐批搬== | ==仅预处理/后处理需 CPU，成块传送由 DMAC 完成== |
+            | ==总线占用== | ==不长期占用总线（仅响应瞬间）== | ==传送期间周期性/阶段性占用总线== |
+            | ==并行度== | ==CPU 与设备"准备"并行、"传送"不并行== | ==CPU 与数据传送真正并行== |
+            | ==适用场景== | ==中低速设备、单笔/少量、需复杂处理== | ==高速大批量（如磁盘读写）== |
+            | ==响应开销== | ==每次传送都中断一次，开销大== | ==仅首/尾各中断一次，开销小== |
+        - ==DMA 传送期间 CPU 与 DMAC 的三种总线占用方式==：==解决"传送数据时 CPU 与 DMAC 如何共享总线"==
+          - ==① 停止 CPU 访存（独占方式）==：==DMAC 申请到总线后、CPU 在整个数据块传送期间暂停一切访存（不取指、不访存）==，==DMAC 独占总线连续成块传==；==控制最简单、但 CPU 长时间停工、总线利用率低==（==适合高速设备、块很大时==）
+          - ==② 周期挪用 / 周期窃取（最常用）==：==DMAC 只在需要传送的那一瞬间"偷"一个总线周期、传完立即归还==，==CPU 绝大多数时间照常工作==；==仅当 CPU 与 DMAC 同时争总线时 DMAC 优先、CPU 等一拍==，==对 CPU 影响最小、效率最高==
+          - ==③ CPU 与 DMA 交替访存（透明 DMA / 分时方式）==：==把每个总线周期硬性拆成两半、CPU 用前半、DMAC 用后半（==如 C1 归 CPU、C2 归 DMAC==）==，==二者完全不冲突、无需申请/归还总线==；==需总线周期可均匀拆分、硬件最复杂、CPU 不察觉 DMA 进行（=="透明"==）==
+          - ==三者对比速记==：==停止访存=简单但 CPU 停工、利用率低；周期挪用=按需偷周期、最常用最高效；交替访存=硬拆周期、透明无冲突但硬件最复杂==
+      - ==通道方式详解==：
+        - ==通道类型==：
+          - ==字节多路通道==：==为多个低速设备服务、轮流穿插传一个字节==（==各设备轮询、提高利用率==）
+          - ==数组多路通道==：==为多个中速设备服务、每次连传一组（一个数据块）后换设备==（==兼顾多路与批量==）
+          - ==选择通道==：==独占通道、一次只服务一台高速设备、连续传完整个数据块再让出==（==如磁盘==）
+        - ==通道程序==：==由通道指令组成的、放在主存中由通道执行==，==指令含"操作码/计数/内存地址/标志"==，==标志决定是否链式到下条==
+      - ==考点提示==：==五种 I/O 方式按 CPU 介入递减、并行度递增==；==统一/独立编址区别==；==中断响应三条件、处理七步骤==；==DMA 三阶段与中断的对比、周期窃取==；==中断向量表查表寻址==
   - 计算机体系结构
   - 操作系统 35
   - 计算机网络 25
