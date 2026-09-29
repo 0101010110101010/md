@@ -8563,16 +8563,272 @@
               | ==位示图法== | 用一比特位图，第 i 位对应第 i 块，**0=空闲、1=已用** | 扫描位图找 0 位（可连续可离散），置 1 并据位号算出盘块号 | 把对应位的 1 改回 0 即可，简单直接 |
               | ==空闲链表法== | 所有空闲块用指针**链成链表**（空闲盘块链 / 空闲盘区链） | 从链表头取下所需块（或一组块） | 把回收块挂回链表头/尾，改指针即可 |
               | ==成组链接法== | 空闲块**分组**，每组首块存「本组块号列表 + 下一组指针」（UNIX 方式） | 从当前组取块；当前组取空时，按首块指针**跳到下一组**继续取 | 回收时挂回当前组；组满则新建一组并由首块记录新组指针 |
-
-
-
-
     - 输入输出（I/O）管理
-      - ==I/O 控制方式==（==按 CPU 介入递减==）：==程序查询→程序中断→DMA→通道==（==与计组的 I/O 方式一致，OS 层侧重管理与缓冲==）
-      - ==缓冲技术==：==缓解 CPU 与 I/O 速度不匹配、减少对 CPU 中断次数==：==单缓冲、双缓冲、循环缓冲、缓冲池（多进程共享的缓冲队列）==
-      - ==SPOOLing（假脱机）==：==用磁盘/缓冲区把独占设备"虚拟"成共享设备==，==典型：打印假脱机，进程输出先入磁盘队列、后台慢慢打印==；==提高设备利用率、实现独占设备共享==
-      - ==设备分配==：==基于设备类型（独占/共享/虚拟）分配==，==用数据结构：系统设备表 SDT、设备控制表 DCT、控制器表 COCT、通道表 CHCT==；==分配算法：FCFS、优先级==；==可能引发设备分配死锁（用有序分配/剥夺预防）==
-      - ==I/O 软件层次==：==用户层 I/O→设备独立性软件→设备驱动程序→中断处理程序→硬件==（==逐层屏蔽细节==）
+      - ==分类（按不同角度对 I/O 设备归类）==
+        - ==按使用特性分类==
+          - ==存储设备==：==外存，如磁盘、磁带，用于存放信息（断电不丢失）==
+          - ==I/O 设备（人机交互设备）==：
+            - ==输入设备==：==键盘、鼠标、扫描仪等，把外部信息送入计算机==
+            - ==输出设备==：==显示器、打印机等，把结果呈现给人==
+            - ==交互式设备==：==终端，既可输入又可输出==
+          - ==网络设备（通信设备）==：==网卡、调制解调器等，用于计算机之间通过网络交换信息（如以太网卡、无线网卡）==
+        - ==按传输速率分类==
+          - ==低速设备==：==键盘、鼠标，每秒几~几百字节==
+          - ==中速设备==：==行式打印机、激光打印机，每秒几千~几万字节==
+          - ==高速设备==：==磁盘、光盘，每秒数百 KB 以上==
+        - ==按信息交换单位分类==
+          - ==块设备==：==以固定大小数据块为单位交换，如磁盘，可寻址、常配 DMA、独立 I/O==
+          - ==字符设备==：==以字符为单位、不可寻址、常中断驱动，如打印机、串口、鼠标==
+      - ==I/O 控制器（设备控制器）==
+        - 功能
+          - 接受识别CPU发出的命令（==命令译码，把指令转为设备动作==）
+          - 向CPU报告设备的状态（==就绪/忙/出错等状态写入状态寄存器==）
+          - 数据交换（==在 CPU 与设备间暂存、缓冲、传送数据==）
+          - 地址识别（==识别 I/O 端口/寄存器地址，路由到对应寄存器==）
+        - 组成
+          - CPU与控制器的接口（==数据/控制/状态寄存器，供 CPU 读写==）
+          - I/O逻辑（==内部控制与译码电路，协调命令、时序与中断==）
+          - 控制器与设备的接口（==信号转换与电气匹配，连接具体设备==）
+        - 编址
+          - ==内存映射 I/O==：==把控制器寄存器映射到内存地址空间，CPU 用普通访存指令（load/store）读写，不区分内存与 I/O==（==优点：指令通用；缺点：占用内存地址、Cache 一致性需注意==）
+          - ==独立编址 I/O（I/O 端口）==：==控制器寄存器使用独立 I/O 地址空间，CPU 用专用指令（IN / OUT）访问==（==优点：不占内存空间、地址线少；缺点：需专用指令==）
+      - ==I/O 控制方式==（==按 CPU 介入递减==，==与计组的 I/O 方式一致，OS 层侧重管理与缓冲==）
+
+        | ==方式== | ==完成一次读写操作的流程== | ==CPU 干预的频率== | ==数据传送调度单位== | ==数据的流向== | ==主要优缺点== |
+        | --- | --- | --- | --- | --- | --- |
+        | ==程序查询方式== | ==发命令→CPU 循环轮询状态寄存器→就绪才传送→传送完再查== | ==极高（传送全程忙等，每个字节都干预）== | ==每次一个字/字节== | ==设备 ⇄ CPU 寄存器 ⇄ 内存（经 CPU 中转）== | ==优：实现简单、实时可控；缺：CPU 利用率最低、并行度差== |
+        | ==程序中断方式== | ==发 I/O 请求→CPU 转去执行别的进程→设备就绪发中断→CPU 转中断处理程序传数据== | ==高（每次传一个字/块都中断一次 CPU）== | ==每次一个字/一块== | ==设备 ⇄ CPU 寄存器 ⇄ 内存（仍经 CPU 中转）== | ==优：CPU 不必忙等、利用率提升；缺：每字中断、上下文切换开销大== |
+        | ==DMA 方式== | ==CPU 设好内存起址/块数/方向→DMA 控制器接管总线批量传→整块传完发一次中断== | ==低（仅起始设置与结束中断，中间不干预）== | ==每次一块（多个连续字）== | ==设备 ⇄ 内存（直接，不经 CPU 中转）== | ==优：CPU 基本解放、块传送高效；缺：仍需 CPU 初始化、仅连续块== |
+        | ==通道方式== | ==CPU 发 I/O 指令→通道执行通道程序独立管多台设备→完成一批 I/O 才中断 CPU== | ==极低（仅启动与整批结束中断）== | ==每次一批（多块/多设备）== | ==设备 ⇄ 内存（通道独立调度，不经 CPU）== | ==优：CPU 介入最少、并行度最高、可同时管多设备；缺：硬件成本高、结构复杂== |
+      - ==I/O 核心子系统==
+        - 中间三层
+          - ==I/O 调度==：==对多个进程的 I/O 请求排队并决定服务顺序，改善系统整体性能==（==目标：高吞吐、公平、低响应时间；常用算法：FCFS、SSTF/SCAN 等磁盘调度、优先级调度==）
+          - ==设备保护==：==防止进程越权访问设备，像文件保护一样基于"所有者/权限"做检查==（==系统按逻辑设备号鉴权，无权限的进程访问设备时被拒绝，避免互相干扰或破坏==）
+          - 设备独立性软件，==设备分配==：
+            - ==设备分配时应该考虑的因素==
+              - ==设备固有属性==（==按是否可同时被多个进程使用分类，决定分配策略==）
+                - ==独占设备==：==同一时刻只能分配给一个进程，如打印机、磁带机==（==分配策略：独占使用，用完释放；易造成等待==）
+                - ==共享设备==：==可让多个进程"交替/并发"使用、宏观共享，如磁盘==（==分配策略：按请求调度，I/O 调度算法决定服务顺序==）
+                - ==虚拟设备==：==用 SPOOLing 把独占设备"虚拟"成可共享的逻辑设备，如假脱机打印队列==（==分配策略：进程只往磁盘队列写，后台慢慢消费，无人真正独占物理设备==）
+              - ==设备分配算法==：==常用先来先服务 FCFS、或按进程优先级调度==
+              - ==分配的安全性==（==指分配设备后进程是否会长期持有资源而引发死锁==）
+                - ==安全方式==：==进程申请到设备后立即启动 I/O 并阻塞等待，不长期持有、用完即放，不会形成环路等待==（==不会死锁，但设备可能短暂闲置==）
+                - ==不安全方式==：==进程保留已分配的设备、继续申请别的设备（可能持有多台资源），效率高但一旦形成循环等待就会死锁==（==需配合死锁预防/避免，如有序分配、静态分配==）
+              - ==设备独立性（无关性）==：==用户用逻辑设备名申请，系统再映射到具体物理设备，便于换硬件、灵活调度==
+            - ==静态分配和动态分配==
+              - ==静态分配==：==进程运行前一次性分配它所需的全部设备，运行结束才全部释放==（==优点：绝不会死锁；缺点：设备长期闲置、利用率低==）
+              - ==动态分配==：==进程运行中按需要逐步申请/释放设备==（==优点：设备利用率高；缺点：可能因循环等待导致死锁，需配预防/避免策略==）
+            - ==设备分配管理中的数据结构==（==四类表逐级指向==）
+              - ==系统设备表 SDT==：==登记系统全部设备，每项含设备类型/标识符/状态/驱动程序入口，并指向该设备的 DCT==
+              - ==设备控制表 DCT==：==每个设备一张，含设备类型/标识符、设备状态（忙/闲）、指向 COCT 的控制器指针、重复执行次数、中断向量号==
+              - ==控制器控制表 COCT==：==每个控制器一张，含控制器状态、指向 CHCT 的通道指针、等待队列==
+              - ==通道控制表 CHCT==：==每个通道一张，含通道状态、等待队列==（==SDT→DCT→COCT→CHCT 形成"设备—控制器—通道"的隶属链==）
+
+                <svg width="920" height="300" viewBox="0 0 920 300" style="background:#ffffff" xmlns="http://www.w3.org/2000/svg">
+                  <rect x="0" y="0" width="920" height="300" fill="#ffffff"/>
+                  <rect x="20" y="30" width="190" height="240" rx="6" fill="#e3f2fd" stroke="#1565c0" stroke-width="1.5"/>
+                  <rect x="20" y="30" width="190" height="28" rx="6" fill="#1565c0"/>
+                  <text x="115" y="49" text-anchor="middle" fill="#ffffff" font-size="12" font-weight="bold">系统设备表 SDT</text>
+                  <text x="32" y="82" fill="#0d47a1" font-size="11">设备类型</text>
+                  <text x="32" y="112" fill="#0d47a1" font-size="11">设备标识符</text>
+                  <text x="32" y="142" fill="#0d47a1" font-size="11">设备状态（忙 / 闲）</text>
+                  <text x="32" y="172" fill="#0d47a1" font-size="11">驱动程序入口</text>
+                  <text x="32" y="202" fill="#0d47a1" font-size="11">→ 指向 DCT</text>
+                  <text x="32" y="248" fill="#888" font-size="10">（系统全部设备）</text>
+                  <path d="M210 200 L244 200" stroke="#444" stroke-width="2" fill="none"/>
+                  <path d="M244 200 L236 196 L236 204 Z" fill="#444"/>
+                  <rect x="250" y="30" width="190" height="240" rx="6" fill="#e3f2fd" stroke="#1565c0" stroke-width="1.5"/>
+                  <rect x="250" y="30" width="190" height="28" rx="6" fill="#1565c0"/>
+                  <text x="345" y="49" text-anchor="middle" fill="#ffffff" font-size="12" font-weight="bold">设备控制表 DCT</text>
+                  <text x="262" y="82" fill="#0d47a1" font-size="11">设备类型</text>
+                  <text x="262" y="112" fill="#0d47a1" font-size="11">设备标识符</text>
+                  <text x="262" y="142" fill="#0d47a1" font-size="11">设备状态（忙 / 闲）</text>
+                  <text x="262" y="172" fill="#0d47a1" font-size="11">重复执行次数</text>
+                  <text x="262" y="202" fill="#0d47a1" font-size="11">中断向量号</text>
+                  <text x="262" y="232" fill="#0d47a1" font-size="11">→ 指向 COCT</text>
+                  <text x="262" y="248" fill="#888" font-size="10">（每设备一张）</text>
+                  <path d="M440 232 L474 200" stroke="#444" stroke-width="2" fill="none"/>
+                  <path d="M474 200 L466 196 L466 204 Z" fill="#444"/>
+                  <rect x="480" y="30" width="190" height="240" rx="6" fill="#e3f2fd" stroke="#1565c0" stroke-width="1.5"/>
+                  <rect x="480" y="30" width="190" height="28" rx="6" fill="#1565c0"/>
+                  <text x="575" y="49" text-anchor="middle" fill="#ffffff" font-size="12" font-weight="bold">控制器控制表 COCT</text>
+                  <text x="492" y="82" fill="#0d47a1" font-size="11">控制器状态（忙 / 闲）</text>
+                  <text x="492" y="112" fill="#0d47a1" font-size="11">等待队列</text>
+                  <text x="492" y="142" fill="#0d47a1" font-size="11">→ 指向 CHCT</text>
+                  <text x="492" y="248" fill="#888" font-size="10">（每控制器一张）</text>
+                  <path d="M670 140 L704 140" stroke="#444" stroke-width="2" fill="none"/>
+                  <path d="M704 140 L696 136 L696 144 Z" fill="#444"/>
+                  <rect x="710" y="30" width="190" height="240" rx="6" fill="#e3f2fd" stroke="#1565c0" stroke-width="1.5"/>
+                  <rect x="710" y="30" width="190" height="28" rx="6" fill="#1565c0"/>
+                  <text x="805" y="49" text-anchor="middle" fill="#ffffff" font-size="12" font-weight="bold">通道控制表 CHCT</text>
+                  <text x="722" y="82" fill="#0d47a1" font-size="11">通道状态（忙 / 闲）</text>
+                  <text x="722" y="112" fill="#0d47a1" font-size="11">等待队列</text>
+                  <text x="722" y="248" fill="#888" font-size="10">（每通道一张）</text>
+                  <rect x="70" y="278" width="780" height="18" fill="#ffffff"/>
+                  <text x="460" y="292" text-anchor="middle" fill="#888" font-size="11">SDT → DCT → COCT → CHCT 构成"设备—控制器—通道"逐级隶属链</text>
+                </svg>
+            - ==设备分配的步骤==（==自底向上逐层申请：设备→控制器→通道，都空闲才成功==）
+              - ==① 查 SDT/DCT==：==按逻辑设备名在 SDT 找到对应 DCT，看设备是否空闲；忙则把进程 PCB 挂入该设备等待队列==
+              - ==② 分配控制器==：==由 DCT 找到 COCT，查控制器空闲否；忙则等待，否则分配并置忙==
+              - ==③ 分配通道==：==由 COCT 找到 CHCT，查通道空闲否；忙则等待，否则分配并置忙==
+              - ==④ 启动 I/O==：==三层资源都到手后，将命令与参数写入设备控制器，启动本次 I/O==
+            - ==设备分配步骤的改进方法==（==原"设备→控制器→通道"顺序易形成环路等待死锁==）
+              - ==逆序分配==：==改为"先分配通道→再控制器→最后设备"的自顶向下顺序，减少形成环的可能==
+              - ==按固定序申请（有序分配）==：==给所有设备类型编号，要求进程按编号递增顺序申请资源，破坏"环路等待"条件，预防死锁==
+              - ==改用静态分配==：==运行前一次性分齐所需设备，从根上避免运行期争用死锁==（==代价是利用率下降==）
+          - 设备独立性软件，==缓冲技术==（==缓解 CPU 与 I/O 速度不匹配、减少对 CPU 中断次数、提高并行度==）
+            - ==引入原因==：==CPU 与 I/O 设备速度悬殊，若 CPU 每产生/消费一块数据都必须等慢速设备，CPU 大量空闲==；==在内存开一块"缓冲"暂存，让 CPU 与设备可部分并行==
+            - ==单缓冲==：==系统在主存开一块缓冲==（==典型流程：设备→缓冲→CPU 顺序交替；任一时刻 CPU 与设备只有一个在工作，并行度有限；常用于低速字符设备==）
+
+              <svg width="640" height="240" viewBox="0 0 640 240" style="background:#ffffff" xmlns="http://www.w3.org/2000/svg">
+                <rect x="0" y="0" width="640" height="240" fill="#ffffff"/>
+                <rect x="30" y="90" width="120" height="60" rx="6" fill="#e3f2fd" stroke="#1565c0" stroke-width="1.5"/>
+                <text x="90" y="125" text-anchor="middle" fill="#0d47a1" font-size="13" font-weight="bold">I/O 设备</text>
+                <rect x="260" y="90" width="120" height="60" rx="6" fill="#fff3e0" stroke="#e65100" stroke-width="1.5"/>
+                <text x="320" y="120" text-anchor="middle" fill="#e65100" font-size="13" font-weight="bold">单块缓冲</text>
+                <text x="320" y="138" text-anchor="middle" fill="#888" font-size="10">（主存）</text>
+                <rect x="490" y="90" width="120" height="60" rx="6" fill="#e8f5e9" stroke="#2e7d32" stroke-width="1.5"/>
+                <text x="550" y="125" text-anchor="middle" fill="#1b5e20" font-size="13" font-weight="bold">CPU</text>
+                <path d="M150 110 L256 110" stroke="#444" stroke-width="2" fill="none"/>
+                <path d="M256 110 L248 106 L248 114 Z" fill="#444"/>
+                <path d="M380 110 L486 110" stroke="#444" stroke-width="2" fill="none"/>
+                <path d="M486 110 L478 106 L478 114 Z" fill="#444"/>
+                <rect x="30" y="180" width="580" height="20" fill="#ffffff"/>
+                <text x="320" y="196" text-anchor="middle" fill="#888" font-size="11">阶段1：设备→缓冲；阶段2：缓冲→CPU（两者顺序交替，不能真正并行）</text>
+              </svg>
+
+              <svg width="640" height="180" viewBox="0 0 640 180" style="background:#ffffff" xmlns="http://www.w3.org/2000/svg">
+                <rect x="0" y="0" width="640" height="180" fill="#ffffff"/>
+                <rect x="40" y="10" width="560" height="22" fill="#ffffff"/>
+                <text x="320" y="27" text-anchor="middle" fill="#444" font-size="13" font-weight="bold">单缓冲工作时序（设备与 CPU 顺序交替，无重叠）</text>
+                <text x="60" y="68" fill="#1565c0" font-size="12">设备</text>
+                <rect x="120" y="55" width="180" height="20" fill="#bbdefb" stroke="#1565c0"/>
+                <text x="210" y="70" text-anchor="middle" fill="#0d47a1" font-size="10">设备→缓冲（第一批）</text>
+                <rect x="300" y="55" width="180" height="20" fill="#eeeeee" stroke="#bbb"/>
+                <text x="390" y="70" text-anchor="middle" fill="#888" font-size="10">空闲（等 CPU）</text>
+                <rect x="480" y="55" width="120" height="20" fill="#bbdefb" stroke="#1565c0"/>
+                <text x="540" y="70" text-anchor="middle" fill="#0d47a1" font-size="10">→缓冲</text>
+                <text x="60" y="100" fill="#2e7d32" font-size="12">CPU</text>
+                <rect x="120" y="87" width="180" height="20" fill="#eeeeee" stroke="#bbb"/>
+                <text x="210" y="102" text-anchor="middle" fill="#888" font-size="10">空闲（等设备）</text>
+                <rect x="300" y="87" width="180" height="20" fill="#c8e6c9" stroke="#2e7d32"/>
+                <text x="390" y="102" text-anchor="middle" fill="#1b5e20" font-size="10">缓冲→CPU（第一批）</text>
+                <rect x="480" y="87" width="120" height="20" fill="#c8e6c9" stroke="#2e7d32"/>
+                <text x="540" y="102" text-anchor="middle" fill="#1b5e20" font-size="10">→CPU</text>
+                <rect x="40" y="130" width="560" height="18" fill="#ffffff"/>
+                <text x="320" y="144" text-anchor="middle" fill="#888" font-size="10">设备忙时 CPU 闲、CPU 忙时设备闲，任一时段只有一个在工作（灰=空闲）</text>
+                <rect x="40" y="152" width="560" height="18" fill="#ffffff"/>
+                <text x="320" y="166" text-anchor="middle" fill="#444" font-size="11" font-weight="bold">结论：单缓冲两段不重叠，整段耗时 = 设备时间 + CPU 时间</text>
+              </svg>
+            - ==双缓冲==：==开两块缓冲交替使用==（==一块被 CPU 读时，另一块可被设备填充，CPU 与设备可真正并行；提高吞吐，但仍限于一对生产/消费者的简单场景==）
+
+              <svg width="640" height="300" viewBox="0 0 640 300" style="background:#ffffff" xmlns="http://www.w3.org/2000/svg">
+                <rect x="0" y="0" width="640" height="300" fill="#ffffff"/>
+                <rect x="40" y="10" width="560" height="22" fill="#ffffff"/>
+                <text x="320" y="27" text-anchor="middle" fill="#444" font-size="13" font-weight="bold">工作时序对比：单缓冲（上） vs 双缓冲（下）</text>
+                <text x="20" y="68" fill="#0d47a1" font-size="12" font-weight="bold">单</text>
+                <text x="60" y="68" fill="#1565c0" font-size="12">设备</text>
+                <rect x="120" y="55" width="120" height="20" fill="#bbdefb" stroke="#1565c0"/>
+                <text x="180" y="70" text-anchor="middle" fill="#0d47a1" font-size="10">设备→缓冲</text>
+                <rect x="240" y="55" width="120" height="20" fill="#eeeeee" stroke="#bbb"/>
+                <rect x="360" y="55" width="120" height="20" fill="#bbdefb" stroke="#1565c0"/>
+                <text x="420" y="70" text-anchor="middle" fill="#0d47a1" font-size="10">设备→缓冲</text>
+                <text x="60" y="100" fill="#2e7d32" font-size="12">CPU</text>
+                <rect x="120" y="87" width="120" height="20" fill="#eeeeee" stroke="#bbb"/>
+                <rect x="240" y="87" width="120" height="20" fill="#c8e6c9" stroke="#2e7d32"/>
+                <text x="300" y="102" text-anchor="middle" fill="#1b5e20" font-size="10">缓冲→CPU</text>
+                <rect x="360" y="87" width="120" height="20" fill="#eeeeee" stroke="#bbb"/>
+                <rect x="120" y="118" width="360" height="14" fill="#ffffff"/>
+                <text x="320" y="129" text-anchor="middle" fill="#888" font-size="10">单缓冲：设备忙完 CPU 才忙，两段不重叠（灰=空闲）</text>
+                <text x="20" y="172" fill="#0d47a1" font-size="12" font-weight="bold">双</text>
+                <text x="60" y="172" fill="#1565c0" font-size="12">设备</text>
+                <rect x="120" y="159" width="120" height="20" fill="#bbdefb" stroke="#1565c0"/>
+                <text x="180" y="174" text-anchor="middle" fill="#0d47a1" font-size="10">→缓冲A</text>
+                <rect x="240" y="159" width="120" height="20" fill="#bbdefb" stroke="#1565c0"/>
+                <text x="300" y="174" text-anchor="middle" fill="#0d47a1" font-size="10">→缓冲B</text>
+                <rect x="360" y="159" width="120" height="20" fill="#bbdefb" stroke="#1565c0"/>
+                <text x="420" y="174" text-anchor="middle" fill="#0d47a1" font-size="10">→缓冲A</text>
+                <text x="60" y="204" fill="#2e7d32" font-size="12">CPU</text>
+                <rect x="120" y="191" width="120" height="20" fill="#eeeeee" stroke="#bbb"/>
+                <rect x="240" y="191" width="120" height="20" fill="#c8e6c9" stroke="#2e7d32"/>
+                <text x="300" y="206" text-anchor="middle" fill="#1b5e20" font-size="10">读缓冲A</text>
+                <rect x="360" y="191" width="120" height="20" fill="#c8e6c9" stroke="#2e7d32"/>
+                <text x="420" y="206" text-anchor="middle" fill="#1b5e20" font-size="10">读缓冲B</text>
+                <rect x="120" y="222" width="360" height="14" fill="#ffffff"/>
+                <text x="320" y="233" text-anchor="middle" fill="#888" font-size="10">双缓冲：设备填 B 的同时 CPU 读 A，两段重叠并行</text>
+                <rect x="40" y="248" width="560" height="20" fill="#ffffff"/>
+                <text x="320" y="263" text-anchor="middle" fill="#444" font-size="11" font-weight="bold">结论：同样 2 批数据，双缓冲总耗时明显短于单缓冲</text>
+              </svg>
+            - ==循环缓冲==：==多个大小相等的缓冲块首尾连成环==（==设 in/out 指针循环复用，适合生产者—消费者速度不均、需连续流式传输的场景，如音频/视频采集==）
+              - ==生产者—消费者约束（取/填的正确规则）==：==循环缓冲本质是"有界缓冲"的 PV 同步问题，关键不是"满了才取、空了才填"，而是==：
+                - ==取数据（消费者，如 CPU / 读进程）==：==只要缓冲区"非空"（有已填好的数据块）就能取，不必等填满；取走后该块变为空、可供生产者再填==
+                - ==填数据（生产者，如 I/O 设备 / 写进程）==：==只要缓冲区"非满"（还有空块）就能填，不必等清空；填满一块后该块变为"满"、可供消费者取==
+                - ==两个等待条件==：==缓冲区"空"（无数据）时消费者阻塞等待 full 信号==；==缓冲区"满"（无空块）时生产者阻塞等待 empty 信号==（==用 empty / full 两个信号量 + 互斥量实现，避免同时改指针==）
+                - ==常见误解澄清==：=="缓冲区满了才可以取数据、空了才可以填数据"只对单/双缓冲（一块=一个数据块）近似成立；多块成环时是"边填边取、部分重叠"，绝不傻等彻底满/彻底空==
+            - ==缓冲池==：==系统维持一个由多个空闲缓冲块组成、供多进程共享的缓冲队列==（==进程按需从池中取块、用完归还，统一管理、利用率最高；常用于多进程并发 I/O 的通用系统==）
+              - ==三类队列==：==缓冲池把所有缓冲块按状态挂在三条队列上==：==① 空缓冲队列 emq（全空闲，待分配）==、==② 输入队列 inq（装满输入数据、待进程取走）==、==③ 输出队列 outq（装满输出数据、待设备取走）==
+              - ==工作缓冲区（工作区）==：==进程并不直接操作队列里的缓冲块，而是从队列取一个块、挂到"工作缓冲区"使用，用完再归还队列==；==按用途分四种==：==收容输入 hin（设备→缓冲，写入 inq）==、==提取输入 sin（进程从 inq 取块读数据）==、==收容输出 hout（进程写数据→缓冲，写入 outq）==、==提取输出 sout（设备从 outq 取块输出）==
+
+                <svg width="700" height="320" viewBox="0 0 700 320" style="background:#ffffff" xmlns="http://www.w3.org/2000/svg">
+                  <rect x="0" y="0" width="700" height="320" fill="#ffffff"/>
+
+                  <!-- 缓冲池标题 -->
+                  <rect x="250" y="14" width="200" height="26" rx="6" fill="#ede7f6" stroke="#5e35b1" stroke-width="1.5"/>
+                  <text x="350" y="32" text-anchor="middle" fill="#4a148c" font-size="13" font-weight="bold">缓冲池（多块共享）</text>
+
+                  <!-- 三条队列 -->
+                  <rect x="40" y="70" width="180" height="40" rx="6" fill="#e8f5e9" stroke="#2e7d32" stroke-width="1.5"/>
+                  <text x="130" y="95" text-anchor="middle" fill="#1b5e20" font-size="12" font-weight="bold">空缓冲队列 emq</text>
+                  <rect x="260" y="70" width="180" height="40" rx="6" fill="#fff3e0" stroke="#e65100" stroke-width="1.5"/>
+                  <text x="350" y="95" text-anchor="middle" fill="#e65100" font-size="12" font-weight="bold">输入队列 inq</text>
+                  <rect x="480" y="70" width="180" height="40" rx="6" fill="#e3f2fd" stroke="#1565c0" stroke-width="1.5"/>
+                  <text x="570" y="95" text-anchor="middle" fill="#0d47a1" font-size="12" font-weight="bold">输出队列 outq</text>
+
+                  <!-- 四个工作缓冲区 -->
+                  <rect x="60" y="150" width="180" height="40" rx="6" fill="#fce4ec" stroke="#c2185b" stroke-width="1.5"/>
+                  <text x="150" y="175" text-anchor="middle" fill="#880e4f" font-size="12" font-weight="bold">收容输入 hin</text>
+                  <rect x="460" y="150" width="180" height="40" rx="6" fill="#fce4ec" stroke="#c2185b" stroke-width="1.5"/>
+                  <text x="550" y="175" text-anchor="middle" fill="#880e4f" font-size="12" font-weight="bold">提取输入 sin</text>
+                  <rect x="60" y="220" width="180" height="40" rx="6" fill="#e0f7fa" stroke="#00838f" stroke-width="1.5"/>
+                  <text x="150" y="245" text-anchor="middle" fill="#006064" font-size="12" font-weight="bold">收容输出 hout</text>
+                  <rect x="460" y="220" width="180" height="40" rx="6" fill="#e0f7fa" stroke="#00838f" stroke-width="1.5"/>
+                  <text x="550" y="245" text-anchor="middle" fill="#006064" font-size="12" font-weight="bold">提取输出 sout</text>
+
+                  <!-- 外部角色 -->
+                  <rect x="290" y="150" width="120" height="40" rx="6" fill="#fffde7" stroke="#f9a825" stroke-width="1.5"/>
+                  <text x="350" y="175" text-anchor="middle" fill="#f57f17" font-size="12" font-weight="bold">进程（CPU）</text>
+
+                  <!-- 箭头：设备→hin→inq -->
+                  <path d="M350 110 L150 150" stroke="#444" stroke-width="1.6" fill="none"/>
+                  <path d="M150 150 L156 147 L156 153 Z" fill="#444"/>
+                  <path d="M240 150 L262 110" stroke="#444" stroke-width="1.6" fill="none"/>
+                  <path d="M262 110 L257 112 L255 106 Z" fill="#444"/>
+                  <!-- inq→sin→进程 -->
+                  <path d="M350 110 L550 150" stroke="#444" stroke-width="1.6" fill="none"/>
+                  <path d="M550 150 L544 147 L544 153 Z" fill="#444"/>
+                  <path d="M460 175 L412 175" stroke="#444" stroke-width="1.6" fill="none"/>
+                  <path d="M412 175 L420 171 L420 179 Z" fill="#444"/>
+                  <!-- 进程→hout→outq -->
+                  <path d="M290 200 L150 220" stroke="#444" stroke-width="1.6" fill="none"/>
+                  <path d="M150 220 L156 217 L156 223 Z" fill="#444"/>
+                  <path d="M240 220 L262 110" stroke="#444" stroke-width="1.6" fill="none"/>
+                  <path d="M262 110 L257 112 L255 106 Z" fill="#444"/>
+                  <!-- outq→sout→设备 -->
+                  <path d="M570 110 L350 150" stroke="#444" stroke-width="1.6" fill="none"/>
+                  <path d="M350 150 L356 147 L356 153 Z" fill="#444"/>
+                  <path d="M460 245 L350 130" stroke="#444" stroke-width="1.6" fill="none"/>
+                  <path d="M350 130 L345 132 L343 126 Z" fill="#444"/>
+
+                  <rect x="40" y="290" width="620" height="18" fill="#ffffff"/>
+                  <text x="350" y="304" text-anchor="middle" fill="#888" font-size="10.5">设备经 hin 写入 inq，进程经 sin 读出；进程经 hout 写入 outq，设备经 sout 取走（emq 提供可分配的空块）</text>
+                </svg>
+          - 用户层， ==SPOOLing（假脱机）==：==用磁盘/缓冲区把独占设备"虚拟"成共享设备==，==典型：打印假脱机，进程输出先入磁盘队列、后台慢慢打印==；==提高设备利用率、实现独占设备共享==
+      - ==I/O 软件层次==（==从上到下、逐层屏蔽实现细节==）
+        - ==用户层 I/O==：==用户进程通过库函数 / 系统调用接口（如 read/write、printf）发起 I/O 请求，并做格式化等处理==
+        - ==设备独立性软件（与设备无关软件）==：==向用户屏蔽设备差异：统一命名/逻辑设备号、保护、缓冲管理、出错处理、分配/释放独立逻辑设备==
+        - ==设备驱动程序==：==针对具体硬件设备的"厂商代码"：把通用 I/O 请求翻译成设备专属命令、设置控制器寄存器、发起 I/O==
+        - ==中断处理程序==：==响应设备中断，做现场保存/恢复、读状态/数据、唤醒等待进程，尽量短小==（==常与驱动程序配合==）
+        - ==硬件==：==设备与 I/O 控制器，真正执行 electrical 动作、产生中断==
   - 计算机网络 25
 - 学习
   - 第一遍过知识点
