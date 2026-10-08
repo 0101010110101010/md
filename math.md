@@ -6300,7 +6300,7 @@
         - ==阶码用移码（偏置）==：==E = 真实阶码 + 偏移量==，便于==按无符号数直接比较大小==、简化对阶
         - ==尾数隐含最高位 1==：规格化数形如 ==1.M==，==整数位的 1 隐含不存储== ⇒ 实际尾数精度 ==24 / 53 位==
         - ==真值公式==：==x = (−1)^S × 1.M × 2^(E − 偏移量)==
-        - ==特殊值==：==E 全 0== ⇒ M=0 为 ==±0==、M≠0 为==非规格化数==（下溢区）；==E 全 1== ⇒ M=0 为 ==±∞==、M≠0 为 ==NaN==（非法运算）
+        - ==特殊值==：==E 全 0== ⇒ M=0 为 ==±0==、M≠0 为==非规格化数==（下溢区；==隐含最高位为 0（即 0.M）而非 1==，value = (−1)^S × 0.M × 2^(1−偏移量)，==例（float）`0 00000000 000…001` = 2^(−23) × 2^(1−127) = 2^(−23) × 2^(−126) = +2^(−149)（最小正浮点数），用于平滑衔接 0 与最小正规数 2^(−126)==）；==E 全 1== ⇒ M=0 为 ==±∞==、M≠0 为 ==NaN==（非法运算）
         - ==定点 vs 浮点==：定点==小数点位置固定==（范围小、精度均一、实现简单、速度快）；浮点==小数点浮动==（范围大、相对精度稳定、硬件复杂）
         - ==规格化（Normalization）==：使尾数满足==规格化形式==（保证 ==1/2 ≤ |M| < 1==、有效位最多），==判据随编码而异==：
           - ==原码规格化==：==尾数最高数值位必为 1==（与符号位无关）——正数 ==0.1xxx…==、负数 ==1.1xxx…==；不满足则==左移直至最高数值位为 1==（阶码相应减 1）
@@ -10384,6 +10384,47 @@
       - ==子网划分与 CIDR 计算==：==给定 IP 与掩码求网络号/主机范围/可用地址数；VLSM、路由聚合==
       - ==网络安全基础==：==对称加密/非对称加密、数字签名、报文摘要、中间人攻击、防火墙、DoS；SSL/TLS 握手==
       - ==协议对比与易混点==：==电路交换 vs 分组交换；TCP vs UDP；CSMA/CD vs CSMA/CA；IPv4 vs IPv6；RIP vs OSPF==
+- 英语二（30天速成高分计划，满分100 / 3h）
+  - ==目标拆解（分值权重）==：阅读A 40 + 阅读B 10 = ==50（命根，决定上限）==；写作 25（小10+大15）；翻译 15；完形 10（最后做、性价比低）
+  - ==总策略==：==词汇从真题里背（复现率最高）==；阅读用精读法；写作背模板；翻译练整段通顺；完形靠语感捡分
+  - ==阶段一 打底（Day 1-10）词汇+阅读入门==
+    - 每日：精读英语二真题阅读 1-2 篇（2010 起顺做）+ 抄背生词；APP 刷"真题词书" 30min
+    - 目标：熟悉 4 类题型套路（细节/主旨/推断/态度），词汇量上来
+    - 第10天：做一套早年真题自测，定位弱项
+  - ==阶段二 强化（Day 11-20）阅读+翻译+新题型==
+    - 每日：真题阅读 2 篇精读 + 阅读B 新题型专项（多项对应/小标题）+ 每周 3 次英译汉整段练习
+    - 重点：阅读错题归类复盘；翻译求"中文通顺"而非字对字硬译
+    - 第20天：再模考一套，对比阶段一成绩
+  - ==阶段三 写作+套卷（Day 21-27）==
+    - 小作文：背 6 类应用文模板（建议/道歉/通知/投诉/邀请/求职）
+    - 大作文：背图表作文模板（描述数据→分析原因→总结）+ 高频数据表达（上升/占比/对比）
+    - 每周 2 套完整模考（严格 3h 计时，练节奏）
+  - ==阶段四 冲刺（Day 28-30）==
+    - 每天 1 套近年真题/模拟（2021-2025 优先），全真计时
+    - 复盘错题本 + 背熟写作模板 + 完形技巧（逻辑连接词、固定搭配）
+    - 考前一天只做轻量保温，调作息
+  - ==每日时间分配参考==：阅读精读 70-80min / 单词 30min / 翻译或写作 30min / 错题 20min
+  - ==救命技巧==：阅读==先题后文、定位句精读==；完形最后做、答案分布较均衡；作文模板+书写工整多拿分
+  - ==小作文 6 类应用文模板（~100词，10分）==
+    - ==通用结构==：Dear ___ , / 目的句（I am writing to...）/ 2-3 点展开 / 结尾句（I would appreciate...）/ Yours sincerely, + 署名
+    - ==建议信==：I am writing to express my view on...; I would suggest that...; I hope my suggestions help.
+    - ==道歉信==：I am writing to apologize for...; Please accept my sincere apology; I will... to make up.
+    - ==投诉信==：I am writing to complain about...; I request a prompt solution; I look forward to your reply.
+    - ==邀请信==：I would like to invite you to...; The event will be held at...; Your presence would honor us.
+    - ==求职/申请信==：I am applying for the position of...; I am qualified because...; I enclose my résumé for review.
+    - ==通知==：Notice / This is to inform that...; All are welcome to attend; For details contact...
+  - ==大作文 图表模板（~150词，15分）三段式==
+    - ==第一段 描述数据==：The chart/line/bar/pie shows/illustrates... from X to Y. / As is shown, ... increased rose/dropped significantly.
+    - ==第二段 分析原因==：Several factors account for this. First, ...; Moreover, ...; What's more, ... (经济/社会/政策/观念等角度)
+    - ==第三段 总结展望==：In conclusion, the trend is likely to continue; It is advisable that... / we should...
+    - ==高频数据表达==：上升 rise/increase/climb/soar；下降 decline/fall/drop/plunge；占比 account for/make up；对比 in contrast/on the contrary；平稳 remain stable
+  - ==英语二高频核心词表（真题复现率最高，分组背）==
+    - ==阅读态度词==：positive, negative, neutral, skeptical, optimistic, pessimistic, critical, approving, objective, biased
+    - ==逻辑连接词==：however, nevertheless, therefore, furthermore, consequently, whereas, nonetheless, likewise
+    - ==经济商业==：inflation, recession, revenue, profit, consumption, economy, market, corporation, investment, stimulate
+    - ==社会教育==：individual, community, phenomenon, curriculum, compulsory, upbringing, inequality, welfare, circumstance
+    - ==科技环境==：technology, innovation, sustainable, emission, renewable, pollution, digital, artificial, significant
+    - ==写作万能动词/名词==：improve, enhance, promote, reflect, indicate, illustrate, phenomenon, consequence, measure, tendency
 - 学习
   - 第一遍过知识点
   - 第二遍过全局结构
