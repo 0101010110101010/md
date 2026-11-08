@@ -160,6 +160,63 @@
           - 函数大于0，极限大于等于0（函数代表范围）
         - 子列收敛：如果数列$\{x_n\}$收敛于$a$，那么它的任一子数列也收敛于$a$
       - 极限运算法则
+        - 
+        - ==极限"存在 / 不存在"与四则运算的关系==（同一自变量变化过程下讨论；"存在"均指有限常数极限）
+          - 两个极限都==存在==（A、B 为常数，除法时还需 B≠0）：
+            - 加、减、乘、除的极限都==存在==（即上面的四则运算法则成立）
+          - 一个==存在==、一个==不存在==（设存在的那个极限为常数 c，且 c 有限；不存在的那个记为 g）：
+            - 加、减：结果==一定不存在==
+              - 反证：若 $\lim(f\pm g)$ 存在，则 $g=(f\pm g)\mp f$ 的极限也存在，与"g 不存在"矛盾
+            - 乘、除：结果==分情况==，==关键区别就在"存在的那个极限 c 是否为 0"==
+              - **乘法**
+                - 若 **c = 0**（存在的极限为 0）：积 $f\cdot g\to 0$ ==一定存在==（0 乘任何量，极限仍为 0）
+                - 若 **c ≠ 0**：积 $f\cdot g$ ==一定不存在==（反证：若 $f\cdot g$ 存在，则 $g=(f\cdot g)/f\to (\text{存在})/c$ 也存在，矛盾）
+              - **除法**（讨论 $f/g$）
+                - 分子 $f$ 存在、分母 $g$ 不存在：
+                  - c = 0 时，$f/g\to 0$ 存在（0 ÷ 震荡量 = 0）
+                  - c ≠ 0 时，$f/g$ 不存在（反证同上）
+                - 分子 $g$ 不存在、分母 $f$ 存在且极限 c≠0：则 $g/f$ 与 $g$ 同"存在性" → 不存在；若分母极限 c=0，则 $g/f$ 趋于无穷（非正常极限，通常意义下不存在）
+              - 一句话：==一个存在、一个不存在时，乘/除"是否一定存在"完全取决于那个存在的极限是不是 0==
+          - 两个都==不存在==：
+            - 加、减、乘、除：结果==都不一定==（可能存，也可能不存）
+              - 加减存例：$f(x)=\sin\frac1x,\ g(x)=-\sin\frac1x$，二者均不存在，但 $f+g=0$ 存在
+              - 加减不存例：$f(x)=g(x)=\sin\frac1x$，均不存在，$f+g=2\sin\frac1x$ 仍不存在
+              - 乘除存例：$f(x)=g(x)=\frac1x\ (x\to0)$ 二者均不存在（趋于无穷），但 $f/g=1$ 的极限==存在==；而 $f\cdot g=1/x^2$ 仍不存在
+        - ==反常积分 收敛/发散 与加、减法的性质==（本质：敛散性 = 极限是否存在；判敛总思路：先"拆"再"判"）
+          - ==一、按积分区间拆分（切区间）==——在奇点 / 无穷端点处切开，使每段只含"一个奇点"，写成 $\int=\int_1+\int_2$（两段是==独立极限==）
+            ==三段敛散判定（区间拆分的关键）==：子积分各自独立取极限，==不存在相互抵消==，故比函数拆分更干净
+              - 情况1（两段==都收敛==）：$\int_1,\int_2$ 均收敛 → 整体 ==一定收敛==（且 $= \int_1+\int_2$）
+              - 情况2（==一个收敛、一个发散==）：设 $\int_1$ 收敛、$\int_2$ 发散 → 整体 ==一定发散==
+              - 情况3（两段==都发散==）：整体 ==一定发散==（两极限各自独立，不可能像函数拆分那样"$\infty-\infty$ 抵消"；如 $\int_{-1}^{1}\frac1x$ 拆成两段均发散 → 整体发散）
+          - ==二、按被积函数拆分（拆函数）==——把 $f=f_1\pm f_2$，据两部分敛散判整体
+            - 情况1（两个都收敛）：$\int f_1,\int f_2$ 均收敛 → $\int(f_1\pm f_2)$ ==一定收敛==，且 $=\int f_1\pm\int f_2$（线性性）
+            - 情况2（一个收敛、一个发散）：设 $\int f_1$ 收敛、$\int f_2$ 发散 → $\int(f_1\pm f_2)$ ==一定发散==（反证：若收敛则 $\int f_2=\int(f_1\pm f_2)\mp\int f_1$ 也收敛，矛盾）
+              - 与"极限：存在+不存在→加减一定不存在"逻辑一致（敛散本质即极限是否存在）
+            - 情况3（两个都发散）：结果==不一定==，==不可把 $+\infty$ 与 $-\infty$ 当数相减抵消==
+              - 收敛例：$\int_1^{+\infty}\frac1x$ 与 $\int_1^{+\infty}\!\left(-\frac1x\right)$ 均发散，但 $\int\left(\frac1x-\frac1x\right)=\int0=0$ 收敛
+              - 发散例：$\int_1^{+\infty}\frac1x$ 与自身均发散，则 $\int\left(\frac1x+\frac1x\right)=\int\frac2x$ 仍发散
+              - 正部/负部分解（最稳妥）：$f=f^+-f^-$（$f^+=\max(f,0),\ f^-=\max(-f,0)$），$\int f$ 收敛 $\iff$ $\int f^+$ 与 $\int f^-$ 同时收敛；任一个发散到 $+\infty$ 则原积分发散（条件收敛即正、负部各自发散、靠震荡抵消）
+          - ==被积函数"趋于 0"与收敛的关系==（常考易错点："广义积分有值 ⇒ 被积函数趋于 0"需加条件才成立）
+            - 正确结论（极限存在时）：若 $\lim\limits_{x\to+\infty}f(x)=A$ 存在，且 $\int_a^{+\infty}f$ 收敛，则==必有 $A=0$==
+              - 等价说法：若 $\lim\limits_{x\to+\infty}f(x)=A\neq0$（或 $\pm\infty$），则 $\int_a^{+\infty}f$ ==一定发散==（非零常数级别的"尾巴"，面积必无穷）
+            - 误区1（$f\to0$ 不是充分条件）：$f(x)\to0$ 推不出积分收敛。反例：$f(x)=\frac1x\to0$，但 $\int_1^{+\infty}\frac1x\,\mathrm{d}x$ 发散（$p=1$ 临界）
+            - 误区2（收敛推不出 $f\to0$，无附加条件时不成立）：积分收敛也推不出被积函数趋于 0。反例：在 $x=n$ 处造高为 $1$、宽为 $\frac1{n^2}$ 的窄三角尖峰，各峰面积 $\sim\frac1{n^2}$ 可求和收敛 $\Rightarrow\int f$ 收敛，但 $f(n)=1\not\to0$
+            - 补充（加"单调性"就成立）：若 $f(x)$ ==单调== 且 $\int_a^{+\infty}f$ 收敛，则必有 $f(x)\to0$
+            - 一句话：收敛只要求"总面积有限"，允许局部出现越来越窄的尖峰；只有"极限存在"或"单调"时，才能说"收敛 $\Rightarrow$ 被积函数趋于 0"
+          - 补充（绝对收敛）：$\int|f|$ 收敛 $\Rightarrow$ $\int f$ 收敛；但 $\int f$ 收敛 $\nRightarrow$ $\int|f|$ 收敛（可能条件收敛，如 $\int_1^{+\infty}\frac{\sin x}{x}\,\mathrm{d}x$）
+          - 实战顺序：==先按区间拆分==隔离所有奇点（无穷端点、瑕点）→ ==再按被积函数拆分==（正部负部 / 与 $\frac1{x^p}$ 比较）逐段判敛
+        - ==有界/无界 与加、减、乘的关系==（同一自变量变化过程下讨论；"有界"指该过程中函数有界，"无界"指无界）
+          - 加、减：
+            - 有界 ± 有界 = ==有界==
+            - 无界 ± 有界 = ==无界==（有界量改变不了无界性：$|f\pm g|\ge |f|-|g|$，有界项被控制）
+            - 无界 ± 无界 = ==不一定==（可抵消：$x+(-x)=0$ 有界；$x+x=2x$ 无界）
+          - 乘：
+            - 有界 × 有界 = ==有界==
+            - 有界 × 无界 = ==不一定==，==唯一看"有界因子是不是 0"为分界==
+              - 【有界因子恒等于 0】若 $f(x)\equiv 0$（真正的 0，不是"趋于 0"）：则 $f\cdot g\equiv 0$，结果==一定是有界（就是 0）==
+              - 【有界因子趋于 0 但不恒为 0】若==有界函数只是趋于 0==（如 $x\to\infty$ 时 $\frac1x\to0$ 有界）：结果==不定== —— ① 有界例：$x$ 无界、$\frac1x$ 有界且$\to0$，则 $x\cdot\frac1x=1$ 有界；② 无界例：$x$ 无界、$\frac1{\sqrt x}$ 有界且$\to0$，则 $x\cdot\frac1{\sqrt x}=\sqrt x\to\infty$ 无界
+              - 【有界因子与 0 保持距离】若==有界函数与 0 保持距离==（$|f|\ge c>0$，如常数 2、3）：则 无界 × 该有界 = ==一定无界==（有界项乘不"压住"无界项）
+            - 无界 × 无界 = ==不一定==（反例：$x$ 与 $\frac1x$ 在 $x\to0$ 时都无界，但 $x\cdot\frac1x=1$ 有界）
         - 如果 $\lim f(x) = A, \lim g(x) = B$,注意A和B都是常数，那么 
           $\lim(f(x) \pm g(x)) = \lim f(x) \pm \lim g(x) = A \pm B$
           $\lim(f(x) \cdot g(x)) = \lim f(x) \cdot \lim g(x) = A \cdot B$
@@ -739,7 +796,10 @@
         &= \frac{1}{a} \arctan(\frac{x}{a}) + C \\
         & \int \frac{1}{\sqrt {a^2 - x^2}} \mathrm d x \\
         &=\frac{1}{|a|} \int \frac{1}{\sqrt {1 - (\frac{x}{a})^2}} \mathrm d x \\ 
-        &= \arcsin\frac{x}{|a|} + C
+        &= \arcsin\frac{x}{|a|} + C \\
+        & \int \frac{1}{\sqrt{x^2 + a^2}} \,\mathrm d x = \ln\!\left|x + \sqrt{x^2 + a^2}\right| + C \\
+        & \int \frac{1}{\sqrt{x^2 - a^2}} \,\mathrm d x = \ln\!\left|x + \sqrt{x^2 - a^2}\right| + C \quad (|x| > |a|) \\
+        & \int \frac{1}{x^2 - a^2} \,\mathrm d x = \frac{1}{2a}\ln\left|\frac{x-a}{x+a}\right| + C
         \end{align*}
         $$
       - 凑微分法：找到一部分作为另一部分的导数
@@ -912,6 +972,9 @@
             \displaystyle \frac{n-1}{n} \cdot \frac{n-3}{n-2} \cdots \frac{2}{3} \cdot 1, & n \text{ 为奇数}
           \end{cases}
           $$
+        - 引力
+          - **万有引力定律**：两质点质量 $m_1,m_2$，相距 $r$，引力大小 $F = G\dfrac{m_1m_2}{r^2}$（$G$ 为引力常量），方向沿两质点连线
+        - 变力做功
         - 压强（液体静压力）
           - **基础公式**：压强 $P = \rho g h$
             - $\rho$ 液体密度，$g$ 重力加速度，$h$ 到液面的深度
@@ -958,6 +1021,8 @@
           - **适用特点**：
             - 指数型：判据是**衰减速度**——$e^{-ax}$（$a>0$）指数衰减必收敛，比任何幂函数都快
             - 对数型：$x=0$ 处是**弱奇点**（收敛），$x\to+\infty$ 处增长**最慢**（单独 $\ln x$ 发散）
+        - 定义法
+        - 和标杆函数比，瑕点处极限为常数，然后替换为标杆函数判敛散性
         - 比较判别法（判断敛散性的核心工具）
           - **收敛方向**：若 $0 \le f(x) \le g(x)$ 且 $\int g$ 收敛，则 $\int f$ 收敛
             - "比收敛的还小，必收敛"
@@ -980,6 +1045,7 @@
           &\int_1^{+\infty} \frac{1}{\sqrt{x}} \,\mathrm{d}x \quad &p=\tfrac{1}{2}<1,\ \text{发散（} 2\sqrt{x} \to +\infty \text{）}
           \end{aligned}
           $$
+        - 偶倍奇零要积分收敛才能用
       - 积分应用 旋转体体积与面积
           $$
           \begin{aligned}
@@ -999,6 +1065,7 @@
         - 只有线性方程才分齐次/非齐次
         - 结构：
           - 一阶方程
+            按照线性、可分离变量、齐次方式考虑，其中13考虑xy颠倒
             - 线性：$y' + P(x)y = Q(x)$
               - 齐次（$Q(x)=0$）：通解 $y = Ce^{-\int P(x)\mathrm{d}x}$
               - 非齐次（$Q(x)\neq 0$）：通解公式（常数变易法）
@@ -1014,6 +1081,7 @@
                   $$\frac{\mathrm{d}u}{f(u) - u} = \frac{\mathrm{d}x}{x}$$
                   两边积分得关于 $u$ 的通解，最后用 $u = \dfrac{y}{x}$ 代回
               - 伯努利方程：$y' + P(x)y = Q(x)y^n$（令 $z = y^{1-n}$）
+              - 欧拉方程（只有数一）
               - 全微分方程
           - 二阶方程
             - 可降阶（非线性特殊解法）
@@ -1381,9 +1449,9 @@
     - 偏导数
       - 存在用极限定义来判断
     - 全微分
-      - **四大概念关系**（二元函数）：
+      - **五大概念关系**（二元函数）：
 
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 340">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 470">
           <!-- 偏导数连续 -->
           <rect x="160" y="10" width="160" height="50" rx="8" fill="#e8f5e9" stroke="#2e7d32" stroke-width="2"/>
           <text x="240" y="40" text-anchor="middle" font-size="15" fill="#2e7d32" font-weight="bold">偏导数连续</text>
@@ -1391,20 +1459,26 @@
           <rect x="160" y="130" width="160" height="50" rx="8" fill="#e3f2fd" stroke="#1565c0" stroke-width="2"/>
           <text x="240" y="160" text-anchor="middle" font-size="15" fill="#1565c0" font-weight="bold">可全微分</text>
           <!-- 连续 -->
-          <rect x="60" y="260" width="130" height="50" rx="8" fill="#fff3e0" stroke="#e65100" stroke-width="2"/>
-          <text x="125" y="290" text-anchor="middle" font-size="15" fill="#e65100" font-weight="bold">连续</text>
+          <rect x="60" y="250" width="130" height="50" rx="8" fill="#fff3e0" stroke="#e65100" stroke-width="2"/>
+          <text x="125" y="280" text-anchor="middle" font-size="15" fill="#e65100" font-weight="bold">连续</text>
+          <!-- 极限存在（连续 ⇒ 极限存在） -->
+          <rect x="60" y="370" width="130" height="50" rx="8" fill="#f3e5f5" stroke="#6a1b9a" stroke-width="2"/>
+          <text x="125" y="400" text-anchor="middle" font-size="15" fill="#6a1b9a" font-weight="bold">极限存在</text>
+          <!-- 箭头：连续 → 极限存在 -->
+          <line x1="125" y1="300" x2="125" y2="368" stroke="#1565c0" stroke-width="2" marker-end="url(#arrowBlue)"/>
+          <text x="135" y="340" font-size="12" fill="#1565c0">⇒</text>
           <!-- 偏导数存在 -->
-          <rect x="290" y="260" width="140" height="50" rx="8" fill="#fce4ec" stroke="#c62828" stroke-width="2"/>
-          <text x="360" y="290" text-anchor="middle" font-size="15" fill="#c62828" font-weight="bold">偏导数存在</text>
+          <rect x="290" y="250" width="140" height="50" rx="8" fill="#fce4ec" stroke="#c62828" stroke-width="2"/>
+          <text x="360" y="280" text-anchor="middle" font-size="15" fill="#c62828" font-weight="bold">偏导数存在</text>
           <!-- 箭头：偏导连续 → 可全微分 -->
           <line x1="240" y1="60" x2="240" y2="125" stroke="#2e7d32" stroke-width="2" marker-end="url(#arrowGreen)"/>
           <text x="260" y="95" font-size="12" fill="#2e7d32">充分条件</text>
           <!-- 箭头：可全微分 → 连续 -->
-          <line x1="195" y1="180" x2="135" y2="255" stroke="#1565c0" stroke-width="2" marker-end="url(#arrowBlue)"/>
-          <text x="130" y="225" font-size="12" fill="#1565c0">⇒</text>
+          <line x1="195" y1="180" x2="135" y2="245" stroke="#1565c0" stroke-width="2" marker-end="url(#arrowBlue)"/>
+          <text x="130" y="215" font-size="12" fill="#1565c0">⇒</text>
           <!-- 箭头：可全微分 → 偏导存在 -->
-          <line x1="285" y1="180" x2="345" y2="255" stroke="#1565c0" stroke-width="2" marker-end="url(#arrowBlue)"/>
-          <text x="330" y="225" font-size="12" fill="#1565c0">⇒</text>
+          <line x1="285" y1="180" x2="345" y2="245" stroke="#1565c0" stroke-width="2" marker-end="url(#arrowBlue)"/>
+          <text x="330" y="215" font-size="12" fill="#1565c0">⇒</text>
           <!-- 双向交叉线：连续 ⇏ 偏导存在 -->
           <line x1="190" y1="275" x2="290" y2="275" stroke="#999" stroke-width="1.5" stroke-dasharray="6,3"/>
           <text x="200" y="269" font-size="11" fill="#999">互不蕴含</text>
@@ -1633,6 +1707,18 @@
 
         > **几何理解**：曲面 $F=0$ 在 $M_0$ 的法向量为 $\nabla F$，曲面 $G=0$ 的法向量为 $\nabla G$。曲线的切线同时垂直于两个法向量，故切向量为 $\nabla F \times \nabla G$。
   - 重积分
+    - 题目
+      - 二重积分计算
+        - 利用直角坐标计算
+        - 利用极坐标计算
+        - 平移不变性
+        - 椭圆化圆
+        - 交换积分次序
+        - 对称性
+        - 奇偶性
+        - 轮换对称性
+        - 分部积分
+        - 形心公式
     - 二重积分直角坐标系运算
       - 投影, $\mathrm dx \mathrm dy(\mathrm d\sigma)$ 表示每个颗粒，$f(x,y)$ 表示属性 
         - 例：计算 $\displaystyle \iint_D xy \,\mathrm{d}x\mathrm{d}y$，$D: 0 \le x \le 1,\ 1 \le y \le 2$
